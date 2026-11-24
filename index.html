@@ -279,6 +279,8 @@ body.head .adminonly{display:none!important}
   <div class="filters stick" style="padding:10px 12px 8px;margin:0"><input id="dSearch" placeholder="🔍 ค้นหาชื่อหน่วยงานหรือหัวหน้า" style="min-width:240px"><select id="dCat"></select><span class="muted" id="dInfo"></span></div>
   <div class="tw" id="dTable" data-cardify></div>
   <p class="muted" style="padding:0 12px">ตั้งชื่อหัวหน้าครั้งเดียว บุคลากรที่สังกัดกลุ่มงานนั้นจะได้สายบังคับบัญชาอัตโนมัติ: <b>ผู้บังคับบัญชาชั้นต้น</b> → ช่องความเห็นในใบลา · <b>ผู้บังคับบัญชาสูงสุด</b> → “เรียน” และช่องคำสั่งอนุญาตในใบลา (ถ้าเว้นว่างจะใช้ค่าในแท็บแบบฟอร์มใบลา) · <b>รหัสเข้าระบบ</b> ใช้เป็นชื่อผู้ใช้ของหัวหน้ากลุ่มงาน รหัสผ่านเริ่มต้นเหมือนรหัสเข้าระบบ</p></div>
+  <div class="panel" id="qDefPanel"><h3><span>โควต้าวันลาเริ่มต้นตามประเภทบุคลากร (วันทำการต่อปีงบประมาณ)</span></h3><div class="tw" id="qDef" data-cardify></div>
+  <p class="muted" style="padding:0 12px">ค่าเริ่มต้นนี้ใช้เมื่อเลือกประเภทบุคลากร แก้โควต้ารายคนได้ในตารางรายชื่อด้านล่าง · <b>พักผ่อนสะสม</b> = วันลาพักผ่อนที่ยกมาจากปีก่อน (แต่ละคนไม่เท่ากัน)</p></div>
   <div class="panel"><h3><span>รายชื่อบุคลากร</span><button class="btn sec sm" id="bAdd">+ เพิ่มรายชื่อ</button></h3>
   <div class="tw" id="bStaff" data-cardify></div>
   <p class="muted" style="padding:0 12px">เลข ID ใช้ให้ผู้ขอลากรอกแทนข้อมูลส่วนตัว ห้ามซ้ำกัน (แนะนำเลขประจำตัวในหน่วยงาน ไม่ควรใช้เลขบัตรประชาชน) · ผู้บังคับบัญชาชั้นต้นมาจากกลุ่มงานที่เลือกโดยอัตโนมัติ · สิทธิ์ลาพักผ่อน = จำนวนวันที่ลาได้ในปีงบประมาณ (รวมวันสะสม)</p>
@@ -460,7 +462,7 @@ async function wipeLeaves(){
 async function resetToDirectory(){
   await wipeLeaves();
   S.depts=[];importDirectory();
-  S.staff=PAO_STAFF.map(([code,name,pos,dept,tel,etype])=>({id:'p'+code,code,name,pos,dept,tel,etype,addr:'',vac:10}));
+  S.staff=PAO_STAFF.map(([code,name,pos,dept,tel,etype])=>({id:'p'+code,code,name,pos,dept,tel,etype,addr:'',...qDefOf(etype),qCarry:0}));
   Object.assign(S.settings,{dataV:DATA_V,dirImport:DIR_SRC,codesV:'nodash',demoV:'none',org:'สำนักงานจังหวัดยะลา',year:2570,round:1});
   saveStaff();saveSet();subLeaves();
 }
@@ -525,6 +527,7 @@ async function boot(){
   subLeaves();
   await initFileDB();
   if((!store.cloud||store.owner)&&S.settings.dataV!==DATA_V)await resetToDirectory();
+  if((!store.cloud||store.owner)&&!S.settings.quotaV){S.staff.forEach(st=>{if(st.qVac==null){const d=qDefOf(st.etype);Object.assign(st,{qVac:d.qVac,qSick:d.qSick,qBiz:d.qBiz,qCarry:Math.max(0,(+st.vac||10)-10)})}});S.settings.quotaV=1;saveStaff();saveSet()}
   if((!store.cloud||store.owner)&&!S.settings.noApprove){LV.filter(l=>l.status==='pending').forEach(l=>putLeave({...l,status:'approved'}));S.settings.noApprove=1;saveSet()}
   if((!store.cloud||store.owner)&&S.settings.demoV!=='hr1'){loadDemo();S.settings.demoV='hr1';saveSet()}
   loadSess();setRole(sess?sess.role:'staff');
@@ -609,6 +612,15 @@ function stats(staffId,list){
   if(late>+st.maxLate)over.push(`มาสาย ${late} ครั้ง`);
   return{o,qc,qd,late,total,over};
 }
+const ETYPES=['ข้าราชการ','ลูกจ้างประจำ','พนักงานราชการ','ลูกจ้างเหมาบริการ'];
+const QDEF={'ข้าราชการ':{qVac:10,qSick:60,qBiz:45},'ลูกจ้างประจำ':{qVac:10,qSick:60,qBiz:45},'พนักงานราชการ':{qVac:10,qSick:30,qBiz:10},'ลูกจ้างเหมาบริการ':{qVac:10,qSick:15,qBiz:6}};
+const qDefs=()=>({...JSON.parse(JSON.stringify(QDEF)),...(S.settings.qdef||{})});
+const qDefOf=et=>qDefs()[et]||qDefs()['ข้าราชการ'];
+function quotaOf(st){const d=qDefOf(st&&st.etype),n=(k,dv)=>st&&st[k]!=null&&st[k]!==''?+st[k]:dv;
+  const vac=n('qVac',d.qVac),carry=n('qCarry',0);return{vac,carry,vacTot:vac+carry,sick:n('qSick',d.qSick),biz:n('qBiz',d.qBiz)}}
+const QT={'ลาพักผ่อน':'vacTot','ลาป่วย':'sick','ลากิจส่วนตัว':'biz'};
+const usedOf=(staffId,type,exceptId)=>fyAll().filter(l=>keyOf(l)===staffId&&l.type===type&&l.id!==exceptId&&l.status==='approved').reduce((a,l)=>a+(+l.days||0),0);
+function quotaLine(st,key){const q=quotaOf(st);return Object.entries(QT).map(([t,k])=>{const u=usedOf(key,t),r=q[k]-u;return`<span class="chip">${T[t].s}: ใช้ <b>${fmt(u)}</b>/${fmt(q[k])} วัน · คงเหลือ <b style="color:${r<0?'var(--red)':'inherit'}">${fmt(r)}</b></span>`}).join('')}
 const vacUsed=(staffId,exceptId,incPending)=>fyAll().filter(l=>keyOf(l)===staffId&&l.type==='ลาพักผ่อน'&&l.id!==exceptId&&(l.status==='approved'||(incPending&&l.status==='pending'))).reduce((a,l)=>a+(+l.days||0),0);
 const sx=st=>`<span class="sx ${st}">${STX[st]||st}</span>`;
 
@@ -658,7 +670,7 @@ function renderPend(){
 }
 function linkStaff(info){
   let st=staffByName(info.nm);
-  if(!st){st={id:uid(),name:norm(info.nm),pos:info.pos||'',dept:info.dept||'',tel:info.tel||'',vac:10,...(info.demo?{demo:1}:{})};S.staff.push(st);saveStaff();toast('เพิ่ม '+st.name+' เข้ารายชื่อบุคลากรแล้ว')}
+  if(!st){st={id:uid(),name:norm(info.nm),pos:info.pos||'',dept:info.dept||'',tel:info.tel||'',etype:'ข้าราชการ',...qDefOf('ข้าราชการ'),qCarry:0,...(info.demo?{demo:1}:{})};S.staff.push(st);saveStaff();toast('เพิ่ม '+st.name+' เข้ารายชื่อบุคลากรแล้ว')}
   else{let ch=0;['pos','dept','tel'].forEach(f=>{if(!st[f]&&info[f]){st[f]=info[f];ch=1}});if(ch)saveStaff()}
   return st;
 }
@@ -726,8 +738,8 @@ function checkForm(){
       if(t.q){const qc=s.qc+1,qd=s.qd+days;if(qc>+S.settings.maxTimes||qd>+S.settings.maxDays)msgs.push(['warn',`รวมครั้งนี้ ลาป่วย+ลากิจ จะเป็น ${qc} ครั้ง ${fmt(qd)} วัน เกินเกณฑ์ (${S.settings.maxTimes} ครั้ง / ${S.settings.maxDays} วัน)`])}
       if(t.late&&s.late+1>+S.settings.maxLate)msgs.push(['warn',`รวมครั้งนี้ มาสายจะเป็น ${s.late+1} ครั้ง เกินเกณฑ์ ${S.settings.maxLate} ครั้ง`]);
     }
-    if(v.type==='ลาพักผ่อน'&&fy===curFY()){const q=v.st?(+v.st.vac||0):10,u=vacUsed(v.key,editId,true)+days;
-      msgs.push([u>q?'warn':'ok',`ลาพักผ่อนปีงบนี้รวม ${fmt(u)} จากสิทธิ์ ${fmt(q)} วัน${u>q?' (เกินสิทธิ์)':` คงเหลือ ${fmt(q-u)} วัน`}`])}
+    if(QT[v.type]&&fy===curFY()&&v.st){const q=quotaOf(v.st)[QT[v.type]],u=usedOf(v.key,v.type,editId)+days;
+      msgs.push([u>q?'warn':'ok',`${v.type}ปีงบนี้รวม ${fmt(u)} จากโควต้า ${fmt(q)} วัน${u>q?' (เกินโควต้า)':` คงเหลือ ${fmt(q-u)} วัน`}`])}
   }
   return{v,days,ok,msgs};
 }
@@ -793,7 +805,7 @@ function renderPerson(){
    <div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:8px;align-items:center">
    <span>รวมวันลา <b>${fmt(s.total)}</b> วัน</span>·<span>ป่วย+กิจ ${s.qc}/${S.settings.maxTimes} ครั้ง ${fmt(s.qd)}/${S.settings.maxDays} วัน</span>·<span>มาสาย ${s.late}/${S.settings.maxLate}</span>
    ${s.over.length?`<span class="st bad">เกินเกณฑ์</span>`:`<span class="st ok">อยู่ในเกณฑ์</span>`}</div>
-   <div class="muted" style="margin-top:6px">ลาพักผ่อนปีงบ ${S.settings.year}: ใช้ ${fmt(vu)} จากสิทธิ์ ${fmt(q)} วัน คงเหลือ ${fmt(q-vu)} วัน</div>`;
+   <div style="margin-top:8px"><b>โควต้าวันลาปีงบ ${S.settings.year}</b>${v.st.etype?` <span class="muted">(${esc(v.st.etype)})</span>`:''}<div class="chips" style="margin-top:4px">${quotaLine(v.st,v.key)}</div></div>`;
   renderHist(v,mineAll);
 }
 
@@ -868,8 +880,8 @@ function indTable(id){
   const st=staffById(id);if(!st)return'<div class="empty">พิมพ์ชื่อแล้วเลือกจากรายการ</div>';
   const fy=fyLeaves().filter(l=>keyOf(l)===id);
   const blk=r=>{const[a,b]=period(r,curFY()),L=fy.filter(l=>l.start>=a&&l.start<=b),s=stats(id,L);return `<tr><td colspan="6" style="background:#e8eff6;font-weight:700">รอบ${r===1?'ครึ่งปีแรก':'ครึ่งปีหลัง'} · รวมวันลา ${fmt(s.total)} วัน · ป่วย+กิจ ${s.qc} ครั้ง ${fmt(s.qd)} วัน · มาสาย ${s.late} ครั้ง · ขาดราชการ ${fmt(s.o['ขาดราชการ'].d)} วัน${s.over.length?' · เกินเกณฑ์':''}</td></tr>`+(L.length?L.map((l,i)=>`<tr><td class="c">${i+1}</td><td>${esc(l.type)}${l.half?' ('+esc(l.half)+')':''}</td><td class="c">${thD(l.start)}</td><td class="c">${T[l.type]?.late?'-':thD(l.end)}</td><td class="c">${fmt(l.days)} ${T[l.type]?.late?'ครั้ง':'วัน'}</td><td>${esc(l.note)}</td></tr>`).join(''):'<tr><td colspan="6" class="c">ไม่มีการลา</td></tr>')};
-  const vu=vacUsed(id),q=+st.vac||0;
-  return `<p><b>${esc(st.name)}</b> ตำแหน่ง ${esc(st.pos||'-')} · ปีงบประมาณ ${S.settings.year} · ลาพักผ่อนใช้ ${fmt(vu)}/${fmt(q)} วัน คงเหลือ ${fmt(q-vu)} วัน</p><table><thead><tr><th>ที่</th><th>ประเภท</th><th>ตั้งแต่</th><th>ถึง</th><th>รวม</th><th>หมายเหตุ</th></tr></thead><tbody>${blk(1)}${blk(2)}</tbody></table>`;
+  const q=quotaOf(st),qs=Object.entries(QT).map(([t,k])=>{const u=usedOf(id,t);return`${T[t].s} ${fmt(u)}/${fmt(q[k])} (เหลือ ${fmt(q[k]-u)})`}).join(' · ');
+  return `<p><b>${esc(st.name)}</b> ตำแหน่ง ${esc(st.pos||'-')} · ปีงบประมาณ ${S.settings.year}<br>โควต้าวันลา: ${qs}</p><table><thead><tr><th>ที่</th><th>ประเภท</th><th>ตั้งแต่</th><th>ถึง</th><th>รวม</th><th>หมายเหตุ</th></tr></thead><tbody>${blk(1)}${blk(2)}</tbody></table>`;
 }
 function renderRep(){
   const L=roundLeaves().filter(inScope),R=sumRows();
@@ -900,6 +912,7 @@ function renderBase(){
 }
 
 function renderStaff(){
+  if($('#qDefPanel'))$('#qDefPanel').style.display=role==='admin'?'':'none';renderQDef();
   const dq=norm($('#dSearch').value).toLowerCase(),dc=$('#dCat').value;
   const cs=$('#dCat'),cv=cs.value;cs.innerHTML=opt('','— ทุกหมวด —')+dcats().map(c=>opt(c,c,c===cv)).join('');
   const DL=S.depts.filter(d=>(!dc||(d.cat||'อื่นๆ')===dc)&&(!dq||[d.name,d.headName,d.min,d.code].some(x=>String(x||'').toLowerCase().includes(dq))));
@@ -907,7 +920,7 @@ function renderStaff(){
   $('#dInfo').textContent=`แสดง ${DL.length} จาก ${S.depts.length} กลุ่มงาน · ข้อมูลจาก${S.settings.dirImport||DIR_SRC}`;
   $('#dTable').innerHTML=DL.length?`<table><thead><tr><th>ที่</th><th>สังกัด</th><th>รหัสเข้าระบบ<br>(หัวหน้ากลุ่มงาน)</th><th>ชื่อหน่วยงาน / กลุ่มงาน</th><th>ผู้บังคับบัญชาสูงสุด<br>(ผู้อนุญาต)</th><th>ตำแหน่ง</th><th>ผู้บังคับบัญชาชั้นต้น</th><th>ตำแหน่ง</th><th>บุคลากร<br>ในระบบ</th><th></th></tr></thead><tbody>${DL.map((d,i)=>`<tr><td class="c">${i+1}</td><td style="min-width:130px;font-size:13px">${esc(d.min||d.cat||'-')}</td><td style="white-space:nowrap">${din(d,'code',90)}${d.pwHash?` <button class="btn sec sm" data-dreset="${d.id}" title="รีเซ็ตรหัสผ่านกลับเป็นรหัสเข้าระบบ">↺</button>`:''}</td><td>${din(d,'name',240)}</td><td>${din(d,'headName',160)}</td><td>${din(d,'headPos',170)}</td><td>${din(d,'supName',160)}</td><td>${din(d,'supPos',170)}</td><td class="c">${S.staff.filter(x=>norm(x.dept)===norm(d.name)).length}</td><td class="c"><button class="btn red sm" data-drm="${d.id}">ลบ</button></td></tr>`).join('')}</tbody></table>`:'<div class="empty">ไม่พบหน่วยงาน</div>';
   const dopts=cur=>opt('','— เลือกหน่วยงาน —')+dcats().map(c=>{const L=S.depts.filter(d=>(d.cat||'อื่นๆ')===c);return L.length?`<optgroup label="${c}">${L.map(d=>opt(d.name,d.name,norm(d.name)===norm(cur))).join('')}</optgroup>`:''}).join('')+(cur&&!S.depts.some(d=>norm(d.name)===norm(cur))?opt(cur,cur+' (ยังไม่มีในรายการ)',true):'');
-  const VS=visStaff();$('#bStaff').innerHTML=VS.length?`<table><thead><tr><th>No</th><th>เลข ID</th><th>ชื่อ-สกุล</th><th>ตำแหน่ง</th><th>หน่วยงาน/กลุ่มงาน</th><th>ผู้บังคับบัญชาชั้นต้น (อัตโนมัติ)</th><th>เบอร์โทร</th><th>ที่อยู่ติดต่อ</th><th>สิทธิ์ลาพักผ่อน (วัน)</th><th></th></tr></thead><tbody>${VS.map((s,i)=>{const p=supOf(s);return`<tr><td class="c">${i+1}</td><td><input data-sid="${s.id}" data-f="code" value="${esc(s.code)}" style="width:90px" class="${s.code&&S.staff.filter(x=>norm(x.code)===norm(s.code)).length>1?'dup':''}"></td><td><input data-sid="${s.id}" data-f="name" value="${esc(s.name)}" style="min-width:170px"></td><td><input data-sid="${s.id}" data-f="pos" value="${esc(s.pos)}" style="min-width:170px"></td><td><select data-sid="${s.id}" data-f="dept" style="min-width:170px"${role==='head'?' disabled':''}>${dopts(s.dept)}</select></td><td style="min-width:170px">${p.name?`${esc(p.name)}<div class="muted">${esc(p.pos)}</div>`:`<span class="muted">${deptOf(s)?'(หน่วยงานนี้ยังไม่ได้ตั้งผู้บังคับบัญชาชั้นต้น)':'— เลือกหน่วยงาน —'}</span>`}</td><td><input data-sid="${s.id}" data-f="tel" value="${esc(s.tel)}" style="width:120px"></td><td><input data-sid="${s.id}" data-f="addr" value="${esc(s.addr)}" style="min-width:180px"></td><td><input type="number" min="0" max="30" step="0.5" data-sid="${s.id}" data-f="vac" value="${esc(s.vac)}" style="width:80px"></td><td class="c" style="white-space:nowrap">${i&&role!=='head'?`<button class="btn sec sm" data-up="${s.id}">▲</button> `:''}<button class="btn red sm" data-rm="${s.id}">ลบ</button></td></tr>`}).join('')}</tbody></table>`:'<div class="empty">ยังไม่มีรายชื่อ กด “+ เพิ่มรายชื่อ”</div>';
+  const VS=visStaff();$('#bStaff').innerHTML=VS.length?`<table><thead><tr><th>No</th><th>เลข ID</th><th>ชื่อ-สกุล</th><th>ตำแหน่ง</th><th>หน่วยงาน/กลุ่มงาน</th><th>ผู้บังคับบัญชาชั้นต้น (อัตโนมัติ)</th><th>เบอร์โทร</th><th>ที่อยู่ติดต่อ</th><th>ประเภทบุคลากร</th><th>พักผ่อน<br>ปีนี้</th><th>พักผ่อน<br>สะสม</th><th>ป่วย</th><th>กิจ</th><th></th></tr></thead><tbody>${VS.map((s,i)=>{const p=supOf(s);return`<tr><td class="c">${i+1}</td><td><input data-sid="${s.id}" data-f="code" value="${esc(s.code)}" style="width:90px" class="${s.code&&S.staff.filter(x=>norm(x.code)===norm(s.code)).length>1?'dup':''}"></td><td><input data-sid="${s.id}" data-f="name" value="${esc(s.name)}" style="min-width:170px"></td><td><input data-sid="${s.id}" data-f="pos" value="${esc(s.pos)}" style="min-width:170px"></td><td><select data-sid="${s.id}" data-f="dept" style="min-width:170px"${role==='head'?' disabled':''}>${dopts(s.dept)}</select></td><td style="min-width:170px">${p.name?`${esc(p.name)}<div class="muted">${esc(p.pos)}</div>`:`<span class="muted">${deptOf(s)?'(หน่วยงานนี้ยังไม่ได้ตั้งผู้บังคับบัญชาชั้นต้น)':'— เลือกหน่วยงาน —'}</span>`}</td><td><input data-sid="${s.id}" data-f="tel" value="${esc(s.tel)}" style="width:120px"></td><td><input data-sid="${s.id}" data-f="addr" value="${esc(s.addr)}" style="min-width:180px"></td><td><select data-sid="${s.id}" data-f="etype" style="min-width:130px">${opt('','— เลือก —')+ETYPES.map(e=>opt(e,e,e===s.etype)).join('')}</select></td>${(()=>{const q=quotaOf(s);return[['qVac',q.vac],['qCarry',q.carry],['qSick',q.sick],['qBiz',q.biz]].map(([f,v])=>`<td><input type="number" min="0" max="365" step="0.5" data-sid="${s.id}" data-f="${f}" value="${v}" style="width:64px"></td>`).join('')})()}<td class="c" style="white-space:nowrap">${i&&role!=='head'?`<button class="btn sec sm" data-up="${s.id}">▲</button> `:''}<button class="btn red sm" data-rm="${s.id}">ลบ</button></td></tr>`}).join('')}</tbody></table>`:'<div class="empty">ยังไม่มีรายชื่อ กด “+ เพิ่มรายชื่อ”</div>';
 }
 let deptTimer;
 $('#dTable').addEventListener('input',e=>{const i=e.target,d=S.depts.find(x=>x.id===i.dataset.did);if(!d)return;
@@ -920,7 +933,7 @@ $('#hImport').onclick=async()=>{if(!await ask(`อัปเดตกลุ่ม
 $('#dTable').addEventListener('click',async e=>{const rs=e.target.dataset.dreset;if(rs){const d=S.depts.find(x=>x.id===rs);if(d&&await ask(`รีเซ็ตรหัสผ่านของ ${esc(d.name)} กลับเป็นรหัสเข้าระบบ (${esc(d.code)})?`)){delete d.pwHash;saveDepts();renderStaff();toast('รีเซ็ตรหัสผ่านแล้ว')}return}const id=e.target.dataset.drm;if(!id)return;const d=S.depts.find(x=>x.id===id),n=S.staff.filter(x=>norm(x.dept)===norm(d.name)).length;
   if(!await ask(`ลบกลุ่มงาน <b>${esc(d.name||'(ไม่มีชื่อ)')}</b>?${n?`<br>มีบุคลากร ${n} คนอยู่ในกลุ่มนี้ ต้องเลือกกลุ่มงานใหม่ให้ภายหลัง`:''}`))return;S.depts=S.depts.filter(x=>x!==d);saveDepts();renderStaff()});
 $('#dAdd').onclick=()=>{$('#dSearch').value='';$('#dCat').value='';S.depts.push({id:uid(),name:'',cat:'อื่นๆ',supName:'',supPos:'',headName:'',headPos:''});saveDepts();renderStaff();const ins=document.querySelectorAll('#dTable input[data-f="name"]');ins[ins.length-1].focus()};
-$('#bStaff').addEventListener('change',e=>{if(e.target.dataset.f==='dept'){saveStaff();renderStaff()}});
+$('#bStaff').addEventListener('change',e=>{const f=e.target.dataset.f;if(f==='dept'){saveStaff();renderStaff()}if(f==='etype'){const st=staffById(e.target.dataset.sid);if(st){st.etype=e.target.value;const d=qDefOf(st.etype);Object.assign(st,{qVac:d.qVac,qSick:d.qSick,qBiz:d.qBiz});saveStaff();renderStaff();toast('ตั้งโควต้าตามประเภท '+st.etype+' แล้ว (แก้รายคนได้)')}}});
 let setTimer;
 function setChanged(){
   const st=S.settings,y=parseInt($('#bYear').value,10);
@@ -934,7 +947,7 @@ function setChanged(){
 $('#demoLoad').onclick=loadDemo;$('#demoClear').onclick=clearDemo;
 $('#bPinSave').onclick=async()=>{const p=$('#bPin').value;if(p.length<4)return toast('รหัสผ่านต้องมีอย่างน้อย 4 ตัว',true);S.settings.adminHash=await sha('admin|'+p);saveSet();$('#bPin').value='';renderBase();toast('เปลี่ยนรหัสผ่านผู้ดูแลระบบแล้ว')};
 let staffTimer;
-$('#bStaff').addEventListener('input',e=>{const i=e.target;if(!i.dataset.sid)return;const s=staffById(i.dataset.sid);if(!s)return;s[i.dataset.f]=i.dataset.f==='vac'?(+i.value||0):i.value.trim();if(i.dataset.f==='code'){const dup=s.code&&S.staff.some(x=>x!==s&&norm(x.code)===norm(s.code));i.classList.toggle('dup',!!dup);if(dup)toast('เลข ID นี้ซ้ำกับคนอื่น',true)}clearTimeout(staffTimer);staffTimer=setTimeout(saveStaff,600)});
+$('#bStaff').addEventListener('input',e=>{const i=e.target;if(!i.dataset.sid)return;const s=staffById(i.dataset.sid);if(!s)return;s[i.dataset.f]=/^(vac|q[A-Z])/.test(i.dataset.f)?(+i.value||0):i.value.trim();if(i.dataset.f==='code'){const dup=s.code&&S.staff.some(x=>x!==s&&norm(x.code)===norm(s.code));i.classList.toggle('dup',!!dup);if(dup)toast('เลข ID นี้ซ้ำกับคนอื่น',true)}clearTimeout(staffTimer);staffTimer=setTimeout(saveStaff,600)});
 $('#bStaff').addEventListener('click',async e=>{
   const rm=e.target.dataset.rm,up=e.target.dataset.up;
   if(up){const i=S.staff.findIndex(s=>s.id===up);if(i>0){[S.staff[i-1],S.staff[i]]=[S.staff[i],S.staff[i-1]];saveStaff();renderStaff()}}
@@ -942,7 +955,7 @@ $('#bStaff').addEventListener('click',async e=>{
     if(!await ask(`ลบ <b>${esc(s.name||'(ไม่มีชื่อ)')}</b> ออกจากรายชื่อ?${n?`<br><span style="color:var(--red)">มีประวัติการลา ${n} รายการ (ยังเก็บไว้ แต่จะไม่แสดงในแบบสรุป)</span>`:''}`))return;
     S.staff=S.staff.filter(x=>x.id!==rm);saveStaff();renderStaff();toast('ลบรายชื่อแล้ว')}
 });
-$('#bAdd').onclick=()=>{const n=S.staff.map(x=>parseInt(x.code,10)).filter(x=>!isNaN(x));S.staff.push({id:uid(),code:String(n.length?Math.max(...n)+1:1001),name:'',pos:'',vac:10,dept:role==='head'&&myDept()?myDept().name:''});saveStaff();renderStaff();const ins=document.querySelectorAll('#bStaff input[data-f="name"]');ins[ins.length-1].focus()};
+$('#bAdd').onclick=()=>{const n=S.staff.map(x=>parseInt(x.code,10)).filter(x=>!isNaN(x));S.staff.push({id:uid(),code:String(n.length?Math.max(...n)+1:1001),name:'',pos:'',etype:'ข้าราชการ',...qDefOf('ข้าราชการ'),qCarry:0,dept:role==='head'&&myDept()?myDept().name:''});saveStaff();renderStaff();const ins=document.querySelectorAll('#bStaff input[data-f="name"]');ins[ins.length-1].focus()};
 async function allLeaves(){
   if(!store.cloud)return LV;
   const out=[];for(let y=curFY()-5;y<=curFY()+1;y++){const s=await store.db.collection('leaves').where('fy','==',y).get();s.docs.forEach(d=>out.push({...d.data()}))}return out;
@@ -1063,7 +1076,7 @@ function dMonth(){const L=xLeaves().filter(l=>l.status==='approved');
   return{head:['เดือน',...TYPES.map(t=>t.s+(t.late?' (ครั้ง)':' (วัน)')),'รวมวันลา'],
    rows:[...M.map(m=>[m.t,...TYPES.map(t=>mVal(L,m.k,t)),LEAVE_T.reduce((a,t)=>a+mVal(L,m.k,t),0)]),['รวม',...TYPES.map(t=>M.reduce((a,m)=>a+mVal(L,m.k,t),0)),M.reduce((a,m)=>a+LEAVE_T.reduce((b,t)=>b+mVal(L,m.k,t),0),0)]],
    widths:[18,...TYPES.map(()=>12),12]}}
-function dStaff(){return{head:['ที่','เลข ID','ชื่อ-สกุล','ตำแหน่ง','สังกัด/กลุ่มงาน','เบอร์โทร','ที่อยู่ติดต่อ','ผู้บังคับบัญชาชั้นต้น','ตำแหน่งผู้บังคับบัญชา','ผู้บังคับบัญชาสูงสุด','ตำแหน่งผู้บังคับบัญชาสูงสุด','สิทธิ์ลาพักผ่อน (วัน)','ลาพักผ่อนใช้แล้ว (วัน)','คงเหลือ (วัน)'],rows:visStaff().map((s,i)=>{const u=vacUsed(s.id);return[i+1,s.code||'',s.name,s.pos||'',s.dept||'',s.tel||'',s.addr||'',supOf(s).name,supOf(s).pos,(topOf(s)||{}).name||'',(topOf(s)||{}).pos||'',+s.vac||0,u,(+s.vac||0)-u]}),widths:[5,9,26,28,24,14,30,24,26,24,26,14,14,12]}}
+function dStaff(){return{head:['ที่','เลข ID','ชื่อ-สกุล','ตำแหน่ง','สังกัด/กลุ่มงาน','เบอร์โทร','ที่อยู่ติดต่อ','ผู้บังคับบัญชาชั้นต้น','ตำแหน่งผู้บังคับบัญชา','ผู้บังคับบัญชาสูงสุด','ตำแหน่งผู้บังคับบัญชาสูงสุด','ประเภทบุคลากร','โควต้าพักผ่อน (ปีนี้+สะสม)','พักผ่อนใช้แล้ว','พักผ่อนคงเหลือ','โควต้าป่วย','ป่วยใช้แล้ว','ป่วยคงเหลือ','โควต้ากิจ','กิจใช้แล้ว','กิจคงเหลือ'],rows:visStaff().map((s,i)=>{const q=quotaOf(s),u=t=>usedOf(s.id,t);return[i+1,s.code||'',s.name,s.pos||'',s.dept||'',s.tel||'',s.addr||'',supOf(s).name,supOf(s).pos,(topOf(s)||{}).name||'',(topOf(s)||{}).pos||'',s.etype||'',q.vacTot,u('ลาพักผ่อน'),q.vacTot-u('ลาพักผ่อน'),q.sick,u('ลาป่วย'),q.sick-u('ลาป่วย'),q.biz,u('ลากิจส่วนตัว'),q.biz-u('ลากิจส่วนตัว')]}),widths:[5,9,26,28,24,14,30,24,26,24,26,16,14,12,12,10,10,10,10,10,10]}}
 function dHol(){return{head:['ที่','วันที่','วัน','ชื่อวันหยุด','ปีงบประมาณ'],rows:[...S.holidays].sort((a,b)=>a.date<b.date?-1:1).map((h,i)=>[i+1,thDL(h.date),WD[pd(h.date).getUTCDay()],h.name,fyOf(h.date)]),widths:[5,22,6,44,12]}}
 const sheetOf=(name,title,d)=>({name,rows:[[title],[S.settings.org+' · '+scopeText()],[],d.head,...d.rows],titles:2,hdr:3,widths:d.widths});
 const fname=n=>`${n}_${S.settings.year}${$('#xScope').value==='fy'?'':'_รอบ'+S.settings.round}`;
@@ -1158,7 +1171,7 @@ const workDays=l=>T[l.type]&&T[l.type].cal?calcDays('ลาป่วย',l.start
 const orgOf=dept=>{const o=FORMS.org||'';if(!dept)return o;if(o&&dept.startsWith(o))return o;return o&&!dept.includes(o)?`${dept} ${o}`:dept};
 function fyLeavesSync(fy){return fy===curFY()||!store.cloud?LV.filter(x=>x.fy===fy):(histCache[fy]||LV.filter(x=>x.fy===fy))}
 function formVars(l){
-  const st=staffById(l.staffId)||staffByName(l.nm),k=keyOf(l),vac=st?(+st.vac||10):10;
+  const st=staffById(l.staffId)||staffByName(l.nm),k=keyOf(l),Q=quotaOf(st),vac=Q.vacTot;
   const mine=[...LV,...Object.values(histCache).flat()].filter((x,i,a)=>x.status==='approved'&&keyOf(x)===k&&x.id!==l.id&&x.start<l.start&&a.findIndex(y=>y.id===x.id)===i).sort((a,b)=>a.start<b.start?-1:1);
   const prev=mine.filter(x=>GEN3.includes(x.type)).pop();
   const ab=`<span style="display:inline-grid;grid-template-columns:auto auto;column-gap:14px;align-items:center;vertical-align:middle;text-indent:0">
@@ -1167,7 +1180,7 @@ function formVars(l){
   return{ชื่อ:staffName(l),ตำแหน่ง:posOf(l),สังกัด:orgOf(l.dept||(st&&st.dept)||''),โทร:l.tel||(st&&st.tel)||'',ประเภท:l.type.replace(/^ลา/,''),เหตุผล:l.note||'',
     ตั้งแต่:thDL(l.start),ถึง:thDL(l.end||l.start),จำนวนวัน:l.half?'ครึ่ง':fmt(calDays(l.start,l.end)),วันทำการ:fmt(workDays(l))+(l.half?` (${l.half})`:''),
     ครั้งสุดท้ายตั้งแต่:prev?thDL(prev.start):'',ครั้งสุดท้ายถึง:prev?thDL(prev.end||prev.start):'',ครั้งสุดท้ายจำนวน:prev?(prev.half?'ครึ่ง':fmt(calDays(prev.start,prev.end))):'',ครั้งสุดท้ายวันทำการ:prev?fmt(workDays(prev)):'',
-    ติดต่อ:l.contact||(st&&st.addr)||'',วันพักผ่อนสะสม:fmt(Math.max(0,vac-10)),วันพักผ่อนปีนี้:fmt(Math.min(vac,10)),สิทธิ์พักผ่อนรวม:fmt(vac),ปีงบประมาณ:String(l.fy||''),
+    ติดต่อ:l.contact||(st&&st.addr)||'',วันพักผ่อนสะสม:fmt(Q.carry),วันพักผ่อนปีนี้:fmt(Q.vac),สิทธิ์พักผ่อนรวม:fmt(vac),ปีงบประมาณ:String(l.fy||''),
     ช่องเลือกประเภท:{html:cbRow(l.type)},ช่องครั้งสุดท้าย:{html:cbRow(prev?prev.type:'')},ช่องขอลา:{html:ab},
     _mine:mine,_vac:vac,_used:used};
 }
@@ -1357,6 +1370,14 @@ $('#bkList').addEventListener('click',async e=>{const id=e.target.dataset.bkrm;i
   if(!await ask('ลบรายการนี้?'))return;
   if(LV.some(l=>l.id===id))removeLeave(id);else if(store.cloud)qWrite('L:'+id,()=>store.db.doc('leaves/'+id).delete());
   delete histCache[fy];setTimeout(renderBackList,300);toast('ลบแล้ว')});
+
+/* ---------- โควต้าเริ่มต้นตามประเภทบุคลากร ---------- */
+function renderQDef(){const D=qDefs(),cnt=e=>S.staff.filter(s=>s.etype===e).length;
+  $('#qDef').innerHTML=`<table><thead><tr><th>ประเภทบุคลากร</th><th>จำนวน</th><th>พักผ่อน/ปี</th><th>ป่วย/ปี</th><th>กิจ/ปี</th><th></th></tr></thead><tbody>${ETYPES.map(e=>`<tr><td>${e}</td><td class="c">${cnt(e)} คน</td>${['qVac','qSick','qBiz'].map(k=>`<td><input type="number" min="0" max="365" step="0.5" data-qe="${e}" data-qk="${k}" value="${D[e][k]}" style="width:70px"></td>`).join('')}<td><button class="btn sec sm" data-qapply="${e}">ใช้กับทุกคนในประเภทนี้</button></td></tr>`).join('')}</tbody></table>`}
+$('#qDef').addEventListener('input',e=>{const i=e.target;if(!i.dataset.qe)return;const q=S.settings.qdef=S.settings.qdef||{};q[i.dataset.qe]={...qDefOf(i.dataset.qe),[i.dataset.qk]:+i.value||0};clearTimeout(setTimer);setTimer=setTimeout(saveSet,600)});
+$('#qDef').addEventListener('click',async e=>{const et=e.target.dataset.qapply;if(!et)return;const L=S.staff.filter(s=>s.etype===et);
+  if(!await ask(`ตั้งโควต้าพักผ่อน/ป่วย/กิจ ของ${et} ทั้ง ${L.length} คน ตามค่าในตาราง?<br><span class="muted">ค่าที่แก้รายคนไว้จะถูกแทนที่ (วันพักผ่อนสะสมไม่เปลี่ยน)</span>`))return;
+  const d=qDefOf(et);L.forEach(s=>Object.assign(s,{qVac:d.qVac,qSick:d.qSick,qBiz:d.qBiz}));saveStaff();renderStaff();toast(`ตั้งโควต้าให้ ${L.length} คนแล้ว`)});
 
 /* ---------- ตรวจจับอุปกรณ์ ---------- */
 const DEV_T={mobile:'📱 มือถือ',tablet:'📲 แท็บเล็ต',desktop:'💻 คอมพิวเตอร์'};
