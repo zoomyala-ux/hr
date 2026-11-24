@@ -68,6 +68,9 @@ tfoot td{font-weight:700;background:#e8eff6}
 tr.edit td{background:#fff6d6!important}
 .editing{outline:3px solid #f0b400}
 #printArea{display:none}
+.panel{overflow:clip}
+.stick{position:sticky;top:var(--navh,46px);z-index:6;background:#fff;padding-top:8px;padding-bottom:8px;box-shadow:0 6px 6px -6px #0003}
+body.staff .stick{top:0}
 .who{border:1px solid #9cc79f;background:#f1f9f1;border-radius:8px;padding:8px 12px;font-size:14px;line-height:1.7}
 .who b{font-size:16px;color:var(--green)}.who.no{border-color:#e6a1a1;background:#fdecea;color:var(--red)}
 input.dup{border-color:var(--red)!important;background:#fdecea}
@@ -125,7 +128,7 @@ body.head .adminonly{display:none!important}
 </nav>
 <main>
 <!-- รอตรวจสอบ -->
-<section id="pend"><div class="filters"><input id="pSearch" placeholder="🔍 พิมพ์ชื่อค้นหา" style="min-width:220px"></div><p class="muted" style="margin-top:0">ใบลาที่ผู้กรอกส่งเข้ามา ตรวจสอบแล้วกดอนุมัติ จึงจะนับในแบบสรุปและรายงาน</p><div class="tw" id="pTable"></div></section>
+<section id="pend"><div class="filters stick"><input id="pSearch" placeholder="🔍 พิมพ์ชื่อค้นหา" style="min-width:220px"></div><p class="muted" style="margin-top:0">ใบลาที่ผู้กรอกส่งเข้ามา ตรวจสอบแล้วกดอนุมัติ จึงจะนับในแบบสรุปและรายงาน</p><div class="tw" id="pTable"></div></section>
 <!-- บันทึกการลา -->
 <section id="rec" class="on">
  <div class="grid2">
@@ -153,7 +156,7 @@ body.head .adminonly{display:none!important}
 
 <!-- ทั้งหมด -->
 <section id="all">
- <div class="filters">
+ <div class="filters stick">
   <select id="aYear" title="ปีงบประมาณ"></select><input id="aStaff" placeholder="🔍 พิมพ์ชื่อค้นหา" style="min-width:200px"><select id="aType"></select><select id="aMonth"></select><select id="aStat"><option value="">— ทุกสถานะ —</option><option value="approved">อนุมัติ</option><option value="pending">รอตรวจสอบ</option><option value="rejected">ไม่อนุมัติ</option></select>
   <label style="display:flex;gap:5px;align-items:center;min-width:0;white-space:nowrap"><input type="checkbox" id="aRound" style="width:auto" checked> เฉพาะรอบรายงาน</label>
   <button class="btn sec" id="aCsv">ดาวน์โหลด Excel (CSV)</button>
@@ -164,7 +167,7 @@ body.head .adminonly{display:none!important}
 <!-- สรุป -->
 <section id="sum">
  <div style="text-align:center;margin-bottom:8px"><div class="big" id="sTitle"></div><div id="sSub"></div></div>
- <div class="btns" style="margin:0 0 10px"><input id="sSearch" placeholder="🔍 พิมพ์ชื่อค้นหา" style="width:200px"><button class="btn" id="sCsv">ดาวน์โหลด Excel (CSV)</button><button class="btn sec" id="sHtml">ดาวน์โหลดรายงานสำหรับพิมพ์</button><button class="btn sec pOnly" id="sPrint">พิมพ์</button></div>
+ <div class="btns stick" style="margin:0 0 10px"><input id="sSearch" placeholder="🔍 พิมพ์ชื่อค้นหา" style="width:200px"><button class="btn" id="sCsv">ดาวน์โหลด Excel (CSV)</button><button class="btn sec" id="sHtml">ดาวน์โหลดรายงานสำหรับพิมพ์</button><button class="btn sec pOnly" id="sPrint">พิมพ์</button></div>
  <div class="tw" id="sTable"></div>
  <p class="muted" id="sNote"></p>
 </section>
@@ -215,7 +218,7 @@ body.head .adminonly{display:none!important}
 <!-- บุคลากร -->
 <section id="staff">
  <div class="panel adminonly"><h3><span>หน่วยงาน / สายบังคับบัญชา</span><span><button class="btn sec sm" id="hImport">อัปเดตจากทำเนียบ</button> <button class="btn sec sm" id="dAdd">+ เพิ่มหน่วยงาน/กลุ่มงาน</button></span></h3>
-  <div class="filters" style="padding:10px 12px 0"><input id="dSearch" placeholder="🔍 ค้นหาชื่อหน่วยงานหรือหัวหน้า" style="min-width:240px"><select id="dCat"></select><span class="muted" id="dInfo"></span></div>
+  <div class="filters stick" style="padding:10px 12px 8px;margin:0"><input id="dSearch" placeholder="🔍 ค้นหาชื่อหน่วยงานหรือหัวหน้า" style="min-width:240px"><select id="dCat"></select><span class="muted" id="dInfo"></span></div>
   <div class="tw" id="dTable"></div>
   <p class="muted" style="padding:0 12px">ตั้งชื่อหัวหน้าครั้งเดียว บุคลากรที่สังกัดหน่วยงานนั้นจะได้สายบังคับบัญชาอัตโนมัติ: <b>ผู้บังคับบัญชาชั้นต้น</b> → ช่องความเห็นในใบลา · <b>หัวหน้าส่วนราชการ</b> → “เรียน” และช่องคำสั่งอนุญาตในใบลา (ถ้าเว้นว่างจะใช้ค่าในแท็บแบบฟอร์มใบลา) · ไม่รวมหน่วยงานระดับอำเภอ · <b>รหัสเข้าระบบ</b> ใช้เป็นชื่อผู้ใช้ของหัวหน้าส่วน รหัสผ่านเริ่มต้นเหมือนรหัสเข้าระบบ</p></div>
   <div class="panel"><h3><span>รายชื่อบุคลากร</span><button class="btn sec sm" id="bAdd">+ เพิ่มรายชื่อ</button></h3>
@@ -225,13 +228,13 @@ body.head .adminonly{display:none!important}
 </section>
 <!-- วันหยุด -->
 <section id="hol">
- <div class="filters"><input type="date" id="hDate"><input id="hName" placeholder="ชื่อวันหยุด" style="min-width:220px"><button class="btn" id="hAdd">เพิ่มวันหยุด</button><button class="btn sec" id="hDef">เพิ่มวันหยุดมาตรฐาน ปีงบ 2569</button></div>
+ <div class="filters stick"><input type="date" id="hDate"><input id="hName" placeholder="ชื่อวันหยุด" style="min-width:220px"><button class="btn" id="hAdd">เพิ่มวันหยุด</button><button class="btn sec" id="hDef">เพิ่มวันหยุดมาตรฐาน ปีงบ 2569</button></div>
  <p class="muted">ไม่ต้องใส่วันเสาร์–อาทิตย์ ระบบไม่นับให้อยู่แล้ว · วันที่มี * ควรตรวจกับประกาศจริง (วันตรุษตามประกาศจุฬาราชมนตรี และวันหยุดพิเศษตามมติ ครม.)</p>
  <div class="tw" id="hTable"></div>
 </section>
 <!-- ส่งออก -->
 <section id="exp">
- <div class="filters"><b>ช่วงข้อมูลการลา:</b><select id="xScope"><option value="round">รอบรายงานปัจจุบัน</option><option value="fy">ทั้งปีงบประมาณ</option></select><select id="xStat"><option value="approved">เฉพาะที่อนุมัติ</option><option value="">ทุกสถานะ</option></select><span class="muted" id="xInfo"></span></div>
+ <div class="filters stick"><b>ช่วงข้อมูลการลา:</b><select id="xScope"><option value="round">รอบรายงานปัจจุบัน</option><option value="fy">ทั้งปีงบประมาณ</option></select><select id="xStat"><option value="approved">เฉพาะที่อนุมัติ</option><option value="">ทุกสถานะ</option></select><span class="muted" id="xInfo"></span></div>
  <div class="grid2">
   <div>
    <div class="panel"><h3>Excel (.xlsx)</h3><div class="bd">
@@ -1166,6 +1169,7 @@ $('#fmLogoDel').onclick=()=>{FORMS.logo='';saveForms();renderForm()};
 $('#fmTest').onclick=()=>{const l=sampleLeave();if(l.id==='x'){const t={...l};LV.push(t);leavePDF(t).finally(()=>{LV=LV.filter(x=>x!==t)})}else leavePDF(l)};
 $('#fmReset').onclick=async()=>{if(!await ask('คืนค่าแบบฟอร์มใบลาเป็นค่าเริ่มต้นทั้งหมด?'))return;FORMS=mergeForms(null);cfgSet('forms',FORMS);renderForm();toast('คืนค่าเริ่มต้นแล้ว')};
 
+const setNavH=()=>document.documentElement.style.setProperty('--navh',($('#tabs').offsetHeight||46)+'px');window.addEventListener('resize',setNavH);setTimeout(setNavH,300);
 boot();
 </script>
 
