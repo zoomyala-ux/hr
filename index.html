@@ -181,7 +181,7 @@ body.head .adminonly{display:none!important}
     <div class="row" id="rEnd"><label>วันสิ้นสุดการลา</label><input type="date" id="fEnd"></div>
     <div class="row" id="rHalf"><label>ลาครึ่งวัน</label><select id="fHalf"><option value="">เต็มวัน</option><option>ครึ่งวันเช้า</option><option>ครึ่งวันบ่าย</option></select></div>
     <div class="row"><label>เหตุผลการลา</label><input id="fNote" placeholder="เช่น ป่วยเป็นไข้หวัด"></div>
-    <div class="row" id="rSub" style="display:none"><label>ผู้ปฏิบัติหน้าที่แทน <span style="color:var(--red)">*</span></label><input id="fSub" list="subList" placeholder="พิมพ์แล้วเลือกชื่อจากรายการ (จำเป็นสำหรับลาพักผ่อน)"><datalist id="subList"></datalist></div>
+    <div class="row" id="rSub" style="display:none"><label>ผู้ปฏิบัติหน้าที่แทน <span style="color:var(--red)">*</span></label><input id="fSub" list="subList" placeholder="เลือกคนในกลุ่มงานเดียวกัน (จำเป็นสำหรับลาพักผ่อน)"><datalist id="subList"></datalist></div>
     <div class="row"><label>ติดต่อได้ที่ (ระหว่างลา)</label><input id="fContact" placeholder="ที่อยู่/เบอร์โทรระหว่างลา (ถ้าไม่กรอกใช้เบอร์โทร)"></div>
     <div class="row"><label>รวมการลาครั้งนี้</label><div><span class="big" id="fDays">0</span> <span id="fUnit">วัน</span> <span class="muted" id="fNo"></span></div></div>
     <div id="fMsg"></div>
@@ -586,6 +586,9 @@ const fyAll=()=>LV.filter(l=>l.fy===curFY());
 const fyLeaves=()=>fyAll().filter(l=>l.status==='approved');
 const roundLeaves=()=>fyLeaves().filter(inRound);
 const active=l=>l.status!=='rejected';
+const sameGrp=(a,b)=>!!(a&&b&&norm(a.dept)===norm(b.dept));
+const grpMates=st=>S.staff.filter(x=>st&&x.id!==st.id&&sameGrp(x,st));
+const subOK=(st,s2)=>sameGrp(st,s2)||!grpMates(st).length;
 const ownFresh=l=>l.by==='staff'&&Date.now()-(+l.ts||0)<864e5;
 const pendCount=()=>LV.filter(l=>l.status==='pending'&&inScope(l)).length;
 const staffById=id=>S.staff.find(s=>s.id===id);
@@ -703,7 +706,7 @@ function attachSug(input,box,onPick){
 let contactAuto=true;
 function fillFromStaff(st){if(contactAuto||!$('#fContact').value){$('#fContact').value=st.addr||'';contactAuto=true}}
 $('#fContact').addEventListener('input',()=>contactAuto=false);
-$('#fSub').addEventListener('focus',()=>{const me=formVals().st,L=[...S.staff].filter(x=>!me||x.id!==me.id).sort((a,b)=>(me&&b.dept===me.dept)-(me&&a.dept===me.dept));$('#subList').innerHTML=L.map(x=>`<option value="${esc(x.name)}">${esc(x.pos||'')}</option>`).join('')});
+$('#fSub').addEventListener('focus',()=>{const me=formVals().st,G=me?grpMates(me):[],L=G.length?G:S.staff.filter(x=>!me||x.id!==me.id);$('#subList').innerHTML=L.map(x=>`<option value="${esc(x.name)}">${esc(x.pos||'')}</option>`).join('')});
 attachSug($('#fName'),$('#fSug'),st=>{if(editId)clearForm(true);fillFromStaff(st);renderPerson();updForm()});
 function renderRec(){
   $('#formTitle').textContent=editId?'แก้ไขรายการการลา':(isMgr()?'บันทึกการลา (ผู้ดูแล)':'ยื่นใบลา');
@@ -735,7 +738,8 @@ function checkForm(){
   if(v.type==='ลาพักผ่อน'){const s2=v.sub&&staffByName(v.sub);
     if(!v.sub){msgs.push(['err','ลาพักผ่อนต้องระบุผู้ปฏิบัติหน้าที่แทน']);ok=false}
     else if(!s2){msgs.push(['err','เลือกผู้ปฏิบัติหน้าที่แทนจากรายชื่อบุคลากร']);ok=false}
-    else if(v.st&&s2.id===v.st.id){msgs.push(['err','ผู้ปฏิบัติหน้าที่แทนต้องไม่ใช่ตัวผู้ขอลาเอง']);ok=false}}
+    else if(v.st&&s2.id===v.st.id){msgs.push(['err','ผู้ปฏิบัติหน้าที่แทนต้องไม่ใช่ตัวผู้ขอลาเอง']);ok=false}
+    else if(v.st&&!subOK(v.st,s2)){msgs.push(['err',`ผู้ปฏิบัติหน้าที่แทนต้องอยู่ใน${v.st.dept||'กลุ่มงานเดียวกัน'}เท่านั้น`]);ok=false}}
   if(ok){
     const [a,b]=curPeriod(),fy=fyOf(v.start),e=v.end||v.start;
     if(fy!==curFY())msgs.push(['warn',`วันที่นี้อยู่ในปีงบประมาณ ${fy} ไม่ใช่ปีงบ ${curFY()} ที่ตั้งไว้`]);
@@ -1469,6 +1473,8 @@ async function importFile(file){
     const type=typeOfTxt(r[2]),start=cellDT(r[3]),end=cellDT(r[4])||start,hv=cellStr(r[5]),half=/เช้า/.test(hv)?'ครึ่งวันเช้า':/บ่าย/.test(hv)?'ครึ่งวันบ่าย':'';
     const why=!st?'ไม่พบเลข ID/ชื่อ':!type?'ประเภทการลาไม่ถูกต้อง':!start?'วันเริ่มอ่านไม่ได้':end<start?'วันสิ้นสุดก่อนวันเริ่ม':'';
     if(why){plan.lvBad.push(`ประวัติการลา แถว ${i+5}: ${why}`);return}
+    const sb=cellStr(r[7]),sbs=sb&&S.staff.find(x=>norm(x.name)===norm(sb));
+    if(sb&&(!sbs||!subOK(st,sbs))){plan.lvBad.push(`ประวัติการลา แถว ${i+5}: ผู้ปฏิบัติหน้าที่แทน “${sb}” ${sbs?'ไม่ได้อยู่กลุ่มงานเดียวกัน':'ไม่มีในรายชื่อ'}`);return}
     const k=st.id+'|'+type+'|'+start;if(exist.has(k)){plan.lvDup++;return}exist.add(k);
     plan.lv.push({st,type,start,end:T[type].late?start:end,half:T[type].late||T[type].cal?'':half,note:cellStr(r[6]),sub:cellStr(r[7])})});
   const hs=holSet();HR.forEach(r=>{const d=cellDT(r[0]),n=cellStr(r[1]);if(d&&n&&!hs.has(d)){hs.add(d);plan.hol.push({date:d,name:n})}});
