@@ -128,7 +128,7 @@ body.admin #adminBar,body.head #adminBar{display:flex;justify-content:space-betw
 .lf p{margin:0;text-indent:3.2em}
 .lf .dl{border-bottom:1px dotted #000;padding:0 6px}
 .lf .de{display:inline-block;min-width:110px;border-bottom:1px dotted #000}
-.lf .cb{display:inline-block;width:.85em;height:.85em;border:1px solid #000;vertical-align:-1px;line-height:.8em;text-align:center;font-size:.95em;margin-right:3px}
+.lf .cb{display:inline-block;width:.85em;height:.85em;border:1px solid #000;border-radius:50%;vertical-align:-1px;line-height:.8em;text-align:center;font-size:.95em;margin-right:3px}
 .lf table{border-collapse:collapse;width:100%;font-size:.88em;line-height:1.4}
 .lf th,.lf td{border:1px solid #000!important;padding:3px 4px;text-align:center;background:#fff!important;color:#000!important;font-weight:400;white-space:normal}
 .lf th{font-weight:700}
@@ -181,6 +181,7 @@ body.head .adminonly{display:none!important}
     <div class="row" id="rEnd"><label>วันสิ้นสุดการลา</label><input type="date" id="fEnd"></div>
     <div class="row" id="rHalf"><label>ลาครึ่งวัน</label><select id="fHalf"><option value="">เต็มวัน</option><option>ครึ่งวันเช้า</option><option>ครึ่งวันบ่าย</option></select></div>
     <div class="row"><label>เหตุผลการลา</label><input id="fNote" placeholder="เช่น ป่วยเป็นไข้หวัด"></div>
+    <div class="row" id="rSub" style="display:none"><label>ผู้ปฏิบัติหน้าที่แทน</label><input id="fSub" list="subList" placeholder="ชื่อผู้ที่มอบหมายงานให้ระหว่างลา (ไม่บังคับ)"><datalist id="subList"></datalist></div>
     <div class="row"><label>ติดต่อได้ที่ (ระหว่างลา)</label><input id="fContact" placeholder="ที่อยู่/เบอร์โทรระหว่างลา (ถ้าไม่กรอกใช้เบอร์โทร)"></div>
     <div class="row"><label>รวมการลาครั้งนี้</label><div><span class="big" id="fDays">0</span> <span id="fUnit">วัน</span> <span class="muted" id="fNo"></span></div></div>
     <div id="fMsg"></div>
@@ -327,6 +328,7 @@ body.head .adminonly{display:none!important}
    <div class="panel"><h3>ส่วนหัว</h3><div class="bd">
     <div class="row"><label>เขียนที่</label><input data-fm="writtenAt"></div>
     <div class="row"><label>เรียน</label><input data-fm="to"></div>
+    <div class="row"><label>สังกัด (ต่อท้ายกลุ่มงาน)</label><input data-fm="org"></div>
     <div class="row"><label>ขนาดตัวอักษร</label><select data-fm="fontSize"><option value="14">เล็ก</option><option value="15">ปกติ</option><option value="16">ใหญ่</option><option value="17">ใหญ่มาก</option></select></div>
     <div class="row"><label>โลโก้/ตราครุฑ</label><div style="display:flex;gap:6px;align-items:center"><label class="btn sec sm">เลือกรูป<input type="file" id="fmLogo" accept="image/*" hidden></label><button class="btn red sm" id="fmLogoDel">ลบรูป</button><span class="muted" id="fmLogoSt"></span></div></div>
    </div></div>
@@ -684,6 +686,7 @@ function attachSug(input,box,onPick){
 let contactAuto=true;
 function fillFromStaff(st){if(contactAuto||!$('#fContact').value){$('#fContact').value=st.addr||'';contactAuto=true}}
 $('#fContact').addEventListener('input',()=>contactAuto=false);
+$('#fSub').addEventListener('focus',()=>{$('#subList').innerHTML=S.staff.map(x=>`<option value="${esc(x.name)}">${esc(x.pos||'')}</option>`).join('')});
 attachSug($('#fName'),$('#fSug'),st=>{if(editId)clearForm(true);fillFromStaff(st);renderPerson();updForm()});
 function renderRec(){
   $('#formTitle').textContent=editId?'แก้ไขรายการการลา':(isMgr()?'บันทึกการลา (ผู้ดูแล)':'ยื่นใบลา');
@@ -695,7 +698,7 @@ function renderRec(){
 }
 function formVals(){
   const q=norm($('#fName').value),st=whoOf(q);
-  return{q,st,nm:st?st.name:'',key:st?st.id:'',pos:st?st.pos||'':'',dept:st?st.dept||'':'',tel:st?st.tel||'':'',type:$('#fType').value,start:$('#fStart').value,end:$('#fEnd').value,half:$('#fHalf').value,note:$('#fNote').value.trim(),contact:norm($('#fContact').value)};
+  return{q,st,nm:st?st.name:'',key:st?st.id:'',pos:st?st.pos||'':'',dept:st?st.dept||'':'',tel:st?st.tel||'':'',type:$('#fType').value,start:$('#fStart').value,end:$('#fEnd').value,half:$('#fHalf').value,note:$('#fNote').value.trim(),sub:$('#fSub').value.trim(),contact:norm($('#fContact').value)};
 }
 function renderWho(v){
   const b=$('#fInfo');if(!v.q){b.innerHTML='';return}
@@ -732,6 +735,7 @@ function updForm(){
   const t=T[$('#fType').value]||TYPES[0];
   $('#rEnd').style.display=t.late||$('#fHalf').value?'none':'';
   $('#rHalf').style.display=t.late||t.cal?'none':'';
+  $('#rSub').style.display=t.n==='ลาพักผ่อน'?'':'none';
   if(t.late||t.cal)$('#fHalf').value='';
   $('#lStart').textContent=t.late?'วันที่มาสาย':'วันเริ่มต้นลา';
   const r=checkForm();renderWho(r.v);
@@ -746,14 +750,14 @@ let nameTimer;
 $('#fName').addEventListener('input',()=>{clearTimeout(nameTimer);nameTimer=setTimeout(()=>{const st=whoOf($('#fName').value);if(st)fillFromStaff(st);renderPerson();updForm()},250)});
 ['fType','fEnd','fHalf'].forEach(id=>$('#'+id).addEventListener('change',updForm));
 $('#fStart').addEventListener('change',()=>{if(!$('#fEnd').value||$('#fEnd').value<$('#fStart').value)$('#fEnd').value=$('#fStart').value;updForm()});
-function clearForm(keepPerson){editId=null;['fStart','fEnd','fNote','fContact'].forEach(i=>$('#'+i).value='');$('#fHalf').value='';contactAuto=true;if(!keepPerson)$('#fName').value='';$('#bDel').style.display='none';$('#formPanel').classList.remove('editing');renderRec()}
+function clearForm(keepPerson){editId=null;['fStart','fEnd','fNote','fContact','fSub'].forEach(i=>$('#'+i).value='');$('#fHalf').value='';contactAuto=true;if(!keepPerson)$('#fName').value='';$('#bDel').style.display='none';$('#formPanel').classList.remove('editing');renderRec()}
 $('#bClear').onclick=()=>clearForm(isMgr()?false:true);
 $('#bSave').onclick=()=>{
   const r=checkForm();if(!r.ok)return;const v=r.v,t=T[v.type];
   const old=editId&&findLeave(editId);
   const info={nm:v.nm,pos:v.pos,dept:v.dept,tel:v.tel},staffId=v.st.id;
   if(!isMgr())lsSet(ME_K,{code:v.st.code||''});
-  const rec={id:editId||uid(),staffId,...info,type:v.type,start:v.start,end:t.late?v.start:(v.end&&v.end>=v.start?v.end:v.start),half:v.half,note:v.note,contact:v.contact,days:r.days,fy:fyOf(v.start),
+  const rec={id:editId||uid(),staffId,...info,type:v.type,start:v.start,end:t.late?v.start:(v.end&&v.end>=v.start?v.end:v.start),half:v.half,note:v.note,contact:v.contact,sub:v.type==='ลาพักผ่อน'?v.sub:'',days:r.days,fy:fyOf(v.start),
     status:'approved',by:role,ts:old&&old.ts||Date.now()};
   putLeave(rec);
   const msg=isMgr()?(editId?'แก้ไขรายการแล้ว':'บันทึกการลาแล้ว'):'บันทึกการลาแล้ว';
@@ -774,7 +778,7 @@ function editLeave(id){
   showTab('rec');editId=id;
   const st=staffById(l.staffId)||staffByName(l.nm);
   $('#fName').value=st?(isMgr()?st.name:st.code||st.name):l.nm||'';contactAuto=false;
-  $('#fType').value=l.type;$('#fStart').value=l.start;$('#fEnd').value=l.end||l.start;$('#fHalf').value=l.half||'';$('#fNote').value=l.note||'';$('#fContact').value=l.contact||'';
+  $('#fType').value=l.type;$('#fStart').value=l.start;$('#fEnd').value=l.end||l.start;$('#fHalf').value=l.half||'';$('#fNote').value=l.note||'';$('#fContact').value=l.contact||'';$('#fSub').value=l.sub||'';
   $('#bDel').style.display='';$('#formPanel').classList.add('editing');renderRec();window.scrollTo({top:0,behavior:'smooth'});
 }
 function renderPerson(){
@@ -1134,53 +1138,84 @@ $('#fdbOff').onclick=async()=>{fileH=null;savedH=null;await idbSet('fileH',null)
 async function initFileDB(){if(!fsOK||store.cloud)return;savedH=await idbGet('fileH');updFileUI()}
 
 /* ---------- ใบลา (PDF) + ตัวแก้แบบฟอร์ม ---------- */
-const DEF_FORMS={writtenAt:'สำนักงานจังหวัดยะลา',to:'ผู้ว่าราชการจังหวัดยะลา',fontSize:15,logo:'',
-  sup1Label:'ความเห็นผู้บังคับบัญชาชั้นต้น',sup1Name:'',sup1Pos:'',
-  sup2Label:'คำสั่งผู้บังคับบัญชาสูงสุด',sup2Name:'',sup2Pos:'ผู้ว่าราชการจังหวัดยะลา',
+const DEF_FORMS={v:2,writtenAt:'ศาลากลางจังหวัดยะลา',to:'ผู้ว่าราชการจังหวัดยะลา',org:'สำนักงานจังหวัดยะลา',fontSize:15,logo:'',
+  sup1Label:'ความเห็นผู้บังคับบัญชา',sup1Name:'',sup1Pos:'',
+  sup2Label:'คำสั่ง',sup2Name:'',sup2Pos:'',
   showStats:true,showChecker:true,checkerName:'',checkerPos:'',
-  general:{title:'แบบใบลาป่วย ลาคลอดบุตร ลากิจส่วนตัว',body:'ข้าพเจ้า {ชื่อ} ตำแหน่ง {ตำแหน่ง} สังกัด {สังกัด}\nขอลา {ช่องเลือกประเภท} เนื่องจาก {เหตุผล}\nตั้งแต่วันที่ {ตั้งแต่} ถึงวันที่ {ถึง} มีกำหนด {จำนวนวัน} วัน ข้าพเจ้าได้ลา{ประเภท}ครั้งสุดท้าย ตั้งแต่วันที่ {ครั้งสุดท้ายตั้งแต่} ถึงวันที่ {ครั้งสุดท้ายถึง} มีกำหนด {ครั้งสุดท้ายจำนวน} วัน\nในระหว่างลาจะติดต่อข้าพเจ้าได้ที่ {ติดต่อ}'},
-  vacation:{title:'แบบใบลาพักผ่อน',body:'ข้าพเจ้า {ชื่อ} ตำแหน่ง {ตำแหน่ง} สังกัด {สังกัด}\nมีวันลาพักผ่อนสะสม {วันพักผ่อนสะสม} วันทำการ มีสิทธิลาพักผ่อนประจำปีนี้อีก 10 วันทำการ รวมเป็น {สิทธิ์พักผ่อนรวม} วันทำการ ขอลาพักผ่อนตั้งแต่วันที่ {ตั้งแต่} ถึงวันที่ {ถึง} มีกำหนด {จำนวนวัน} วัน\nในระหว่างลาจะติดต่อข้าพเจ้าได้ที่ {ติดต่อ}'}};
+  general:{title:'แบบใบลาป่วย ลาคลอดบุตร ลากิจส่วนตัว',body:'ข้าพเจ้า {ชื่อ} ตำแหน่ง {ตำแหน่ง}\nสังกัด {สังกัด}\n{ช่องขอลา}\nตั้งแต่วันที่ {ตั้งแต่} ถึงวันที่ {ถึง} มีกำหนด {จำนวนวัน} วัน ( {วันทำการ} วันทำการ)\nข้าพเจ้าได้ลา {ช่องครั้งสุดท้าย} ครั้งสุดท้าย ตั้งแต่วันที่ {ครั้งสุดท้ายตั้งแต่} ถึงวันที่ {ครั้งสุดท้ายถึง} มีกำหนด {ครั้งสุดท้ายจำนวน} วัน ( {ครั้งสุดท้ายวันทำการ} วันทำการ)\nในระหว่างลาจะติดต่อข้าพเจ้าได้ที่ {ติดต่อ} หมายเลขโทรศัพท์ {โทร}'},
+  vacation:{title:'แบบใบลาพักผ่อน',body:'ข้าพเจ้า {ชื่อ} ตำแหน่ง {ตำแหน่ง}\nสังกัด {สังกัด}\nมีวันลาพักผ่อนสะสม {วันพักผ่อนสะสม} วันทำการ มีสิทธิลาพักผ่อนประจำปีนี้อีก {วันพักผ่อนปีนี้} วันทำการ รวมเป็น {สิทธิ์พักผ่อนรวม} วันทำการ ขอลาพักผ่อนตั้งแต่วันที่ {ตั้งแต่} ถึงวันที่ {ถึง} มีกำหนด {จำนวนวัน} วัน ( {วันทำการ} วันทำการ) ในระหว่างลาจะติดต่อข้าพเจ้าได้ที่ {ติดต่อ} โทรศัพท์ {โทร}'}};
 let FORMS=JSON.parse(JSON.stringify(DEF_FORMS));
-const mergeForms=f=>{const d=JSON.parse(JSON.stringify(DEF_FORMS));if(!f)return d;return{...d,...f,general:{...d.general,...(f.general||{})},vacation:{...d.vacation,...(f.vacation||{})}}};
-const PH=['ชื่อ','ตำแหน่ง','สังกัด','ช่องเลือกประเภท','ประเภท','เหตุผล','ตั้งแต่','ถึง','จำนวนวัน','ครั้งสุดท้ายตั้งแต่','ครั้งสุดท้ายถึง','ครั้งสุดท้ายจำนวน','ติดต่อ','โทร','วันพักผ่อนสะสม','สิทธิ์พักผ่อนรวม','ปีงบประมาณ'];
+const mergeForms=f=>{const d=JSON.parse(JSON.stringify(DEF_FORMS));if(!f)return d;
+  if(f.v!==d.v){f={...f};['general','vacation','to','writtenAt','sup1Label','sup2Label','sup2Pos','v'].forEach(k=>delete f[k])}
+  return{...d,...f,general:{...d.general,...(f.general||{})},vacation:{...d.vacation,...(f.vacation||{})}}};
+const PH=['ชื่อ','ตำแหน่ง','สังกัด','ช่องขอลา','ช่องเลือกประเภท','ช่องครั้งสุดท้าย','ประเภท','เหตุผล','ตั้งแต่','ถึง','จำนวนวัน','วันทำการ','ครั้งสุดท้ายตั้งแต่','ครั้งสุดท้ายถึง','ครั้งสุดท้ายจำนวน','ครั้งสุดท้ายวันทำการ','ติดต่อ','โทร','วันพักผ่อนสะสม','วันพักผ่อนปีนี้','สิทธิ์พักผ่อนรวม','ปีงบประมาณ'];
 const hasForm=l=>l&&!T[l.type]?.late&&l.type!=='ขาดราชการ';
+const GEN3=['ลาป่วย','ลากิจส่วนตัว','ลาคลอดบุตร'];
+const cbx=on=>`<span class="cb">${on?'<svg viewBox="0 0 12 12" width="100%" height="100%" style="display:block"><path d="M2.2 6.3l2.6 2.9L9.8 2.8" fill="none" stroke="#000" stroke-width="1.8"/></svg>':''}</span>`;
+const cbRow=t=>GEN3.map(x=>`${cbx(t===x)}${x.replace(/^ลา/,'')}`).join('&nbsp;&nbsp;&nbsp;&nbsp;')+(t&&!GEN3.includes(t)&&t!=='ลาพักผ่อน'?`&nbsp;&nbsp;&nbsp;&nbsp;${cbx(true)}${esc(t.replace(/^ลา/,''))}`:'');
+const calDays=(a,b)=>Math.round((pd(b||a)-pd(a))/864e5)+1;
+const workDays=l=>T[l.type]&&T[l.type].cal?calcDays('ลาป่วย',l.start,l.end||l.start,''):(+l.days||0);
+const orgOf=dept=>{const o=FORMS.org||'';if(!dept)return o;if(o&&dept.startsWith(o))return o;return o&&!dept.includes(o)?`${dept} ${o}`:dept};
+function fyLeavesSync(fy){return fy===curFY()||!store.cloud?LV.filter(x=>x.fy===fy):(histCache[fy]||LV.filter(x=>x.fy===fy))}
 function formVars(l){
   const st=staffById(l.staffId)||staffByName(l.nm),k=keyOf(l),vac=st?(+st.vac||10):10;
-  const prev=LV.filter(x=>x.status==='approved'&&keyOf(x)===k&&x.type===l.type&&x.id!==l.id&&x.start<l.start).pop();
-  const gen=['ลาป่วย','ลากิจส่วนตัว','ลาคลอดบุตร'],cb=on=>`<span class="cb">${on?'<svg viewBox="0 0 12 12" width="100%" height="100%" style="display:block"><path d="M2 6.5l2.8 3L10.5 2" fill="none" stroke="#000" stroke-width="2"/></svg>':''}</span>`;
-  let boxes=gen.map(t=>`${cb(l.type===t)}${t.replace(/^ลา/,'')}`).join('&nbsp;&nbsp;&nbsp;');
-  if(!gen.includes(l.type))boxes+=`&nbsp;&nbsp;&nbsp;${cb(true)}${esc(l.type.replace(/^ลา/,''))}`;
-  return{ชื่อ:staffName(l),ตำแหน่ง:posOf(l),สังกัด:l.dept||(st&&st.dept)||'',โทร:l.tel||(st&&st.tel)||'',ประเภท:l.type.replace(/^ลา/,''),เหตุผล:l.note||'',
-    ตั้งแต่:thDL(l.start),ถึง:thDL(l.end||l.start),จำนวนวัน:fmt(+l.days||0)+(l.half?` (${l.half})`:''),
-    ครั้งสุดท้ายตั้งแต่:prev?thDL(prev.start):'-',ครั้งสุดท้ายถึง:prev?thDL(prev.end||prev.start):'-',ครั้งสุดท้ายจำนวน:prev?fmt(+prev.days||0):'-',
-    ติดต่อ:l.contact||(st&&st.addr)||l.tel||(st&&st.tel)||'',วันพักผ่อนสะสม:fmt(Math.max(0,vac-10)),สิทธิ์พักผ่อนรวม:fmt(vac),ปีงบประมาณ:String(l.fy||''),ช่องเลือกประเภท:{html:boxes}};
+  const mine=[...LV,...Object.values(histCache).flat()].filter((x,i,a)=>x.status==='approved'&&keyOf(x)===k&&x.id!==l.id&&x.start<l.start&&a.findIndex(y=>y.id===x.id)===i).sort((a,b)=>a.start<b.start?-1:1);
+  const prev=mine.filter(x=>GEN3.includes(x.type)).pop();
+  const ab=`<span style="display:inline-grid;grid-template-columns:auto auto;column-gap:14px;align-items:center;vertical-align:middle;text-indent:0">
+    <span style="grid-row:1/4">ขอลา</span><span>${cbx(l.type==='ลาป่วย')}ป่วย</span><span>${cbx(l.type==='ลากิจส่วนตัว')}กิจส่วนตัว&nbsp;&nbsp;เนื่องจาก <span class="dl">${esc(l.note||'')||'&nbsp;'.repeat(40)}</span></span><span>${cbx(l.type==='ลาคลอดบุตร')}คลอดบุตร${GEN3.includes(l.type)?'':`&nbsp;&nbsp;&nbsp;${cbx(true)}${esc(l.type.replace(/^ลา/,''))}`}</span></span>`;
+  const used=mine.filter(x=>x.type==='ลาพักผ่อน'&&x.fy===l.fy).reduce((a,x)=>a+(+x.days||0),0);
+  return{ชื่อ:staffName(l),ตำแหน่ง:posOf(l),สังกัด:orgOf(l.dept||(st&&st.dept)||''),โทร:l.tel||(st&&st.tel)||'',ประเภท:l.type.replace(/^ลา/,''),เหตุผล:l.note||'',
+    ตั้งแต่:thDL(l.start),ถึง:thDL(l.end||l.start),จำนวนวัน:l.half?'ครึ่ง':fmt(calDays(l.start,l.end)),วันทำการ:fmt(workDays(l))+(l.half?` (${l.half})`:''),
+    ครั้งสุดท้ายตั้งแต่:prev?thDL(prev.start):'',ครั้งสุดท้ายถึง:prev?thDL(prev.end||prev.start):'',ครั้งสุดท้ายจำนวน:prev?(prev.half?'ครึ่ง':fmt(calDays(prev.start,prev.end))):'',ครั้งสุดท้ายวันทำการ:prev?fmt(workDays(prev)):'',
+    ติดต่อ:l.contact||(st&&st.addr)||'',วันพักผ่อนสะสม:fmt(Math.max(0,vac-10)),วันพักผ่อนปีนี้:fmt(Math.min(vac,10)),สิทธิ์พักผ่อนรวม:fmt(vac),ปีงบประมาณ:String(l.fy||''),
+    ช่องเลือกประเภท:{html:cbRow(l.type)},ช่องครั้งสุดท้าย:{html:cbRow(prev?prev.type:'')},ช่องขอลา:{html:ab},
+    _mine:mine,_vac:vac,_used:used};
 }
 function fillT(text,V){return esc(text).replace(/\{([^}]+)\}/g,(m,k)=>{if(!(k in V))return m;const v=V[k];if(v&&v.html)return v.html;return v===''?'<span class="de"></span>':`<span class="dl">${esc(v)}</span>`})}
-function statsTable(l){
-  const rows=l.type==='ลาพักผ่อน'?['ลาพักผ่อน']:[...new Set(['ลาป่วย','ลากิจส่วนตัว','ลาคลอดบุตร',l.type])],k=keyOf(l);
-  return`<div class="h">สถิติการลาในปีงบประมาณนี้</div><table><tr><th>ประเภทการลา</th><th>ลามาแล้ว<br>(วัน)</th><th>ลาครั้งนี้<br>(วัน)</th><th>รวมเป็น<br>(วัน)</th></tr>${rows.map(t=>{
-    const b=LV.filter(x=>x.status==='approved'&&keyOf(x)===k&&x.type===t&&x.fy===l.fy&&x.id!==l.id&&x.start<l.start).reduce((a,x)=>a+(+x.days||0),0),n=t===l.type?(+l.days||0):0;
-    return`<tr><td style="text-align:left">${esc(t.replace(/^ลา/,''))}</td><td>${fmt(b)}</td><td>${n?fmt(n):'-'}</td><td>${fmt(b+n)}</td></tr>`}).join('')}</table>`;
+const dots=n=>'.'.repeat(n);
+function halfStats(l,V,r){
+  const [a,b]=period(r,l.fy),inThis=l.start>=a&&l.start<=b;
+  const rows=GEN3.map(t=>{const P=V._mine.filter(x=>x.type===t&&x.fy===l.fy&&x.start>=a&&x.start<=b);const pc=P.length,pdd=P.reduce((s,x)=>s+(+x.days||0),0);
+    const nc=inThis&&l.type===t?1:0,nd=nc?(+l.days||0):0,show=inThis||l.start>b;
+    const c=v=>show?(v?fmt(v):'-'):'';
+    return`<tr><td style="text-align:left">${t.replace(/^ลา/,'')}</td><td>${c(pc)}</td><td>${c(pdd)}</td><td>${inThis?(nc?'1':'-'):''}</td><td>${inThis?(nd?fmt(nd):'-'):''}</td><td>${c(pc+nc)}</td><td>${c(pdd+nd)}</td></tr>`}).join('');
+  return`<div style="font-weight:700;margin-top:${r===2?8:0}px">สถิติการลา ปีงบประมาณ ${l.fy} <span style="font-weight:400">(${r===1?'1 ต.ค. - 31 มี.ค.':'1 เม.ย. - 30 ก.ย.'})</span></div>
+  <table><tr><th rowspan="2">ประเภท<br>การลา</th><th colspan="2">ลามาแล้ว</th><th colspan="2">ลาครั้งนี้</th><th colspan="2">รวมเป็น</th></tr><tr><th>ครั้ง</th><th>วัน</th><th>ครั้ง</th><th>วัน</th><th>ครั้ง</th><th>วัน</th></tr>${rows}</table>`;
 }
-const sigBox=(role,name,pos)=>`<div class="sig">(ลงชื่อ) .......................................... ${role}<br>( ${name?esc(name):'..........................................'} )<br>ตำแหน่ง ${pos?esc(pos):'....................................'}<br>วันที่ ........./................./.........</div>`;
+function vacStats(l,V){const b=V._used,n=+l.days||0,tot=V._vac;
+  return`<div class="h">สถิติการลาในปีงบประมาณนี้</div><table>
+  <tr><td colspan="2" style="text-align:left">วันลาสะสม ${V.วันพักผ่อนสะสม} วัน<br>วันลาปีนี้ ${V.วันพักผ่อนปีนี้} วัน<br>รวม ${fmt(tot)} วัน</td></tr>
+  <tr><td style="text-align:left">ลามาแล้ว</td><td>${fmt(b)} วันทำการ</td></tr>
+  <tr><td style="text-align:left">ลาครั้งนี้</td><td>${fmt(n)} วันทำการ</td></tr>
+  <tr><td style="text-align:left">รวม</td><td>${fmt(b+n)} วันทำการ</td></tr>
+  <tr><td style="text-align:left">คงเหลือ</td><td>${fmt(Math.max(0,tot-b-n))} วันทำการ</td></tr></table>`}
+const sigFull=(name,pos,role)=>`<div class="sig"><span style="white-space:nowrap">(ลงชื่อ) ${dots(role?32:46)}${role?' '+role:''}</span><br>( ${name?esc(name):dots(46)} )<br>ตำแหน่ง ${pos?esc(pos):dots(46)}<br>วันที่ ${dots(8)} เดือน ${dots(18)} พ.ศ. ${dots(8)}</div>`;
 function formHTML(l,F){
-  F=F||FORMS;const tp=l.type==='ลาพักผ่อน'?F.vacation:F.general,V=formVars(l),SP=staffById(l.staffId)||staffByName(l.nm),TP=topOf(SP);
+  F=F||FORMS;const vacF=l.type==='ลาพักผ่อน',tp=vacF?F.vacation:F.general,V=formVars(l),SP=staffById(l.staffId)||staffByName(l.nm),TP=topOf(SP),SUP=supOf(SP);
   const d=new Date(l.ts||Date.now()),ds=iso(new Date(d.getTime()+7*36e5)),[y,m,dd]=ds.split('-').map(Number);
-  const body=tp.body.split('\n').filter(x=>x.trim()).map(x=>`<p>${fillT(x,V)}</p>`).join('');
-  return`<div class="lf" style="font-size:${+F.fontSize||15}px">
-  ${F.logo?`<div class="c"><img src="${F.logo}" style="height:78px"></div>`:''}
-  <div class="t">${esc(tp.title)}</div>
+  const body=tp.body.split('\n').filter(x=>x.trim()).map((x,i)=>`<p${i?' style="text-indent:0"':''}>${fillT(x,V)}</p>`).join('');
+  const subSt=l.sub&&staffByName(l.sub);
+  const supName=SUP.name||F.sup1Name,supPos=SUP.name?SUP.pos:F.sup1Pos,topName=F.sup2Name||(TP&&TP.name)||'',topPos=F.sup2Pos||(TP&&TP.pos)||'';
+  const approve=`<div class="h" style="margin-top:12px">${esc(F.sup2Label)}</div><div>${cbx(false)} อนุญาต&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${cbx(false)} ไม่อนุญาต</div>${sigFull(topName,topPos)}`;
+  const opinion=`<div class="h">${esc(F.sup1Label)}</div><div class="ln"></div><div class="ln"></div>${sigFull(supName,supPos)}`;
+  const me=`<div class="sig">ขอแสดงความนับถือ<br><br>(ลงชื่อ) ${dots(46)}<br>( ${esc(V.ชื่อ)} )<br>ตำแหน่ง ${esc(V.ตำแหน่ง||dots(40))}${vacF?'':`<br>วันที่ <span class="dl">${dd}</span> เดือน <span class="dl">${ML[m-1]}</span> พ.ศ. <span class="dl">${y+543}</span>`}</div>`;
+  const checker=F.showChecker?sigFull(F.checkerName,F.checkerPos,'ผู้ตรวจสอบ'):'';
+  const head=`${F.logo?`<div class="c"><img src="${F.logo}" style="height:78px"></div>`:''}
+  <div class="t"><u>${esc(tp.title)}</u></div>
   <div class="r">เขียนที่ <span class="dl">${esc(F.writtenAt)}</span></div>
   <div class="r">วันที่ <span class="dl">${dd}</span> เดือน <span class="dl">${ML[m-1]}</span> พ.ศ. <span class="dl">${y+543}</span></div>
-  <div style="margin-top:8px">เรื่อง&nbsp;&nbsp;ขอลา${esc(l.type.replace(/^ลา/,''))}</div>
-  <div>เรียน&nbsp;&nbsp;${esc((TP&&TP.pos)||F.to)}</div>
-  <div style="margin-top:6px">${body}</div>
-  <div class="sig" style="margin-left:45%">ขอแสดงความนับถือ<br><br>(ลงชื่อ) .......................................... ผู้ขอลา<br>( ${esc(V.ชื่อ)} )<br>ตำแหน่ง ${esc(V.ตำแหน่ง||'....................................')}</div>
-  <div class="cols">
-   <div>${F.showStats?statsTable(l):''}${F.showChecker?`<div style="margin-top:10px">${sigBox('ผู้ตรวจสอบ',F.checkerName,F.checkerPos)}</div>`:''}</div>
-   <div><div class="h">${esc(F.sup1Label)}</div><div class="ln"></div><div class="ln"></div>${(()=>{const p=supOf(SP);return sigBox('',p.name||F.sup1Name,p.name?p.pos:F.sup1Pos)})()}
-    <div class="h" style="margin-top:14px">${esc(F.sup2Label)}</div><div><span class="cb"></span>อนุญาต&nbsp;&nbsp;&nbsp;&nbsp;<span class="cb"></span>ไม่อนุญาต</div><div class="ln"></div>${TP?sigBox('',TP.name,TP.pos):sigBox('',F.sup2Name,F.sup2Pos)}</div>
-  </div></div>`;
+  <div style="margin-top:6px">เรื่อง&nbsp;&nbsp;${vacF?'ขอลาพักผ่อนประจำปี':'ขออนุญาตลา&nbsp;&nbsp;'+cbRow(l.type)}</div>
+  <div>เรียน&nbsp;&nbsp;${esc(F.to||(TP&&TP.pos)||'')}</div>
+  <div style="margin-top:6px">${body}</div>`;
+  if(vacF)return`<div class="lf" style="font-size:${+F.fontSize||15}px">${head}
+  <div class="cols"><div>${F.showStats?vacStats(l,V):''}<div style="margin-top:6px">${checker}</div></div>
+   <div>${me}<div style="margin-top:8px"><b><u>หมายเหตุ</u></b> ในระหว่างลาข้าพเจ้าได้มอบหมายให้ <span class="${l.sub?'dl':'de'}">${esc(l.sub||'')}</span><br>ตำแหน่ง <span class="${subSt?'dl':'de'}">${esc(subSt?subSt.pos:'')}</span> เป็นผู้ปฏิบัติหน้าที่แทน</div>
+   <div class="sig" style="white-space:nowrap">(ลงชื่อ) ${dots(28)} ผู้ปฏิบัติหน้าที่แทน</div></div></div>
+  <div class="cols"><div></div><div>${opinion}${approve}</div></div></div>`;
+  return`<div class="lf" style="font-size:${+F.fontSize||15}px">${head}
+  <div style="margin-left:45%">${me}</div>
+  <div class="cols"><div>${F.showStats?halfStats(l,V,1)+halfStats(l,V,2):''}<div style="margin-top:6px">${checker}</div></div>
+   <div>${opinion}${approve}</div></div></div>`;
 }
 const loadJS=src=>new Promise((res,rej)=>{const s=document.createElement('script');s.src=src;s.onload=res;s.onerror=()=>rej(new Error('load'));document.head.appendChild(s)});
 async function pdfLibs(){
@@ -1210,7 +1245,7 @@ const pdfBtn=l=>hasForm(l)?`<button class="btn sec sm" data-pdf="${l.id}" title=
 let fmTimer;
 const saveForms=()=>{clearTimeout(fmTimer);fmTimer=setTimeout(()=>cfgSet('forms',FORMS),600)};
 const curTpl=()=>$('#fmTpl').value;
-const DEMO_FORM_L={id:'x',nm:'นายตัวอย่าง ใจดี',pos:'นายช่างไฟฟ้าปฏิบัติงาน',dept:'กลุ่มงานบริหารทั่วไป',tel:'081-234-5678',type:'ลาป่วย',start:'2026-01-12',end:'2026-01-13',half:'',note:'ป่วยเป็นไข้หวัด',days:2,fy:2569,status:'pending',ts:Date.parse('2026-01-14T02:00:00Z')};
+const DEMO_FORM_L={id:'x',nm:'นายตัวอย่าง ใจดี',pos:'นายช่างไฟฟ้าปฏิบัติงาน',dept:'กลุ่มงานอำนวยการ',tel:'081-234-5678',type:'ลาป่วย',start:'2026-01-12',end:'2026-01-13',half:'',note:'ป่วยเป็นไข้หวัด',days:2,fy:2569,status:'pending',ts:Date.parse('2026-01-14T02:00:00Z')};
 function sampleLeave(){const id=$('#fmSample').value;return LV.find(l=>l.id===id)||(curTpl()==='vacation'?{...DEMO_FORM_L,type:'ลาพักผ่อน',note:''}:DEMO_FORM_L)}
 function renderForm(){
   document.querySelectorAll('[data-fm]').forEach(i=>{const v=FORMS[i.dataset.fm];if(i.type==='checkbox')i.checked=!!v;else i.value=v??''});
