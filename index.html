@@ -164,7 +164,7 @@ body.head .adminonly{display:none!important}
   <button data-t="base" class="adm adminonly">ข้อมูลพื้นฐาน</button>
   <button data-t="hol" class="adm adminonly">กำหนดวันหยุด</button>
   <button data-t="form" class="adm adminonly">แบบฟอร์มใบลา</button>
-  <button data-t="exp" class="adm">ส่งออก</button>
+  <button data-t="exp" class="adm">นำเข้า/ส่งออก</button>
 </nav>
 <main>
 <!-- รอตรวจสอบ -->
@@ -311,6 +311,11 @@ body.head .adminonly{display:none!important}
    </div></div>
   </div>
   <div>
+   <div class="panel adminonly"><h3>📥 นำเข้าข้อมูลจาก Excel</h3><div class="bd">
+    <p class="muted" style="margin-top:0">1) ดาวน์โหลดตารางนำเข้าข้อมูล (มีรายชื่อบุคลากรและวันหยุดปัจจุบันใส่ไว้ให้) 2) กรอก/แก้ใน Excel 3) เลือกไฟล์นำเข้า ระบบจะสรุปให้ตรวจก่อนบันทึก</p>
+    <div class="btns" style="margin:0"><button class="btn sec" id="impTpl">⬇ ดาวน์โหลดตารางนำเข้าข้อมูล</button><label class="btn" style="display:inline-block">📂 เลือกไฟล์นำเข้า<input type="file" id="impFile" accept=".xlsx,.csv" hidden></label></div>
+    <p class="muted">ชีตในตาราง: บุคลากร (เลข ID, ชื่อ, ตำแหน่ง, ประเภท, กลุ่มงาน, เบอร์โทร, ที่อยู่, โควต้าวันลา) · ประวัติการลา (ย้อนหลังได้หลายปี) · วันหยุด</p>
+   </div></div>
    <div class="panel adminonly"><h3>ไฟล์ฐานข้อมูลบนคอมพิวเตอร์</h3><div class="bd" id="fdbBox">
     <div id="fdbStatus" class="msg info"></div>
     <div class="btns" id="fdbBtns"><button class="btn" id="fdbNew">สร้างไฟล์ฐานข้อมูลใหม่</button><button class="btn sec" id="fdbOpen">เปิดไฟล์ฐานข้อมูลที่มีอยู่</button><button class="btn red" id="fdbOff" style="display:none">เลิกเชื่อมต่อ</button></div>
@@ -1382,6 +1387,104 @@ $('#qDef').addEventListener('input',e=>{const i=e.target;if(!i.dataset.qe)return
 $('#qDef').addEventListener('click',async e=>{const et=e.target.dataset.qapply;if(!et)return;const L=S.staff.filter(s=>s.etype===et);
   if(!await ask(`ตั้งโควต้าพักผ่อน/ป่วย/กิจ ของ${et} ทั้ง ${L.length} คน ตามค่าในตาราง?<br><span class="muted">ค่าที่แก้รายคนไว้จะถูกแทนที่ (วันพักผ่อนสะสมไม่เปลี่ยน)</span>`))return;
   const d=qDefOf(et);L.forEach(s=>Object.assign(s,{qVac:d.qVac,qSick:d.qSick,qBiz:d.qBiz}));saveStaff();renderStaff();toast(`ตั้งโควต้าให้ ${L.length} คนแล้ว`)});
+
+/* ---------- ตารางนำเข้าข้อมูล (Excel) ---------- */
+const IMP={staff:['เลข ID','ชื่อ-สกุล','ตำแหน่ง','ประเภทบุคลากร','กลุ่มงาน','เบอร์โทร','ที่อยู่ติดต่อ','พักผ่อนปีนี้ (วัน)','พักผ่อนสะสม (วัน)','ลาป่วย (วัน/ปี)','ลากิจ (วัน/ปี)'],
+  leave:['เลข ID','ชื่อ-สกุล (ไม่บังคับ)','ประเภทการลา','วันเริ่ม','วันสิ้นสุด','ครึ่งวัน (เช้า/บ่าย)','เหตุผล','ผู้ปฏิบัติหน้าที่แทน'],
+  hol:['วันที่','ชื่อวันหยุด']};
+const thSlash=d=>{const[y,m,dd]=d.split('-').map(Number);return`${dd}/${m}/${y+543}`};
+function importTemplate(){
+  const sorted=[...S.staff].sort((a,b)=>String(a.code).localeCompare(String(b.code)));
+  const help=[['ตารางนำเข้าข้อมูล ระบบบันทึกข้อมูลการลา'],[S.settings.org||''],[],['หัวข้อ','รายละเอียด'],
+   ['วิธีใช้','กรอก/แก้ไขในชีต “บุคลากร” “ประวัติการลา” “วันหยุด” แล้วบันทึกไฟล์ จากนั้นไปที่แท็บ นำเข้า/ส่งออก → เลือกไฟล์นำเข้า ระบบจะแสดงสรุปให้ตรวจก่อนบันทึก'],
+   ['ห้ามแก้','แถวหัวตาราง (แถวที่ 4 ของแต่ละชีต) และชื่อชีต'],
+   ['ชีตบุคลากร','ใส่รายชื่อปัจจุบันไว้ให้แล้ว แก้ได้เลย · เลข ID ตรงกับที่มีอยู่ = อัปเดต · เลข ID ใหม่ = เพิ่มคน · ช่องที่เว้นว่างจะไม่ไปเปลี่ยนค่าเดิม · ไม่มีการลบคนออกจากระบบ'],
+   ['ชีตประวัติการลา','1 แถว = ใบลา 1 ครั้ง · ใช้เลข ID เป็นหลัก · วันที่ใส่ได้ทั้ง 5/1/2568 หรือ 5 ม.ค. 2568 หรือวันที่แบบ Excel · วันสิ้นสุดเว้นได้ (= ลาวันเดียว) · ใบลาที่ซ้ำ (คนเดียวกัน ประเภทเดียวกัน วันเริ่มเดียวกัน) จะข้าม'],
+   ['ตัวอย่างประวัติการลา','0407 | | ลาป่วย | 5/1/2568 | 6/1/2568 | | ไข้หวัด |'],
+   ['','0407 | | ลาพักผ่อน | 14/4/2568 | 18/4/2568 | | พักผ่อน | นายอามีน บินดาวุด'],
+   ['','0407 | | ลากิจส่วนตัว | 3/3/2568 | | บ่าย | ติดต่อราชการ |'],
+   ['ชีตวันหยุด','ใส่วันหยุดราชการไว้ให้แล้ว เพิ่มแถวได้ (วันที่ซ้ำจะข้าม)'],
+   [],['ประเภทการลาที่ใช้ได้',TYPES.map(t=>t.n).join(' · ')],['ประเภทบุคลากร',ETYPES.join(' · ')],['กลุ่มงาน',S.depts.map(d=>d.name).join(' · ')]];
+  const sh=(name,title,head,rows,widths)=>({name,rows:[[title],[S.settings.org||''],[],head,...rows],titles:2,hdr:3,widths});
+  const blob=xlsxBlob([
+    {name:'คำอธิบาย',rows:help,titles:2,hdr:3,widths:[22,120]},
+    sh('บุคลากร','ข้อมูลบุคลากร',IMP.staff,sorted.map(st=>{const q=quotaOf(st);return[st.code||'',st.name,st.pos||'',st.etype||'',st.dept||'',st.tel||'',st.addr||'',q.vac,q.carry,q.sick,q.biz]}),[10,30,40,18,42,14,30,12,12,12,12]),
+    sh('ประวัติการลา','ประวัติการลา (กรอกเพิ่มได้หลายปีงบประมาณ)',IMP.leave,[],[10,28,22,14,14,16,30,28]),
+    sh('วันหยุด','วันหยุดราชการ',IMP.hol,[...S.holidays].sort((a,b)=>a.date<b.date?-1:1).map(h=>[thSlash(h.date),h.name]),[16,44])]);
+  saveFile('ตารางนำเข้าข้อมูล_ระบบการลา.xlsx',blob,blob.type);
+}
+// --- xlsx reader (ไม่ต้องใช้อินเทอร์เน็ต) ---
+async function unzip(buf){
+  const u=new Uint8Array(buf),dv=new DataView(buf),out={};let e=u.length-22;while(e>=0&&dv.getUint32(e,true)!==0x06054b50)e--;if(e<0)throw new Error('ไม่ใช่ไฟล์ .xlsx');
+  let p=dv.getUint32(e+16,true);const n=dv.getUint16(e+10,true),dec=new TextDecoder();
+  for(let i=0;i<n;i++){const m=dv.getUint16(p+10,true),cs=dv.getUint32(p+20,true),nl=dv.getUint16(p+28,true),xl=dv.getUint16(p+30,true),cl=dv.getUint16(p+32,true),lo=dv.getUint32(p+42,true),name=dec.decode(u.subarray(p+46,p+46+nl));
+    const ds=lo+30+dv.getUint16(lo+26,true)+dv.getUint16(lo+28,true),raw=u.subarray(ds,ds+cs);
+    out[name]=async()=>m===0?dec.decode(raw):await new Response(new Blob([raw]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).text();
+    p+=46+nl+xl+cl}
+  return out;
+}
+async function readXlsx(buf){
+  const z=await unzip(buf),P=new DOMParser(),X=t=>P.parseFromString(t,'application/xml');
+  const ss=z['xl/sharedStrings.xml']?[...X(await z['xl/sharedStrings.xml']()).getElementsByTagName('si')].map(si=>[...si.getElementsByTagName('t')].map(t=>t.textContent).join('')):[];
+  const wb=X(await z['xl/workbook.xml']()),rels=X(await z['xl/_rels/workbook.xml.rels']()),R={};
+  [...rels.getElementsByTagName('Relationship')].forEach(r=>R[r.getAttribute('Id')]=r.getAttribute('Target'));
+  const res={};
+  for(const sh of wb.getElementsByTagName('sheet')){const rid=sh.getAttribute('r:id')||sh.getAttributeNS('http://schemas.openxmlformats.org/officeDocument/2006/relationships','id');
+    let t=(R[rid]||'').replace(/^\/?(xl\/)?/,'');const f=z['xl/'+t];if(!f)continue;const doc=X(await f()),rows=[];
+    for(const r of doc.getElementsByTagName('row')){const row=[];for(const c of r.getElementsByTagName('c')){const ref=c.getAttribute('r')||'',L=ref.replace(/\d+/g,'');let ci=0;for(const ch of L)ci=ci*26+ch.charCodeAt(0)-64;ci--;
+      const ty=c.getAttribute('t'),v=c.getElementsByTagName('v')[0];let val='';
+      if(ty==='s')val=ss[+v.textContent]||'';else if(ty==='inlineStr')val=[...c.getElementsByTagName('t')].map(x=>x.textContent).join('');else if(v)val=ty==='str'||ty==='b'?v.textContent:(isNaN(+v.textContent)?v.textContent:+v.textContent);
+      row[ci<0?row.length:ci]=val}
+      rows[(+r.getAttribute('r')||rows.length+1)-1]=row}
+    res[sh.getAttribute('name')]=rows.map(r=>r||[])}
+  return res;
+}
+const serialDT=n=>{const d=new Date(Date.UTC(1899,11,30)+Math.round(n)*864e5);return iso(d)};
+const cellDT=v=>typeof v==='number'?(v>20000&&v<80000?serialDT(v):''):parseDT(v);
+const cellStr=v=>v==null?'':String(v).trim();
+function findSheet(book,key,head){const n=Object.keys(book).find(k=>k.includes(key));if(!n)return null;const R=book[n];const hi=R.findIndex(r=>r&&cellStr(r[0])===head[0]);return hi<0?null:R.slice(hi+1).filter(r=>r&&r.some(v=>cellStr(v)!==''))}
+function parseCSV(t){const rows=[];let r=[],f='',q=false;for(let i=0;i<t.length;i++){const c=t[i];if(q){if(c==='"'&&t[i+1]==='"'){f+='"';i++}else if(c==='"')q=false;else f+=c}else if(c==='"')q=true;else if(c===','){r.push(f);f=''}else if(c==='\n'||c==='\r'){if(c==='\r'&&t[i+1]==='\n')i++;r.push(f);rows.push(r);r=[];f=''}else f+=c}if(f||r.length){r.push(f);rows.push(r)}return rows}
+async function importFile(file){
+  let book;
+  try{if(/\.csv$/i.test(file.name)){const t=(await file.text()).replace(/^﻿/,''),rows=parseCSV(t);const h=rows.find(r=>r&&r.length>1)||[];
+      const k=cellStr(h[0])==='วันที่'?'วันหยุด':h.some(x=>/ประเภทการลา/.test(x))?'ประวัติการลา':'บุคลากร';book={[k]:rows}}
+    else book=await readXlsx(await file.arrayBuffer())}
+  catch(e){return toast('อ่านไฟล์ไม่ได้ ใช้ไฟล์ .xlsx จาก “ดาวน์โหลดตารางนำเข้าข้อมูล” หรือ .csv',true)}
+  const SR=findSheet(book,'บุคลากร',IMP.staff)||[],LR=findSheet(book,'ประวัติการลา',IMP.leave)||[],HR=findSheet(book,'วันหยุด',IMP.hol)||[];
+  if(!SR.length&&!LR.length&&!HR.length)return toast('ไม่พบข้อมูลในไฟล์ (ตรวจชื่อชีตและแถวหัวตาราง)',true);
+  const deptMatch=v=>{v=norm(v);if(!v)return'';const d=S.depts.find(x=>norm(x.name)===v)||S.depts.find(x=>norm(x.name).includes(v)||v.includes(norm(x.name)));return d?d.name:v};
+  const plan={upd:[],add:[],bad:[],lv:[],lvBad:[],lvDup:0,hol:[]};
+  SR.forEach((r,i)=>{const code=cellStr(r[0]).replace(/\.0$/,'').replace(/-/g,''),name=cellStr(r[1]);if(!code&&!name)return;
+    if(!code){plan.bad.push(`บุคลากร แถว ${i+5}: ไม่มีเลข ID`);return}
+    const f={};const set=(k,v)=>{if(cellStr(v)!=='')f[k]=v};set('name',norm(name));set('pos',cellStr(r[2]));
+    if(cellStr(r[3])){const et=ETYPES.find(e=>cellStr(r[3]).includes(e))||cellStr(r[3]);f.etype=et}
+    set('dept',deptMatch(r[4]));set('tel',cellStr(r[5]));set('addr',cellStr(r[6]));
+    [['qVac',7],['qCarry',8],['qSick',9],['qBiz',10]].forEach(([k,c])=>{if(cellStr(r[c])!==''&&!isNaN(+r[c]))f[k]=+r[c]});
+    const code4=/^\d+$/.test(code)&&code.length<4?code.padStart(4,'0'):code,st=staffByCode(code4);
+    if(st)plan.upd.push([st,f]);else if(f.name)plan.add.push({id:uid(),code:code4,...qDefOf(f.etype),qCarry:0,addr:'',...f});else plan.bad.push(`บุคลากร แถว ${i+5}: เลข ID ${code} ไม่มีในระบบและไม่มีชื่อ`)});
+  const newBy=c=>plan.add.find(a=>a.code===c);
+  const exist=new Set();for(const fy of new Set(LR.map(r=>{const d=cellDT(r[3]);return d?fyOf(d):0}).filter(Boolean)))(await leavesOfFY(fy)).forEach(l=>exist.add(keyOf(l)+'|'+l.type+'|'+l.start));
+  LR.forEach((r,i)=>{const code=cellStr(r[0]).replace(/\.0$/,''),nm=cellStr(r[1]),code4=/^\d+$/.test(code)&&code.length<4?code.padStart(4,'0'):code;
+    const st=(code4&&(staffByCode(code4)||newBy(code4)))||(nm&&S.staff.find(s=>norm(s.name)===norm(nm)));
+    const type=typeOfTxt(r[2]),start=cellDT(r[3]),end=cellDT(r[4])||start,hv=cellStr(r[5]),half=/เช้า/.test(hv)?'ครึ่งวันเช้า':/บ่าย/.test(hv)?'ครึ่งวันบ่าย':'';
+    const why=!st?'ไม่พบเลข ID/ชื่อ':!type?'ประเภทการลาไม่ถูกต้อง':!start?'วันเริ่มอ่านไม่ได้':end<start?'วันสิ้นสุดก่อนวันเริ่ม':'';
+    if(why){plan.lvBad.push(`ประวัติการลา แถว ${i+5}: ${why}`);return}
+    const k=st.id+'|'+type+'|'+start;if(exist.has(k)){plan.lvDup++;return}exist.add(k);
+    plan.lv.push({st,type,start,end:T[type].late?start:end,half:T[type].late||T[type].cal?'':half,note:cellStr(r[6]),sub:cellStr(r[7])})});
+  const hs=holSet();HR.forEach(r=>{const d=cellDT(r[0]),n=cellStr(r[1]);if(d&&n&&!hs.has(d)){hs.add(d);plan.hol.push({date:d,name:n})}});
+  const bad=[...plan.bad,...plan.lvBad];
+  const ok=await ask(`<b>ตรวจก่อนนำเข้า</b><br>บุคลากร: อัปเดต ${plan.upd.length} คน · เพิ่มใหม่ ${plan.add.length} คน<br>ประวัติการลา: ${plan.lv.length} รายการ${plan.lvDup?` · ข้ามที่ซ้ำ ${plan.lvDup}`:''}<br>วันหยุด: เพิ่ม ${plan.hol.length} วัน`+
+    (bad.length?`<br><span style="color:var(--red)">ข้าม ${bad.length} แถวที่มีปัญหา:</span><div class="muted" style="max-height:140px;overflow:auto;text-align:left">${bad.slice(0,50).map(esc).join('<br>')}${bad.length>50?'<br>…':''}</div>`:''));
+  if(!ok)return;
+  plan.upd.forEach(([st,f])=>Object.assign(st,f));S.staff.push(...plan.add);if(plan.upd.length||plan.add.length)saveStaff();
+  if(plan.hol.length){S.holidays.push(...plan.hol);saveHol();recalcAll()}
+  const fys=new Set();plan.lv.forEach(r=>{const st=r.st,e=r.end,fy=fyOf(r.start);fys.add(fy);
+    putLeave({id:uid(),staffId:st.id,nm:st.name,pos:st.pos,dept:st.dept,tel:st.tel,type:r.type,start:r.start,end:e,half:r.half,note:r.note,contact:'',sub:r.sub,days:calcDays(r.type,r.start,e,r.half),fy,status:'approved',by:'admin',ts:Date.now(),...(fy<curFY()?{hist:1}:{})});delete histCache[fy]});
+  if(store.cloud)LV=LV.filter(l=>l.fy===curFY());
+  renderAll();toast(`นำเข้าแล้ว: บุคลากร ${plan.upd.length+plan.add.length} · ใบลา ${plan.lv.length} · วันหยุด ${plan.hol.length}`);
+}
+$('#impTpl').onclick=importTemplate;
+$('#impFile').onchange=e=>{const f=e.target.files[0];e.target.value='';if(f)importFile(f)};
 
 /* ---------- ตรวจจับอุปกรณ์ ---------- */
 const DEV_T={mobile:'📱 มือถือ',tablet:'📲 แท็บเล็ต',desktop:'💻 คอมพิวเตอร์'};
