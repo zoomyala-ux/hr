@@ -68,6 +68,45 @@ tfoot td{font-weight:700;background:#e8eff6}
 tr.edit td{background:#fff6d6!important}
 .editing{outline:3px solid #f0b400}
 #printArea{display:none}
+/* ---- ปรับตามอุปกรณ์ ---- */
+html[data-device=tablet] input,html[data-device=tablet] select{min-height:38px}
+html[data-device=tablet] .btn{min-height:38px}
+html[data-device=tablet] nav button{padding:10px 14px}
+html[data-device=mobile] body{font-size:15px}
+html[data-device=mobile] input,html[data-device=mobile] select,html[data-device=mobile] textarea{font-size:16px;min-height:42px}
+html[data-device=mobile] .btn{min-height:42px;padding:8px 14px}
+html[data-device=mobile] .btn.sm{min-height:36px;padding:5px 10px;font-size:14px}
+html[data-device=mobile] header{padding:10px 12px}
+html[data-device=mobile] header h1{font-size:18px}
+html[data-device=mobile] header .sub{font-size:12px}
+html[data-device=mobile] header>div:last-child{width:100%;justify-content:space-between}
+html[data-device=mobile] .seg{flex:1 1 100%}
+html[data-device=mobile] .seg button{flex:1;padding:9px 6px}
+html[data-device=mobile] nav{padding:6px 6px 0}
+html[data-device=mobile] nav button{padding:9px 11px;font-size:14px}
+html[data-device=mobile] main{padding:0 6px 40px}
+html[data-device=mobile] section{padding:10px}
+html[data-device=mobile] .grid2{grid-template-columns:1fr}
+html[data-device=mobile] .row{grid-template-columns:1fr;gap:4px}
+html[data-device=mobile] .row label{text-align:left}
+html[data-device=mobile] .filters>*{flex:1 1 100%;min-width:0}
+html[data-device=mobile] .filters label{flex:1 1 auto}
+html[data-device=mobile] #adminBar{font-size:13px}
+html[data-device=mobile] .cards{grid-template-columns:1fr 1fr}
+html[data-device=mobile] .bar{grid-template-columns:90px 1fr 60px}
+html[data-device=mobile] [data-cardify] thead{display:none}
+html[data-device=mobile] [data-cardify] table,html[data-device=mobile] [data-cardify] tbody,html[data-device=mobile] [data-cardify] tfoot,html[data-device=mobile] [data-cardify] tr{display:block;width:100%}
+html[data-device=mobile] [data-cardify] tr{border:1px solid var(--line);border-radius:10px;margin:0 0 10px;padding:6px 10px;background:#fff!important;box-shadow:0 1px 3px #0001}
+html[data-device=mobile] [data-cardify] td{display:grid;grid-template-columns:36% 1fr;gap:8px;align-items:center;border:0;border-bottom:1px dashed #e3e9ef;padding:6px 0;text-align:left!important;white-space:normal!important}
+html[data-device=mobile] [data-cardify] td:last-child{border-bottom:0}
+html[data-device=mobile] [data-cardify] td>*{grid-column:2}
+html[data-device=mobile] [data-cardify] td[data-label=""]>*{grid-column:auto}
+html[data-device=mobile] [data-cardify] td::before{content:attr(data-label);font-weight:600;color:#4a5b6d;font-size:13px}
+html[data-device=mobile] [data-cardify] td[data-label=""]{grid-template-columns:1fr}
+html[data-device=mobile] [data-cardify] td[data-label=""]::before{content:none}
+html[data-device=mobile] [data-cardify] td input,html[data-device=mobile] [data-cardify] td select{width:100%!important;min-width:0!important}
+html[data-device=mobile] [data-cardify] tfoot td{display:block}
+html[data-device=mobile] [data-cardify].tw,html[data-device=mobile] [data-cardify] .tw{overflow:visible}
 .panel{overflow:clip}
 .stick{position:sticky;top:var(--navh,46px);z-index:6;background:#fff;padding-top:8px;padding-bottom:8px;box-shadow:0 6px 6px -6px #0003}
 body.staff .stick{top:0}
@@ -110,7 +149,7 @@ body.head .adminonly{display:none!important}
 <body class="staff">
 <header>
   <div><h1>ระบบบันทึกข้อมูลการลา</h1><div class="sub" id="hSub">กำลังโหลด…</div></div>
-  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end"><span class="badge" id="demoBadge" style="display:none;background:#f0b400;color:#000">ข้อมูลตัวอย่าง</span><button class="btn sm" id="fileBtn" style="display:none;background:#f0b400;color:#000"></button><span class="badge" id="mode">กำลังเชื่อมต่อ…</span>
+  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end"><span class="badge" id="demoBadge" style="display:none;background:#f0b400;color:#000">ข้อมูลตัวอย่าง</span><button class="btn sm" id="fileBtn" style="display:none;background:#f0b400;color:#000"></button><span class="badge" id="devBadge" title="แตะเพื่อสลับรูปแบบหน้าจอ" style="cursor:pointer"></span><span class="badge" id="mode">กำลังเชื่อมต่อ…</span>
    <div class="seg" id="roleSeg" role="tablist" aria-label="เลือกส่วนที่ใช้งาน"><button data-r="staff" class="on">👤 ยื่นใบลา</button><button data-r="mgr" id="segMgr">🔐 เข้าสู่ระบบ</button></div></div>
 </header>
 <div id="adminBar"><span id="abText"></span><span><button class="btn sec sm" id="chgPw">🔑 เปลี่ยนรหัสผ่าน</button> <button class="btn sec sm" id="exitAdmin">ออกจากระบบ</button></span></div>
@@ -128,7 +167,7 @@ body.head .adminonly{display:none!important}
 </nav>
 <main>
 <!-- รอตรวจสอบ -->
-<section id="pend"><div class="filters stick"><input id="pSearch" placeholder="🔍 พิมพ์ชื่อค้นหา" style="min-width:220px"></div><p class="muted" style="margin-top:0">ใบลาที่ผู้กรอกส่งเข้ามา ตรวจสอบแล้วกดอนุมัติ จึงจะนับในแบบสรุปและรายงาน</p><div class="tw" id="pTable"></div></section>
+<section id="pend"><div class="filters stick"><input id="pSearch" placeholder="🔍 พิมพ์ชื่อค้นหา" style="min-width:220px"></div><p class="muted" style="margin-top:0">ใบลาที่ผู้กรอกส่งเข้ามา ตรวจสอบแล้วกดอนุมัติ จึงจะนับในแบบสรุปและรายงาน</p><div class="tw" id="pTable" data-cardify></div></section>
 <!-- บันทึกการลา -->
 <section id="rec" class="on">
  <div class="grid2">
@@ -149,7 +188,7 @@ body.head .adminonly{display:none!important}
   </div>
   <div>
    <div class="panel"><h3><span>สรุปการลาในรอบรายงาน</span><span id="pName" style="font-weight:400"></span></h3><div class="bd" id="pCard"></div></div>
-   <div class="panel"><h3><span>ประวัติการลา</span><select id="pRange" style="width:auto;max-width:60%;padding:2px 6px"></select></h3><div id="pHistSum" style="padding:8px 12px 0"></div><div class="tw" id="pHist"></div></div>
+   <div class="panel"><h3><span>ประวัติการลา</span><select id="pRange" style="width:auto;max-width:60%;padding:2px 6px"></select></h3><div id="pHistSum" style="padding:8px 12px 0"></div><div class="tw" id="pHist" data-cardify></div></div>
   </div>
  </div>
 </section>
@@ -161,7 +200,7 @@ body.head .adminonly{display:none!important}
   <label style="display:flex;gap:5px;align-items:center;min-width:0;white-space:nowrap"><input type="checkbox" id="aRound" style="width:auto" checked> เฉพาะรอบรายงาน</label>
   <button class="btn sec" id="aCsv">ดาวน์โหลด Excel (CSV)</button>
  </div>
- <div class="tw" id="aTable"></div>
+ <div class="tw" id="aTable" data-cardify></div>
 </section>
 
 <!-- สรุป -->
@@ -219,10 +258,10 @@ body.head .adminonly{display:none!important}
 <section id="staff">
  <div class="panel adminonly"><h3><span>หน่วยงาน / สายบังคับบัญชา</span><span><button class="btn sec sm" id="hImport">อัปเดตจากทำเนียบ</button> <button class="btn sec sm" id="dAdd">+ เพิ่มหน่วยงาน/กลุ่มงาน</button></span></h3>
   <div class="filters stick" style="padding:10px 12px 8px;margin:0"><input id="dSearch" placeholder="🔍 ค้นหาชื่อหน่วยงานหรือหัวหน้า" style="min-width:240px"><select id="dCat"></select><span class="muted" id="dInfo"></span></div>
-  <div class="tw" id="dTable"></div>
+  <div class="tw" id="dTable" data-cardify></div>
   <p class="muted" style="padding:0 12px">ตั้งชื่อหัวหน้าครั้งเดียว บุคลากรที่สังกัดหน่วยงานนั้นจะได้สายบังคับบัญชาอัตโนมัติ: <b>ผู้บังคับบัญชาชั้นต้น</b> → ช่องความเห็นในใบลา · <b>หัวหน้าส่วนราชการ</b> → “เรียน” และช่องคำสั่งอนุญาตในใบลา (ถ้าเว้นว่างจะใช้ค่าในแท็บแบบฟอร์มใบลา) · ไม่รวมหน่วยงานระดับอำเภอ · <b>รหัสเข้าระบบ</b> ใช้เป็นชื่อผู้ใช้ของหัวหน้าส่วน รหัสผ่านเริ่มต้นเหมือนรหัสเข้าระบบ</p></div>
   <div class="panel"><h3><span>รายชื่อบุคลากร</span><button class="btn sec sm" id="bAdd">+ เพิ่มรายชื่อ</button></h3>
-  <div class="tw" id="bStaff"></div>
+  <div class="tw" id="bStaff" data-cardify></div>
   <p class="muted" style="padding:0 12px">เลข ID ใช้ให้ผู้ขอลากรอกแทนข้อมูลส่วนตัว ห้ามซ้ำกัน (แนะนำเลขประจำตัวในหน่วยงาน ไม่ควรใช้เลขบัตรประชาชน) · ผู้บังคับบัญชาชั้นต้นมาจากกลุ่มงานที่เลือกโดยอัตโนมัติ · สิทธิ์ลาพักผ่อน = จำนวนวันที่ลาได้ในปีงบประมาณ (รวมวันสะสม)</p>
  </div>
 </section>
@@ -230,7 +269,7 @@ body.head .adminonly{display:none!important}
 <section id="hol">
  <div class="filters stick"><input type="date" id="hDate"><input id="hName" placeholder="ชื่อวันหยุด" style="min-width:220px"><button class="btn" id="hAdd">เพิ่มวันหยุด</button><button class="btn sec" id="hDef">เพิ่มวันหยุดมาตรฐาน ปีงบ 2569</button></div>
  <p class="muted">ไม่ต้องใส่วันเสาร์–อาทิตย์ ระบบไม่นับให้อยู่แล้ว · วันที่มี * ควรตรวจกับประกาศจริง (วันตรุษตามประกาศจุฬาราชมนตรี และวันหยุดพิเศษตามมติ ครม.)</p>
- <div class="tw" id="hTable"></div>
+ <div class="tw" id="hTable" data-cardify></div>
 </section>
 <!-- ส่งออก -->
 <section id="exp">
@@ -1170,6 +1209,30 @@ $('#fmTest').onclick=()=>{const l=sampleLeave();if(l.id==='x'){const t={...l};LV
 $('#fmReset').onclick=async()=>{if(!await ask('คืนค่าแบบฟอร์มใบลาเป็นค่าเริ่มต้นทั้งหมด?'))return;FORMS=mergeForms(null);cfgSet('forms',FORMS);renderForm();toast('คืนค่าเริ่มต้นแล้ว')};
 
 const setNavH=()=>document.documentElement.style.setProperty('--navh',($('#tabs').offsetHeight||46)+'px');window.addEventListener('resize',setNavH);setTimeout(setNavH,300);
+/* ---------- ตรวจจับอุปกรณ์ ---------- */
+const DEV_T={mobile:'📱 มือถือ',tablet:'📲 แท็บเล็ต',desktop:'💻 คอมพิวเตอร์'};
+function detectDevice(){
+  const w=Math.min(window.innerWidth,screen.width||window.innerWidth),ua=navigator.userAgent||'';
+  const coarse=window.matchMedia&&matchMedia('(pointer:coarse)').matches;
+  const phoneUA=/iPhone|iPod|Android.*Mobile|Windows Phone|Mobi/i.test(ua),tabUA=/iPad|Tablet|Android(?!.*Mobile)/i.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+  if(phoneUA||w<640)return'mobile';
+  if(tabUA||(coarse&&w<1200)||w<1024)return'tablet';
+  return'desktop';
+}
+let devPref='auto';try{devPref=localStorage.getItem('leaveapp:dev')||'auto'}catch(e){}
+function applyDevice(){
+  const d=devPref==='auto'?detectDevice():devPref;
+  document.documentElement.dataset.device=d;
+  $('#devBadge').textContent=DEV_T[d]+(devPref==='auto'?'':' (กำหนดเอง)');
+  if(typeof setNavH==='function')setTimeout(setNavH,50);
+}
+$('#devBadge').onclick=()=>{const o=['auto','mobile','tablet','desktop'];devPref=o[(o.indexOf(devPref)+1)%o.length];try{localStorage.setItem('leaveapp:dev',devPref)}catch(e){}applyDevice();toast(devPref==='auto'?'ปรับหน้าจออัตโนมัติตามอุปกรณ์':'ใช้หน้าจอแบบ'+DEV_T[devPref].slice(2))};
+let devT;window.addEventListener('resize',()=>{clearTimeout(devT);devT=setTimeout(applyDevice,200)});
+function labelTables(){document.querySelectorAll('[data-cardify] table').forEach(t=>{const hr=t.tHead&&t.tHead.rows[t.tHead.rows.length-1];if(!hr)return;const H=[...hr.cells].map(c=>c.textContent.replace(/\s+/g,' ').trim());
+  t.querySelectorAll('tbody tr').forEach(tr=>[...tr.cells].forEach((td,i)=>{if(!td.hasAttribute('data-label'))td.setAttribute('data-label',H[i]||'')}))})}
+let lblT;new MutationObserver(()=>{clearTimeout(lblT);lblT=setTimeout(labelTables,30)}).observe(document.querySelector('main'),{childList:true,subtree:true});
+applyDevice();
+
 boot();
 </script>
 
