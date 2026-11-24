@@ -1212,7 +1212,7 @@ const setNavH=()=>document.documentElement.style.setProperty('--navh',($('#tabs'
 /* ---------- ตรวจจับอุปกรณ์ ---------- */
 const DEV_T={mobile:'📱 มือถือ',tablet:'📲 แท็บเล็ต',desktop:'💻 คอมพิวเตอร์'};
 function detectDevice(){
-  const w=Math.min(window.innerWidth,screen.width||window.innerWidth),ua=navigator.userAgent||'';
+  const iw=window.innerWidth||document.documentElement.clientWidth||screen.width||1280,w=Math.min(iw,screen.width||iw),ua=navigator.userAgent||'';
   const coarse=window.matchMedia&&matchMedia('(pointer:coarse)').matches;
   const phoneUA=/iPhone|iPod|Android.*Mobile|Windows Phone|Mobi/i.test(ua),tabUA=/iPad|Tablet|Android(?!.*Mobile)/i.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
   if(phoneUA||w<640)return'mobile';
