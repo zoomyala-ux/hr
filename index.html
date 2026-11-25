@@ -603,6 +603,88 @@ html[data-device=mobile] #pvModal .pvf .btn{flex:1}html[data-device=mobile] #pvM
 html[data-device=mobile] #pvModal .pvf{gap:6px;padding:10px}html[data-device=mobile] #pvModal .pvf .btn{font-size:14px;padding:10px 6px;white-space:nowrap}
 #pvModal .pvz{display:none;text-align:center;font-size:12.5px;padding:4px}html[data-device=mobile] #pvModal .pvz{display:block}
 #pvModal .pvb.zoom{justify-content:flex-start}#pvFull{cursor:zoom-in}#pvModal .pvb.zoom #pvFull{cursor:zoom-out}
+
+/* ===== หน้าหลัก v3: ใช้พื้นที่เต็ม ===== */
+#pbar.home{display:none}
+#home .hero.slim{padding:10px 18px;margin-bottom:10px}
+#home .hero.slim h2{font-size:19px;margin:0}#home .hero.slim p{margin:2px 0 0;font-size:13.5px;opacity:.95}
+#home .hfil{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px;position:relative}
+#home .hfil .grpF{border-radius:10px;border:0;padding:5px 10px;font:inherit;font-size:14px;font-weight:600;min-width:200px;max-width:280px}
+#home .hfil .etF{margin:0;gap:5px}
+#home .hfil .etF button{background:#ffffff26;border-color:#ffffff66;color:#fff;padding:4px 11px;font-size:13.5px;border-radius:999px}
+#home .hfil .etF button b{background:#ffffff33}
+#home .hfil .etF button.on{background:#fff;color:#3730a3;border-color:#fff}#home .hfil .etF button.on b{background:#eef2ff}
+.kstrip{display:grid;grid-template-columns:1.5fr repeat(6,1fr);background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;margin-bottom:10px}
+.kstrip>button{border:0;border-left:1px solid #eef2f7;background:none;font:inherit;text-align:left;padding:8px 14px;cursor:pointer;display:flex;flex-direction:column;justify-content:center;min-width:0;transition:.12s}
+.kstrip>button:first-child{border-left:0;flex-direction:row;align-items:center;gap:10px}
+.kstrip>button:hover{background:#f8fafc}
+.kstrip .n{font-size:24px;font-weight:700;color:var(--c);line-height:1.1}.kstrip .n small{font-size:13px;font-weight:500;color:#64748b;margin-left:3px}
+.kstrip .l{font-size:13.5px;color:#475569;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kstrip .warn .n{color:#dc2626}
+.hmain{display:grid;gap:10px;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr) minmax(0,1fr);grid-template-rows:minmax(0,1.2fr) minmax(0,1fr);grid-template-areas:"grp who lv" "trend who todo"}
+.hmain .p-grp{grid-area:grp}.hmain .p-who{grid-area:who}.hmain .p-lv{grid-area:lv}.hmain .p-trend{grid-area:trend}.hmain .p-todo{grid-area:todo}
+.hmain .panel{margin:0!important;display:flex;flex-direction:column;min-height:0}
+.hmain .panel>h3{padding:8px 12px!important;font-size:15.5px!important}
+.hmain .panel>.bd{flex:1;min-height:0;overflow:auto;padding:8px 12px}
+html[data-device=desktop] #home.on{grid-template-rows:auto auto minmax(0,1fr)!important;gap:0!important}
+html[data-device=desktop] #home .hmain{height:100%}
+html[data-device=tablet] .hmain,html[data-device=mobile] .hmain{grid-template-columns:1fr;grid-template-rows:none;grid-template-areas:"grp" "who" "lv" "trend" "todo"}
+html[data-device=tablet] .hmain .panel>.bd{max-height:420px}
+html[data-device=mobile] .kstrip{grid-template-columns:repeat(3,1fr)}html[data-device=mobile] .kstrip>button:first-child{grid-column:1/-1;border-bottom:1px solid #eef2f7}
+html[data-device=mobile] .kstrip>button{padding:6px 10px;border-top:1px solid #eef2f7}
+html[data-device=mobile] #home .hfil .etF{flex-wrap:nowrap;overflow-x:auto;width:100%}html[data-device=mobile] #home .hfil .etF button{flex:none;white-space:nowrap}
+html[data-device=mobile] #home .hfil .grpF{max-width:none;width:100%}
+/* ตารางสถานะ */
+.gtab{width:100%;border-collapse:collapse;font-size:14px}
+.gtab th{position:sticky;top:-8px;background:#fff;font-weight:600;font-size:12.5px;color:#64748b;padding:4px 4px;text-align:center;border-bottom:1px solid var(--line);z-index:1}
+.gtab th:first-child,.gtab td:first-child{text-align:left}
+.gtab td{padding:3px 4px;border-bottom:1px solid #f1f5f9;text-align:center;white-space:nowrap}
+.gtab td:first-child{max-width:0;width:38%;overflow:hidden;text-overflow:ellipsis}
+.gtab tr.gs td{background:#f1f5f9;font-weight:700;color:#334155;font-size:12.5px;padding:3px 6px}
+.gtab tr.tot td{font-weight:700;border-top:2px solid var(--line)}
+.gtab tr[data-gd],.gtab tr[data-et2]{cursor:pointer}.gtab tr[data-gd]:hover td,.gtab tr[data-et2]:hover td{background:#f8fafc}
+.gtab td.z{color:#cbd5e1}
+.gtab .pc{display:flex;align-items:center;gap:6px;justify-content:flex-end}.gtab .pc i{display:block;width:44px;height:7px;border-radius:9px;background:#eef2f7;overflow:hidden}.gtab .pc i b{display:block;height:100%;background:#16a34a}
+/* รายชื่อ */
+#adWho .person{padding:5px 0}#adWho .av{width:28px;height:28px;font-size:12.5px}#adWho .person b{font-size:14.5px}#adWho .person .muted{font-size:12.5px}
+#adWho .gsub{margin:8px 0 2px;padding-top:6px;border-top:1px solid var(--line)}#adWho .gsub:first-child{border:0;margin-top:0;padding-top:0}
+/* การลา */
+#home #hmDonut{display:block!important}
+#home #hmDonut>div:first-child{justify-content:flex-start!important;gap:12px!important;flex-wrap:nowrap!important}
+#home #hmLs{grid-template-columns:1fr 1fr!important;width:auto!important;margin-top:8px!important}
+#home #hmTodo .alert{padding:6px 10px;margin-bottom:6px!important;font-size:14px!important}
+.hmain{grid-template-columns:minmax(0,1.4fr) minmax(0,1fr) minmax(0,1fr)!important;grid-template-rows:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr)!important;grid-template-areas:"grp who lv" "grp who trend" "grp who todo"!important}
+html[data-device=tablet] .hmain,html[data-device=mobile] .hmain{grid-template-columns:1fr!important;grid-template-rows:none!important;grid-template-areas:"grp" "who" "lv" "trend" "todo"!important}
+.gtab td{padding:2px 4px}.gtab{font-size:13.5px}
+#adWho .person .muted{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+html[data-device=desktop] #home #hmDonut{display:flex!important;align-items:center;gap:12px;overflow:hidden}
+html[data-device=desktop] #home #hmDonut>div:first-child{flex:none!important}
+html[data-device=desktop] #home #hmDonut svg{width:92px!important;height:92px!important}
+html[data-device=desktop] #home #hmDonut .legend{font-size:13px!important}
+html[data-device=desktop] #home #hmLs{flex:1;margin:0!important;gap:5px!important}
+#home #hmLs button{padding:3px 7px!important}#home #hmLs b{font-size:16px!important}
+html[data-device=desktop] #home #adTrend .sbars{min-height:40px}
+html[data-device=desktop] #home #adTrend .sbars .c b{font-size:10px;height:12px}
+html[data-device=desktop] #home #adTrend .legend{display:none!important}
+#home #hmTodo>div{grid-template-columns:1fr!important}
+#home #hmTodo .alert .btn{padding:2px 8px;font-size:12.5px}
+.kstrip{grid-template-columns:1.8fr repeat(6,1fr)}
+#home #hmLs span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media(max-width:1500px){html[data-device=desktop] #home #hmLs{grid-template-columns:1fr!important;gap:3px!important}
+ #home #hmLs button{display:flex;align-items:baseline;gap:6px;padding:2px 8px!important}#home #hmLs b{display:inline!important;font-size:15px!important}
+ html[data-device=desktop] #home #hmDonut svg{width:84px!important;height:84px!important}}
+@media(min-height:950px){html[data-device=desktop] .gtab{font-size:15px}html[data-device=desktop] .gtab td{padding:7px 5px}html[data-device=desktop] .gtab tr.gs td{padding:6px}
+ html[data-device=desktop] #adWho .person{padding:7px 0}}
+html[data-device=mobile] #home #hmDonut>div:first-child,html[data-device=tablet] #home #hmDonut>div:first-child{flex-wrap:wrap!important;justify-content:center!important}
+html[data-device=mobile] #home #hmLs{width:100%!important}
+html[data-device=mobile] .gtab{font-size:12.5px}html[data-device=mobile] .gtab th{font-size:11px;padding:3px 1px}html[data-device=mobile] .gtab td{padding:3px 1px}html[data-device=mobile] .gtab .pc i{display:none}
+html[data-device=tablet] .hmain,html[data-device=mobile] .hmain{grid-template-columns:minmax(0,1fr)!important}
+html[data-device=mobile] #home{overflow-x:hidden}
+html[data-device=mobile] #home .hmain .panel>.bd,html[data-device=tablet] #home .hmain .p-lv>.bd{height:auto!important;max-height:none!important;overflow:visible!important}
+html[data-device=mobile] #home .hmain .panel,html[data-device=tablet] #home .hmain .panel{height:auto!important;max-height:none!important}
+html[data-device=mobile] #home #hmDonut>div,html[data-device=tablet] #home #hmDonut>div{height:auto!important}
+#home #hmTodo>div{grid-template-columns:minmax(0,1fr)!important}#home #hmTodo .alert{min-width:0}
+@media(max-width:1500px){#home #hmLs button{padding:1px 8px!important}#home #hmLs b{font-size:14px!important}#home #hmLs span{font-size:11.5px!important}}
 </style>
 </head>
 <body class="staff">
@@ -679,18 +761,16 @@ html[data-device=mobile] #pvModal .pvf{gap:6px;padding:10px}html[data-device=mob
 </section>
 <!-- หน้าหลัก -->
 <section id="home">
- <div class="hero att"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
-  <div class="hrow"><div><h2 id="hmHello">สวัสดีครับ</h2><p id="adSub"></p></div><div class="dnav"><button id="adPrev" title="วันก่อนหน้า">◀</button><input type="date" id="adDate"><button id="adNext" title="วันถัดไป">▶</button><button id="adToday">วันนี้</button></div></div></div>
- <div class="kpi" id="adKpi"></div>
- <div class="dgrid">
-  <div class="panel"><h3><span>🍩 การมาปฏิบัติงาน</span><span class="muted" id="adDonutT"></span></h3><div class="bd" id="adDonut"></div></div>
-  <div class="panel"><h3><span>🏢 แยกตามประเภท / กลุ่มงาน</span></h3><div class="bd" id="adGrp"></div></div>
-  <div class="panel"><h3><span>🙋 ใครไม่อยู่ / ลาเร็วๆ นี้</span></h3><div class="bd" id="adWho"></div></div>
- </div>
- <div class="dgrid2">
-  <div class="panel"><h3><span>📈 20 วันทำการล่าสุด</span><span class="muted">% ปฏิบัติงาน</span></h3><div class="bd" id="adTrend"></div></div>
-  <div class="panel"><h3><span>📝 การลา รอบครึ่งปีนี้</span></h3><div class="bd" id="hmDonut"></div></div>
-  <div class="panel"><h3><span>✅ สิ่งที่ควรทำ</span><span class="muted" id="hmTodoN"></span></h3><div class="bd scrollbox" id="hmTodo"></div></div>
+ <div class="hero att slim"><div class="blob b1"></div><div class="blob b2"></div>
+  <div class="hrow"><div><h2 id="hmHello">สวัสดีครับ</h2><p id="adSub"></p></div><div class="dnav"><button id="adPrev" title="วันก่อนหน้า">◀</button><input type="date" id="adDate"><button id="adNext" title="วันถัดไป">▶</button><button id="adToday">วันนี้</button></div></div>
+  <div class="hfil"><select class="grpF adminonly" title="กรองตามกลุ่มงาน"></select><div class="etF"></div></div></div>
+ <div class="kstrip" id="adKpi"></div>
+ <div class="hmain">
+  <div class="panel p-grp"><h3><span>🏢 สถานะวันนี้ แยกประเภท / กลุ่มงาน</span><span class="muted" id="adDonutT"></span></h3><div class="bd" id="adGrp"></div></div>
+  <div class="panel p-who"><h3><span>🙋 ใครไม่อยู่วันนี้ / ลาเร็วๆ นี้</span><span class="muted" id="adWhoN"></span></h3><div class="bd" id="adWho"></div></div>
+  <div class="panel p-lv"><h3><span>📝 การลา รอบครึ่งปีนี้</span></h3><div class="bd" id="hmDonut"></div></div>
+  <div class="panel p-trend"><h3><span>📈 20 วันทำการล่าสุด</span><span class="muted">% ปฏิบัติงาน</span></h3><div class="bd" id="adTrend"></div></div>
+  <div class="panel p-todo"><h3><span>✅ สิ่งที่ควรทำ</span><span class="muted" id="hmTodoN"></span></h3><div class="bd" id="hmTodo"></div></div>
  </div>
 </section>
 <!-- ประวัติรายคน -->
@@ -2216,7 +2296,7 @@ function renderHome(){if(!attReady(renderHome))return;setTimeout(fitHome,0);
   let off=0;$('#hmDonut').innerHTML=tot?`<div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;justify-content:center"><svg class="donut" viewBox="0 0 140 140" width="150" height="150"><circle cx="70" cy="70" r="52" fill="none" stroke="#eef2f7" stroke-width="18"/>${TD.map(x=>{const len=x.v/tot*C,el=`<circle cx="70" cy="70" r="52" fill="none" stroke="${x.t.c}" stroke-width="18" stroke-dasharray="0 ${C}" data-da="${len} ${C-len}" stroke-dashoffset="${-off}" transform="rotate(-90 70 70)" stroke-linecap="butt"/>`;off+=len;return el}).join('')}<text x="70" y="68" text-anchor="middle" font-size="26" font-weight="700" fill="#0f172a" font-family="inherit">${fmt(tot)}</text><text x="70" y="90" text-anchor="middle" font-size="13" fill="#64748b">วันลา</text></svg>
     <div class="legend">${TD.map(x=>`<div><i style="background:${x.t.c}"></i>${x.t.s} <b>${fmt(x.v)}</b> วัน</div>`).join('')}</div></div>`:'<div class="empty">ยังไม่มีการลาในรอบนี้</div>';
   requestAnimationFrame(()=>setTimeout(()=>document.querySelectorAll('#hmDonut circle[data-da]').forEach(c=>c.setAttribute('stroke-dasharray',c.dataset.da)),60));
-  $('#hmDonut').insertAdjacentHTML('beforeend',`<div id="hmLs"><button data-go2="all"><b>${leaves.length}</b><span>ครั้งที่ลา (${fmt(days)} วัน)</span></button><button data-go2="sum"><b>${late}</b><span>ครั้งที่มาสาย</span></button><button data-go2="sum" class="${over?'warn':''}"><b>${over}</b><span>คนเกินเกณฑ์การลา</span></button><button data-go2="person" class="${qOver?'warn':''}"><b>${qOver}</b><span>คนใช้วันลาเกินสิทธิ์</span></button></div>`);
+  $('#hmDonut').insertAdjacentHTML('beforeend',`<div id="hmLs"><button data-go2="all"><b>${leaves.length}</b><span>ครั้งที่ลา · ${fmt(days)} วัน</span></button><button data-go2="sum"><b>${late}</b><span>ครั้งที่มาสาย</span></button><button data-go2="sum" class="${over?'warn':''}"><b>${over}</b><span>คนเกินเกณฑ์</span></button><button data-go2="person" class="${qOver?'warn':''}"><b>${qOver}</b><span>คนเกินสิทธิ์</span></button></div>`);
   const T2=[];
   if(role==='admin'){const all=g?S.staff.filter(inGF):S.staff,D=g?[g]:S.depts;
     const noCid=all.filter(s=>!s.cid).length,badCid=all.filter(s=>s.cid&&!cidValid(s.cid)).length,noEt=all.filter(s=>!s.etype).length,noTel=all.filter(s=>!s.tel).length,noSup=D.filter(d=>!d.supName).length,noGrp=S.staff.filter(s=>!deptOf(s)).length;
@@ -2243,23 +2323,19 @@ function homeAtt(){ATD=ATD||todayISO();$('#adDate').value=ATD;
   const VS=attStaff(),LM=lvOn(ATD),A=VS.map(st=>({st,a:attOf(st,ATD,LM)})),c={'':0};AST.forEach(x=>c[x.k]=0);A.forEach(x=>c[x.a.s]++);
   const g=gDept(),here=c['มา']+c['สาย']+c['ไปราชการ'],done=VS.length-c[''];
   $('#adDonutT').textContent=thD(ATD);$('#adSub').innerHTML=`${esc(g?g.name:role==='head'&&myDept()?myDept().name:'ทุกกลุ่มงาน')}${ETF?' · '+esc(ETN[ETF]):''} · ${WD[pd(ATD).getUTCDay()]} ${thDL(ATD)}${isOff(ATD)?' · <b>วันหยุด: '+esc(offName(ATD))+'</b>':''} · ปฏิบัติงาน <b>${pct(here,VS.length)}%</b> · บันทึกแล้ว ${done}/${VS.length} คน`;
-  const K=[['👥',VS.length,'เจ้าหน้าที่ทั้งหมด','*','#0f766e'],...AST.map(x=>[x.i,c[x.k],x.k==='มา'?'มาปฏิบัติงาน':x.k==='สาย'?'มาสาย':x.k,x.k,x.c]),['❔',c[''],'ยังไม่บันทึก','','#94a3b8']];
-  $('#adKpi').innerHTML=K.map(([ic,n,l,f,col],i)=>`<button class="hcard${f===''&&n&&!isOff(ATD)?' warn':''}" data-af="${f}" style="animation-delay:${i*50}ms;--c:${col}"><div class="ic">${ic}</div><div class="n" data-count="${n}" data-suf=" คน">0</div><div class="l">${l} →</div></button>`).join('');countUp($('#adKpi'));
-  // donut
-  const D=[...AST,ASC['']].map(x=>({x,v:c[x.k]})).filter(o=>o.v),C=2*Math.PI*52;let off=0;
-  $('#adDonut').innerHTML=VS.length?`<div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;justify-content:center"><svg class="donut" viewBox="0 0 140 140" width="170" height="170"><circle cx="70" cy="70" r="52" fill="none" stroke="#eef2f7" stroke-width="18"/>${D.map(o=>{const len=o.v/VS.length*C,el=`<circle cx="70" cy="70" r="52" fill="none" stroke="${o.x.c}" stroke-width="18" stroke-dasharray="0 ${C}" data-da="${len} ${C-len}" stroke-dashoffset="${-off}" transform="rotate(-90 70 70)"/>`;off+=len;return el}).join('')}<text x="70" y="68" text-anchor="middle" font-size="26" font-weight="700" fill="#0f172a" font-family="inherit">${pct(here,VS.length)}%</text><text x="70" y="88" text-anchor="middle" font-size="11" fill="#64748b" font-family="inherit">ปฏิบัติงาน</text></svg>
-    <div class="legend">${D.map(o=>`<div><i style="background:${o.x.c}"></i>${stLbl(o.x.k)} <b>${o.v}</b> คน</div>`).join('')}</div></div>`:'<div class="empty">ไม่มีรายชื่อ</div>';
-  requestAnimationFrame(()=>setTimeout(()=>document.querySelectorAll('#adDonut circle[data-da]').forEach(x=>x.setAttribute('stroke-dasharray',x.dataset.da)),60));
-  // by group
-  const DP=role==='head'?[myDept()].filter(Boolean):g?[g]:S.depts;
-  const gb=(lbl,L,attr)=>{const cc=attCount(L,ATD,LM),n=L.length||1,h=cc['มา']+cc['สาย']+cc['ไปราชการ'];return`<div class="gbar" ${attr}><div class="gl"><b>${esc(lbl)}</b><span class="muted">${h}/${L.length} · ${pct(h,L.length)}%</span></div><div class="sb">${[...AST,ASC['']].map(x=>cc[x.k]?`<i style="background:${x.c}" data-w="${cc[x.k]/n*100}" title="${stLbl(x.k)} ${cc[x.k]} คน">${cc[x.k]}</i>`:'').join('')}</div></div>`};
-  $('#adGrp').innerHTML=(ETF?'':`<div class="gsub">ตามประเภทบุคลากร</div>${byEt(VS).map(x=>gb((x.k==='0'?'':x.k+'. ')+ETN[x.k],x.L,`data-et2="${x.k}"`)).join('')}<div class="gsub">ตามกลุ่มงาน</div>`)+DP.map(d=>{const L=VS.filter(st=>norm(st.dept)===norm(d.name)),cc=attCount(L,ATD,LM),n=L.length||1;
-    if(!L.length)return'';return`<div class="gbar" data-gd="${d.id}"><div class="gl"><b>${esc(d.name)}</b><span class="muted">${cc['มา']+cc['สาย']+cc['ไปราชการ']}/${L.length} · ${pct(cc['มา']+cc['สาย']+cc['ไปราชการ'],L.length)}%</span></div><div class="sb">${[...AST,ASC['']].map(x=>cc[x.k]?`<i style="background:${x.c}" data-w="${cc[x.k]/n*100}" title="${stLbl(x.k)} ${cc[x.k]} คน">${cc[x.k]}</i>`:'').join('')}</div></div>`}).join('')||'<div class="empty">ไม่มีกลุ่มงาน</div>';
-  requestAnimationFrame(()=>setTimeout(()=>document.querySelectorAll('#adGrp i[data-w]').forEach(i=>i.style.width=i.dataset.w+'%'),60));
+  const ring=(v,c)=>{const C=2*Math.PI*20;return`<svg viewBox="0 0 48 48" width="50" height="50"><circle cx="24" cy="24" r="20" fill="none" stroke="#eef2f7" stroke-width="7"/><circle cx="24" cy="24" r="20" fill="none" stroke="${c}" stroke-width="7" stroke-dasharray="${v/100*C} ${C}" transform="rotate(-90 24 24)" stroke-linecap="round"/><text x="24" y="28" text-anchor="middle" font-size="12" font-weight="700" fill="#0f172a" font-family="inherit">${v}%</text></svg>`};
+  $('#adKpi').innerHTML=`<button data-af="*" style="--c:#0f766e">${ring(pct(here,VS.length),'#16a34a')}<div style="min-width:0"><div class="n">${here}<small>/ ${VS.length} คน</small></div><div class="l">ปฏิบัติงาน · บันทึก ${done}</div></div></button>`+[...AST,ASC['']].map(x=>`<button data-af="${x.k}" class="${!x.k&&c['']&&!isOff(ATD)?'warn':''}" style="--c:${x.c}"><div class="n">${c[x.k]}<small>คน</small></div><div class="l">${x.i} ${stLbl(x.k)}</div></button>`).join('');
+  // by type / group table
+  const DP=role==='head'?[myDept()].filter(Boolean):g?[g]:S.depts,COLS2=[...AST,ASC['']];
+  const tr=(lbl,L,attr,cls)=>{const cc=attCount(L,ATD,LM),h=cc['มา']+cc['สาย']+cc['ไปราชการ'],p=pct(h,L.length);return`<tr ${attr||''} class="${cls||''}" title="${esc(lbl)}"><td>${esc(lbl)}</td><td>${L.length}</td>${COLS2.map(x=>`<td class="${cc[x.k]?'':'z'}" style="${cc[x.k]&&x.k?'color:'+x.c+';font-weight:600':''}">${cc[x.k]||'·'}</td>`).join('')}<td><div class="pc">${p}%<i><b style="width:${p}%"></b></i></div></td></tr>`};
+  $('#adGrp').innerHTML=`<table class="gtab"><thead><tr><th>ประเภท / กลุ่มงาน</th><th>คน</th>${COLS2.map(x=>`<th title="${stLbl(x.k)}">${x.i}<br>${x.k==='ไปราชการ'?'ราชการ':x.k||'ไม่บันทึก'}</th>`).join('')}<th>ปฏิบัติงาน</th></tr></thead><tbody>
+   ${ETF?'':`<tr class="gs"><td colspan="9">ตามประเภทบุคลากร</td></tr>${byEt(VS).map(x=>tr((x.k==='0'?'':x.k+'. ')+ETN[x.k],x.L,`data-et2="${x.k}"`)).join('')}`}
+   <tr class="gs"><td colspan="9">ตามกลุ่มงาน</td></tr>${DP.map(d=>{const L=VS.filter(st=>norm(st.dept)===norm(d.name));return L.length?tr(d.name,L,`data-gd="${d.id}"`):''}).join('')}
+   ${tr('รวม',VS,'','tot')}</tbody></table>`;
   // who is away
   const away=A.filter(x=>x.a.s&&x.a.s!=='มา').sort((p,q)=>AST.findIndex(y=>y.k===p.a.s)-AST.findIndex(y=>y.k===q.a.s));
   const FL=fyLeaves().filter(l=>inScope(l)&&isLeave(l)),wk=addD(ATD,7),soon=FL.filter(l=>l.start>ATD&&l.start<=wk).sort((a,b)=>a.start<b.start?-1:1);
-  $('#adWho').innerHTML=(away.map(({st,a})=>`<div class="person" data-pid="${st.id}" style="cursor:pointer">${avOf(st.name)}<div style="flex:1;min-width:0"><b>${esc(st.name)}</b><div class="muted">${esc(st.dept||'')}${a.n?' · '+esc(a.n):''}${a.t?' · '+esc(a.t)+' น.':''}</div></div><span class="tg" style="background:${ASC[a.s].c}1a;color:${ASC[a.s].c};border-color:${ASC[a.s].c}55">${ASC[a.s].i} ${a.s}</span></div>`).join('')||'<div class="muted" style="padding:6px 0">ทุกคนมาปฏิบัติงานตามปกติ 🎉</div>')
+  $('#adWhoN').textContent=`${away.length} คน`;$('#adWho').innerHTML=`<div class="gsub">วันนี้ (${away.length})</div>`+(away.map(({st,a})=>`<div class="person" data-pid="${st.id}" style="cursor:pointer">${avOf(st.name)}<div style="flex:1;min-width:0"><b>${esc(st.name)}</b><div class="muted">${esc(st.dept||'')}${a.n?' · '+esc(a.n):''}${a.t?' · '+esc(a.t)+' น.':''}</div></div><span class="tg" style="background:${ASC[a.s].c}1a;color:${ASC[a.s].c};border-color:${ASC[a.s].c}55">${ASC[a.s].i} ${a.s}</span></div>`).join('')||'<div class="muted" style="padding:6px 0">ทุกคนมาปฏิบัติงานตามปกติ 🎉</div>')
     +(c['']&&!isOff(ATD)?`<div class="alert" data-go2="att" style="margin-top:10px"><span>❔ ยังไม่บันทึก ${c['']} คน</span><span class="btn sec sm">ไปบันทึก →</span></div>`:'')+`<div class="gsub" style="margin-top:10px">ลาใน 7 วันข้างหน้า (${soon.length})</div>`+(soon.map(l=>`<div class="person">${avOf(staffName(l))}<div style="flex:1;min-width:0"><b>${esc(staffName(l))}</b><div class="muted">${esc(l.type)}${l.half?' ('+esc(l.half)+')':''} · ${thD(l.start)}${(l.end||l.start)!==l.start?' – '+thD(l.end):''}</div></div></div>`).join('')||'<div class="muted" style="padding:4px 0">ไม่มี</div>');
   // trend
   const W=prevWork(ATD,20),TR=W.map(d=>({d,c:attCount(VS,d)}));
