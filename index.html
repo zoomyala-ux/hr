@@ -332,6 +332,34 @@ input,select,textarea{font-size:15.5px}
 .filters>select,.btns.stick>select{max-width:210px}
 .filters>select.grpF,#dCat{max-width:250px}
 #aTable td:nth-child(6),#aTable td:nth-child(7),#aTable td:nth-child(8),#pHist td:nth-child(4),#pHist td:nth-child(5){white-space:nowrap}
+/* หน้าหลัก: ตัวหนังสือใหญ่ขึ้น */
+#home .hero h2{font-size:22px}
+#home .hero p{font-size:14.5px}
+#home .kpi .hcard .n{font-size:25px}
+#home .kpi .hcard .l{font-size:14px}
+#home .kpi .hcard .ic{width:40px;height:40px;font-size:19px}
+#home .panel>h3{font-size:17px}
+#home .legend{font-size:15.5px;gap:8px}
+#home .vbars .c b{font-size:14px}
+#home .vlab span{font-size:14px}
+#home .person b{font-size:15.5px}
+#home .person .muted{font-size:14px}
+#home #hmToday{font-size:15.5px}
+#home .alert{font-size:15px!important}
+#home .hnav .hcard b{font-size:14.5px}
+#home .hnav .hcard .ic{width:30px;height:30px;font-size:16px}
+#home .muted{font-size:14px}
+#home .dgrid .bd{height:180px}
+#home .dgrid2{grid-template-columns:minmax(0,1fr) minmax(0,1.35fr)}
+#home .dgrid .bd{height:168px}
+#home #hmTodo{height:138px}
+#home .alert>span:first-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+#home .alert .btn{white-space:nowrap;flex:none}
+#home .hnav{grid-template-columns:repeat(4,minmax(0,1fr))}
+#home .hnav .hcard{padding:5px 8px}
+#home .dgrid2 .panel>.bd{padding:8px 12px}
+body:has(#home.on) main{padding-bottom:8px}
+#home .dgrid2 .panel{margin-bottom:0}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.hcard{opacity:1}}
 /* ---- ปรับตามอุปกรณ์ ---- */
 html[data-device=desktop] nav{flex-wrap:wrap;row-gap:4px}
@@ -1904,7 +1932,7 @@ function renderHome(){
   countUp($('#hmKpi'));
   // donut
   const TD=LEAVE_T.map(t=>({t,v:leaves.filter(l=>l.type===t.n).reduce((a,l)=>a+(+l.days||0),0)})).filter(x=>x.v>0),tot=TD.reduce((a,x)=>a+x.v,0),C=2*Math.PI*52;
-  let off=0;$('#hmDonut').innerHTML=tot?`<div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;justify-content:center"><svg class="donut" viewBox="0 0 140 140" width="150" height="150"><circle cx="70" cy="70" r="52" fill="none" stroke="#eef2f7" stroke-width="18"/>${TD.map(x=>{const len=x.v/tot*C,el=`<circle cx="70" cy="70" r="52" fill="none" stroke="${x.t.c}" stroke-width="18" stroke-dasharray="0 ${C}" data-da="${len} ${C-len}" stroke-dashoffset="${-off}" transform="rotate(-90 70 70)" stroke-linecap="butt"/>`;off+=len;return el}).join('')}<text x="70" y="66" text-anchor="middle" font-size="22" font-weight="700" fill="#0f172a" font-family="Prompt">${fmt(tot)}</text><text x="70" y="86" text-anchor="middle" font-size="11" fill="#64748b">วันลา</text></svg>
+  let off=0;$('#hmDonut').innerHTML=tot?`<div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;justify-content:center"><svg class="donut" viewBox="0 0 140 140" width="150" height="150"><circle cx="70" cy="70" r="52" fill="none" stroke="#eef2f7" stroke-width="18"/>${TD.map(x=>{const len=x.v/tot*C,el=`<circle cx="70" cy="70" r="52" fill="none" stroke="${x.t.c}" stroke-width="18" stroke-dasharray="0 ${C}" data-da="${len} ${C-len}" stroke-dashoffset="${-off}" transform="rotate(-90 70 70)" stroke-linecap="butt"/>`;off+=len;return el}).join('')}<text x="70" y="68" text-anchor="middle" font-size="26" font-weight="700" fill="#0f172a" font-family="Prompt">${fmt(tot)}</text><text x="70" y="90" text-anchor="middle" font-size="13" fill="#64748b">วันลา</text></svg>
     <div class="legend">${TD.map(x=>`<div><i style="background:${x.t.c}"></i>${x.t.s} <b>${fmt(x.v)}</b> วัน</div>`).join('')}</div></div>`:'<div class="empty">ยังไม่มีการลาในรอบนี้</div>';
   requestAnimationFrame(()=>setTimeout(()=>document.querySelectorAll('#hmDonut circle[data-da]').forEach(c=>c.setAttribute('stroke-dasharray',c.dataset.da)),60));
   // monthly bars
@@ -1936,9 +1964,9 @@ function renderHome(){
   $('#hmTodoN').textContent=T2.length?`${T2.length} เรื่อง`:'';
   $('#hmTodo').innerHTML=T2.length?`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(360px,100%),1fr));gap:8px">${T2.map(([t,go,b])=>`<div class="alert" data-go2="${go}" style="margin:0"><span>⚠️ ${esc(t)}</span><span class="btn sec sm">${b} →</span></div>`).join('')}</div>`:'<div class="alert ok">✅ ข้อมูลครบ ไม่มีสิ่งที่ต้องทำ</div>';
   const NAV=[['all','📋','ใบลาทั้งหมด','ค้นหา แก้ไข ลบ พิมพ์ใบลา'],['rec','➕','เพิ่มใบลา 1 ใบ','กรอกใบลาแล้วพิมพ์ใบลา PDF'],['back','🧾','เพิ่มใบลาหลายใบ','กรอกหลายใบพร้อมกัน ใช้กับใบลาย้อนหลัง'],
-    ['sum','📊','ตารางสรุปรายคน','วันลาของแต่ละคนในรอบครึ่งปี ใครเกินเกณฑ์'],['rep','📈','กราฟ / รายเดือน / รายคน','ดูภาพรวมและพิมพ์รายงานรายคน'],['staff','👥','เจ้าหน้าที่','รายชื่อ เลข ID โควต้าวันลา กลุ่มงาน'],
-    ['add','⬆️','อัปโหลดไฟล์ Excel','ดาวน์โหลดไฟล์ต้นแบบ กรอก แล้วอัปโหลดกลับ'],['exp','⬇️','ดาวน์โหลดรายงาน / สำรองข้อมูล','ไฟล์ Excel รายงานพิมพ์ และไฟล์สำรอง'],
-    ['base','⚙️','ปีงบ / เกณฑ์ / รหัสผ่าน','ตั้งปีงบ รอบครึ่งปี เกณฑ์การลา'],['hol','🗓️','วันหยุดราชการ','ใช้นับวันทำการในใบลา'],['form','🖨️','หน้าตาใบลา','ข้อความและผู้ลงนามในใบลาที่พิมพ์'],['fb','💬','แจ้งปัญหา / ข้อเสนอแนะ',role==='admin'?'ดูเรื่องที่ผู้ใช้แจ้ง เพื่อนำไปพัฒนาระบบ':'บอกปัญหาหรือสิ่งที่อยากให้ปรับปรุง']].filter(x=>canTab(x[0]));
+    ['sum','📊','ตารางสรุปรายคน','วันลาของแต่ละคนในรอบครึ่งปี ใครเกินเกณฑ์'],['rep','📈','กราฟและรายงาน','ดูภาพรวมและพิมพ์รายงานรายคน'],['staff','👥','เจ้าหน้าที่','รายชื่อ เลข ID โควต้าวันลา กลุ่มงาน'],
+    ['add','⬆️','อัปโหลด Excel','ดาวน์โหลดไฟล์ต้นแบบ กรอก แล้วอัปโหลดกลับ'],['exp','⬇️','ดาวน์โหลด/สำรอง','ไฟล์ Excel รายงานพิมพ์ และไฟล์สำรอง'],
+    ['base','⚙️','ตั้งค่าปีงบ/เกณฑ์','ตั้งปีงบ รอบครึ่งปี เกณฑ์การลา'],['hol','🗓️','วันหยุดราชการ','ใช้นับวันทำการในใบลา'],['form','🖨️','หน้าตาใบลา','ข้อความและผู้ลงนามในใบลาที่พิมพ์'],['fb','💬','แจ้งปัญหา/แนะนำ',role==='admin'?'ดูเรื่องที่ผู้ใช้แจ้ง เพื่อนำไปพัฒนาระบบ':'บอกปัญหาหรือสิ่งที่อยากให้ปรับปรุง']].filter(x=>canTab(x[0]));
   $('#hmNav').innerHTML=NAV.map(([t,i,n,d],k)=>`<button class="hcard" data-go2="${t}" title="${esc(d)}" style="animation-delay:${200+k*30}ms"><span class="ic">${i}</span><b>${n}</b></button>`).join('');
 }
 $('#home').addEventListener('click',e=>{const b=e.target.closest('[data-go2]');if(b)showTab(b.dataset.go2)});
