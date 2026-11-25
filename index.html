@@ -154,17 +154,18 @@ body.head .adminonly{display:none!important}
 </header>
 <div id="adminBar"><span id="abText"></span><span><button class="btn sec sm" id="chgPw">🔑 เปลี่ยนรหัสผ่าน</button> <button class="btn sec sm" id="exitAdmin">ออกจากระบบ</button></span></div>
 <nav id="tabs">
+  <button data-t="add" class="adm adminonly">➕ เพิ่ม / อัปโหลดข้อมูล</button>
   <button data-t="pend" class="adm" style="display:none">รอตรวจสอบ <span id="pendN"></span></button>
   <button data-t="rec" class="on">บันทึกการลา</button>
   <button data-t="all" class="adm">ข้อมูลการลาทั้งหมด</button>
-  <button data-t="back" class="adm adminonly">กรอกประวัติลาย้อนหลัง</button>
+  <button data-t="back" class="adm adminonly">เพิ่มใบลาย้อนหลัง</button>
   <button data-t="sum" class="adm">แบบสรุปวันลา</button>
   <button data-t="rep" class="adm">รายงาน</button>
-  <button data-t="staff" class="adm">บุคลากร</button>
+  <button data-t="staff" class="adm">เจ้าหน้าที่ / กลุ่มงาน</button>
   <button data-t="base" class="adm adminonly">ข้อมูลพื้นฐาน</button>
   <button data-t="hol" class="adm adminonly">กำหนดวันหยุด</button>
   <button data-t="form" class="adm adminonly">แบบฟอร์มใบลา</button>
-  <button data-t="exp" class="adm">นำเข้า/ส่งออก</button>
+  <button data-t="exp" class="adm">ดาวน์โหลดรายงาน / สำรองข้อมูล</button>
 </nav>
 <main>
 <!-- รอตรวจสอบ -->
@@ -196,6 +197,28 @@ body.head .adminonly{display:none!important}
  </div>
 </section>
 
+<!-- เพิ่ม/อัปโหลดข้อมูล -->
+<section id="add">
+ <p style="margin-top:0"><b>เลือกสิ่งที่ต้องการทำ</b> · <span class="muted" id="addSum"></span></p>
+ <div class="grid2">
+  <div>
+   <h3 style="margin:0 0 8px;color:var(--pri,#1f4e79)">✏️ เพิ่มทีละรายการ (กรอกในหน้าจอ)</h3>
+   <div class="panel"><h3>📝 เพิ่มใบลาย้อนหลัง ทีละครั้ง</h3><div class="bd"><p class="muted" style="margin-top:0">บันทึกการลาที่เกิดขึ้นก่อนใช้ระบบ เลือกชื่อ ประเภท และวันที่ เพิ่มหลายแถวแล้วกดบันทึกครั้งเดียวได้</p><div class="btns" style="margin:0"><button class="btn" data-go="back">ไปที่หน้าเพิ่มใบลาย้อนหลัง</button></div></div></div>
+   <div class="panel"><h3>👤 เพิ่มเจ้าหน้าที่ ทีละคน</h3><div class="bd"><p class="muted" style="margin-top:0">เพิ่มแถวใหม่ในตารางเจ้าหน้าที่ แล้วกรอกเลข ID ชื่อ ตำแหน่ง กลุ่มงาน ประเภท เลขบัตร และโควต้าวันลา (บันทึกอัตโนมัติ)</p><div class="btns" style="margin:0"><button class="btn" data-go="staff1">เพิ่มเจ้าหน้าที่ 1 คน</button></div></div></div>
+   <div class="panel"><h3>🏢 เพิ่มกลุ่มงาน</h3><div class="bd"><p class="muted" style="margin-top:0">เพิ่มกลุ่มงานใหม่ พร้อมผู้บังคับบัญชาชั้นต้น (ผอ.กลุ่ม) และรหัสเข้าระบบของหัวหน้ากลุ่ม</p><div class="btns" style="margin:0"><button class="btn sec" data-go="dept1">เพิ่มกลุ่มงาน</button></div></div></div>
+   <div class="panel"><h3>📅 เพิ่มวันหยุดราชการ ทีละวัน</h3><div class="bd"><p class="muted" style="margin-top:0">วันหยุดใช้คำนวณวันทำการในใบลา ไม่ต้องใส่เสาร์–อาทิตย์</p><div class="btns" style="margin:0"><button class="btn sec" data-go="hol1">ไปที่หน้าวันหยุด</button></div></div></div>
+   <div class="panel"><h3>🎯 ตั้งโควต้าวันลา</h3><div class="bd"><p class="muted" style="margin-top:0">ตั้งค่าเริ่มต้นตามประเภทเจ้าหน้าที่ แล้วแก้รายคนได้ในตารางเจ้าหน้าที่</p><div class="btns" style="margin:0"><button class="btn sec" data-go="quota">ไปที่ตั้งโควต้าวันลา</button></div></div></div>
+  </div>
+  <div>
+   <h3 style="margin:0 0 8px;color:var(--pri,#1f4e79)">📤 อัปโหลดทีละเยอะ (ไฟล์ Excel)</h3>
+   <p class="muted" style="margin-top:0">ทุกแบบทำ 2 ขั้น: <b>1)</b> ดาวน์โหลดตาราง แล้วกรอกใน Excel <b>2)</b> อัปโหลดไฟล์กลับ ระบบจะสรุปให้ตรวจก่อนบันทึก (ไม่ลบข้อมูลเดิม)</p>
+   <div class="panel"><h3>📚 อัปโหลดประวัติการลา หลายคน หลายครั้ง</h3><div class="bd"><p class="muted" style="margin-top:0">1 แถว = ใบลา 1 ครั้ง ใส่เลข ID ประเภทการลา วันเริ่ม วันสิ้นสุด ย้อนหลังได้หลายปี · ใบลาที่ซ้ำจะข้ามให้</p><div class="btns" style="margin:0"><button class="btn sec" data-tpl="leave">⬇ 1. ดาวน์โหลดตารางประวัติการลา</button><label class="btn" style="display:inline-block">⬆ 2. อัปโหลดตารางที่กรอกแล้ว<input type="file" data-up="leave" accept=".xlsx,.csv" hidden></label></div></div></div>
+   <div class="panel"><h3>👥 อัปโหลดรายชื่อเจ้าหน้าที่ หลายคน</h3><div class="bd"><p class="muted" style="margin-top:0">ตารางมีรายชื่อปัจจุบันใส่ไว้ให้ แก้ไขหรือเพิ่มแถวได้ · เลข ID เดิม = แก้ไขข้อมูล · เลข ID ใหม่ = เพิ่มคน · ใช้กรอกเลขบัตรประชาชน วันพักผ่อนสะสม และโควต้าทีละหลายคน</p><div class="btns" style="margin:0"><button class="btn sec" data-tpl="staff">⬇ 1. ดาวน์โหลดตารางรายชื่อเจ้าหน้าที่</button><label class="btn" style="display:inline-block">⬆ 2. อัปโหลดตารางที่กรอกแล้ว<input type="file" data-up="staff" accept=".xlsx,.csv" hidden></label></div></div></div>
+   <div class="panel"><h3>🗓️ อัปโหลดวันหยุด หลายวัน</h3><div class="bd"><p class="muted" style="margin-top:0">ตารางมีวันหยุดปัจจุบันใส่ไว้ให้ เพิ่มแถวได้ · วันที่ซ้ำจะข้าม</p><div class="btns" style="margin:0"><button class="btn sec" data-tpl="hol">⬇ 1. ดาวน์โหลดตารางวันหยุด</button><label class="btn" style="display:inline-block">⬆ 2. อัปโหลดตารางที่กรอกแล้ว<input type="file" data-up="hol" accept=".xlsx,.csv" hidden></label></div></div></div>
+   <div class="panel"><h3>📦 อัปโหลดทุกอย่างในไฟล์เดียว</h3><div class="bd"><p class="muted" style="margin-top:0">ตารางรวม 3 ชีต (เจ้าหน้าที่ · ประวัติการลา · วันหยุด) สำหรับตั้งระบบครั้งแรก</p><div class="btns" style="margin:0"><button class="btn sec" data-tpl="">⬇ 1. ดาวน์โหลดตารางรวมทุกชีต</button><label class="btn" style="display:inline-block">⬆ 2. อัปโหลดตารางที่กรอกแล้ว<input type="file" data-up="" accept=".xlsx,.csv" hidden></label></div></div></div>
+  </div>
+ </div>
+</section>
 <!-- กรอกประวัติลาย้อนหลัง -->
 <section id="back">
  <p class="muted" style="margin-top:0">บันทึกการลาที่เกิดขึ้นก่อนเริ่มใช้ระบบ (ปีงบประมาณใดก็ได้) รายการที่บันทึกจะนับในแบบสรุปและรายงานของปีงบประมาณนั้นทันที</p>
@@ -282,7 +305,7 @@ body.head .adminonly{display:none!important}
   <p class="muted" style="padding:0 12px">ตั้งชื่อหัวหน้าครั้งเดียว บุคลากรที่สังกัดกลุ่มงานนั้นจะได้สายบังคับบัญชาอัตโนมัติ: <b>ผู้บังคับบัญชาชั้นต้น</b> → ช่องความเห็นในใบลา · <b>ผู้บังคับบัญชาสูงสุด</b> → “เรียน” และช่องคำสั่งอนุญาตในใบลา (ถ้าเว้นว่างจะใช้ค่าในแท็บแบบฟอร์มใบลา) · <b>รหัสเข้าระบบ</b> ใช้เป็นชื่อผู้ใช้ของหัวหน้ากลุ่มงาน รหัสผ่านเริ่มต้นเหมือนรหัสเข้าระบบ</p></div>
   <div class="panel" id="qDefPanel"><h3><span>โควต้าวันลาเริ่มต้นตามประเภทบุคลากร (วันทำการต่อปีงบประมาณ)</span></h3><div class="tw" id="qDef" data-cardify></div>
   <p class="muted" style="padding:0 12px">ค่าเริ่มต้นนี้ใช้เมื่อเลือกประเภทบุคลากร แก้โควต้ารายคนได้ในตารางรายชื่อด้านล่าง · <b>พักผ่อนสะสม</b> = วันลาพักผ่อนที่ยกมาจากปีก่อน (แต่ละคนไม่เท่ากัน)</p></div>
-  <div class="panel"><h3><span>รายชื่อบุคลากร</span><button class="btn sec sm" id="bAdd">+ เพิ่มรายชื่อ</button></h3>
+  <div class="panel"><h3><span>รายชื่อบุคลากร</span><button class="btn sec sm" id="bAdd">+ เพิ่มเจ้าหน้าที่ 1 คน</button></h3>
   <div class="tw" id="bStaff" data-cardify></div>
   <p class="muted" style="padding:0 12px">เลข ID ใช้ให้ผู้ขอลากรอกแทนข้อมูลส่วนตัว ห้ามซ้ำกัน (แนะนำเลขประจำตัวในหน่วยงาน ไม่ควรใช้เลขบัตรประชาชน) · ผู้บังคับบัญชาชั้นต้นมาจากกลุ่มงานที่เลือกโดยอัตโนมัติ · สิทธิ์ลาพักผ่อน = จำนวนวันที่ลาได้ในปีงบประมาณ (รวมวันสะสม)</p>
  </div>
@@ -312,18 +335,13 @@ body.head .adminonly{display:none!important}
    </div></div>
   </div>
   <div>
-   <div class="panel adminonly"><h3>📥 นำเข้าข้อมูลจาก Excel</h3><div class="bd">
-    <p class="muted" style="margin-top:0">1) ดาวน์โหลดตารางนำเข้าข้อมูล (มีรายชื่อบุคลากรและวันหยุดปัจจุบันใส่ไว้ให้) 2) กรอก/แก้ใน Excel 3) เลือกไฟล์นำเข้า ระบบจะสรุปให้ตรวจก่อนบันทึก</p>
-    <div class="btns" style="margin:0"><button class="btn sec" id="impTpl">⬇ ดาวน์โหลดตารางนำเข้าข้อมูล</button><label class="btn" style="display:inline-block">📂 เลือกไฟล์นำเข้า<input type="file" id="impFile" accept=".xlsx,.csv" hidden></label></div>
-    <p class="muted">ชีตในตาราง: บุคลากร (เลข ID, ชื่อ, ตำแหน่ง, ประเภท, กลุ่มงาน, เบอร์โทร, ที่อยู่, โควต้าวันลา) · ประวัติการลา (ย้อนหลังได้หลายปี) · วันหยุด</p>
-   </div></div>
    <div class="panel adminonly"><h3>ไฟล์ฐานข้อมูลบนคอมพิวเตอร์</h3><div class="bd" id="fdbBox">
     <div id="fdbStatus" class="msg info"></div>
     <div class="btns" id="fdbBtns"><button class="btn" id="fdbNew">สร้างไฟล์ฐานข้อมูลใหม่</button><button class="btn sec" id="fdbOpen">เปิดไฟล์ฐานข้อมูลที่มีอยู่</button><button class="btn red" id="fdbOff" style="display:none">เลิกเชื่อมต่อ</button></div>
     <p class="muted">เชื่อมต่อแล้ว ทุกครั้งที่บันทึก/แก้ไข ระบบจะเขียนลงไฟล์ (.json) ให้อัตโนมัติ ย้ายไฟล์ไปเครื่องอื่นหรือเก็บสำรองได้ (ใช้กับ Chrome/Edge บนคอมพิวเตอร์ เมื่อเปิดแอปจากไฟล์ .html)</p>
    </div></div>
-   <div class="panel adminonly"><h3>สำรอง / นำเข้าฐานข้อมูล (.json)</h3><div class="bd">
-    <div class="btns" style="margin:0"><button class="btn sec" id="bBackup">ส่งออกไฟล์ฐานข้อมูล</button><label class="btn sec" style="display:inline-block">นำเข้าจากไฟล์<input type="file" id="bRestore" accept=".json" hidden></label></div>
+   <div class="panel adminonly"><h3>สำรองข้อมูลทั้งระบบ / ย้ายเครื่อง (.json)</h3><div class="bd">
+    <div class="btns" style="margin:0"><button class="btn sec" id="bBackup">⬇ ดาวน์โหลดไฟล์สำรองข้อมูลทั้งหมด</button><label class="btn sec" style="display:inline-block">♻ กู้คืนจากไฟล์สำรอง<input type="file" id="bRestore" accept=".json" hidden></label></div>
     <p class="muted" id="bModeNote"></p>
    </div></div>
   </div>
@@ -557,7 +575,7 @@ function setRole(r,quiet){
   $('#abText').innerHTML=r==='admin'?'🛡 <b>ผู้ดูแลระบบ</b> — จัดการข้อมูลทั้งหมด บันทึกประวัติการลา และออกรายงาน':r==='head'?`🏢 <b>หัวหน้ากลุ่มงาน</b>: ${esc(d?d.name:'')}${d&&(d.supName||d.headName)?` (${esc(d.supName||d.headName)})`:''} — ดูประวัติการลาและรายงานของกลุ่มงาน`:'';
   $('#fType').innerHTML=TYPES.filter(t=>isMgr()||!t.adm).map(t=>opt(t.n,t.n)).join('');
   editId=null;
-  if(!quiet){clearForm(true);showTab(isMgr()?'all':'rec')}
+  if(!quiet){clearForm(true);showTab(role==='admin'?'add':isMgr()?'all':'rec')}
 }
 async function sha(s){try{const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('leaveapp|'+s));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}catch(e){let h=0;for(const c of 'leaveapp|'+s)h=(h*31+c.charCodeAt(0))|0;return 'x'+h}}
 function saveSess(){try{sess?sessionStorage.setItem('leaveapp:sess',JSON.stringify(sess)):sessionStorage.removeItem('leaveapp:sess')}catch(e){}}
@@ -682,7 +700,7 @@ function showTab(t){const b=document.querySelector(`#tabs button[data-t="${t}"]`
   document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x.dataset.t===t));document.querySelectorAll('main section').forEach(s=>s.classList.toggle('on',s.id===t));renderTab(t)}
 $('#tabs').onclick=e=>{const b=e.target.closest('button');if(b)showTab(b.dataset.t)};
 const curTab=()=>document.querySelector('#tabs button.on').dataset.t;
-function renderTab(t){({back:renderBack,pend:renderPend,rec:renderRec,all:renderAllList,sum:renderSum,rep:renderRep,base:renderBase,staff:renderStaff,hol:renderHol,exp:renderExp,form:renderForm})[t]()}
+function renderTab(t){({add:renderAdd,back:renderBack,pend:renderPend,rec:renderRec,all:renderAllList,sum:renderSum,rep:renderRep,base:renderBase,staff:renderStaff,hol:renderHol,exp:renderExp,form:renderForm})[t]()}
 function renderAll(){renderHeader();renderTab(curTab())}
 function renderLive(){renderHeader();const t=curTab();if(t==='base'&&document.activeElement&&document.activeElement.closest('#base'))return;if(t==='rec'){renderPerson();updForm()}else renderTab(t)}
 function renderHeader(){const st=S.settings,[a,b]=curPeriod();$('#hSub').textContent=`${st.org||'-'} · รอบ${+st.round===1?'ครึ่งปีแรก':'ครึ่งปีหลัง'} ปีงบประมาณ ${st.year} (${thD(a)} – ${thD(b)})`;const n=pendCount();$('#pendN').textContent=n||'';$('#demoBadge').style.display=hasDemo()?'':'none'}
@@ -1416,7 +1434,7 @@ const IMP={staff:['เลข ID','ชื่อ-สกุล','ตำแหน่
   leave:['เลข ID','ชื่อ-สกุล (ไม่บังคับ)','ประเภทการลา','วันเริ่ม','วันสิ้นสุด','ครึ่งวัน (เช้า/บ่าย)','เหตุผล','ผู้ปฏิบัติหน้าที่แทน'],
   hol:['วันที่','ชื่อวันหยุด']};
 const thSlash=d=>{const[y,m,dd]=d.split('-').map(Number);return`${dd}/${m}/${y+543}`};
-function importTemplate(){
+function importTemplate(kind){
   const sorted=[...S.staff].sort((a,b)=>String(a.code).localeCompare(String(b.code)));
   const help=[['ตารางนำเข้าข้อมูล ระบบบันทึกข้อมูลการลา'],[S.settings.org||''],[],['หัวข้อ','รายละเอียด'],
    ['วิธีใช้','กรอก/แก้ไขในชีต “บุคลากร” “ประวัติการลา” “วันหยุด” แล้วบันทึกไฟล์ จากนั้นไปที่แท็บ นำเข้า/ส่งออก → เลือกไฟล์นำเข้า ระบบจะแสดงสรุปให้ตรวจก่อนบันทึก'],
@@ -1430,12 +1448,13 @@ function importTemplate(){
    ['ชีตวันหยุด','ใส่วันหยุดราชการไว้ให้แล้ว เพิ่มแถวได้ (วันที่ซ้ำจะข้าม)'],
    [],['ประเภทการลาที่ใช้ได้',TYPES.map(t=>t.n).join(' · ')],['ประเภทบุคลากร',ETYPES.join(' · ')],['กลุ่มงาน',S.depts.map(d=>d.name).join(' · ')]];
   const sh=(name,title,head,rows,widths)=>({name,rows:[[title],[S.settings.org||''],[],head,...rows],titles:2,hdr:3,widths});
-  const blob=xlsxBlob([
-    {name:'คำอธิบาย',rows:help,titles:2,hdr:3,widths:[22,120]},
+  const SH=[
     sh('บุคลากร','ข้อมูลบุคลากร',IMP.staff,sorted.map(st=>{const q=quotaOf(st);return[st.code||'',st.name,st.pos||'',st.etype||'',st.dept||'',st.tel||'',st.addr||'',q.vac,q.carry,q.sick,q.biz,st.cid?cidFmt(st.cid):'']}),[10,30,40,18,42,14,30,12,12,12,12,20]),
     sh('ประวัติการลา','ประวัติการลา (กรอกเพิ่มได้หลายปีงบประมาณ)',IMP.leave,[],[10,28,22,14,14,16,30,28]),
-    sh('วันหยุด','วันหยุดราชการ',IMP.hol,[...S.holidays].sort((a,b)=>a.date<b.date?-1:1).map(h=>[thSlash(h.date),h.name]),[16,44])]);
-  saveFile('ตารางนำเข้าข้อมูล_ระบบการลา.xlsx',blob,blob.type);
+    sh('วันหยุด','วันหยุดราชการ',IMP.hol,[...S.holidays].sort((a,b)=>a.date<b.date?-1:1).map(h=>[thSlash(h.date),h.name]),[16,44])];
+  const pick={staff:0,leave:1,hol:2}[kind],names={staff:'รายชื่อเจ้าหน้าที่',leave:'ประวัติการลา',hol:'วันหยุด'};
+  const blob=xlsxBlob([{name:'คำอธิบาย',rows:help,titles:2,hdr:3,widths:[22,120]},...(pick==null?SH:[SH[pick]])]);
+  saveFile(`ตาราง${kind?names[kind]:'นำเข้าข้อมูล'}_ระบบการลา.xlsx`,blob,blob.type);
 }
 // --- xlsx reader (ไม่ต้องใช้อินเทอร์เน็ต) ---
 async function unzip(buf){
@@ -1468,14 +1487,15 @@ const cellDT=v=>typeof v==='number'?(v>20000&&v<80000?serialDT(v):''):parseDT(v)
 const cellStr=v=>v==null?'':String(v).trim();
 function findSheet(book,key,head){const n=Object.keys(book).find(k=>k.includes(key));if(!n)return null;const R=book[n];const hi=R.findIndex(r=>r&&cellStr(r[0])===head[0]);return hi<0?null:R.slice(hi+1).filter(r=>r&&r.some(v=>cellStr(v)!==''))}
 function parseCSV(t){const rows=[];let r=[],f='',q=false;for(let i=0;i<t.length;i++){const c=t[i];if(q){if(c==='"'&&t[i+1]==='"'){f+='"';i++}else if(c==='"')q=false;else f+=c}else if(c==='"')q=true;else if(c===','){r.push(f);f=''}else if(c==='\n'||c==='\r'){if(c==='\r'&&t[i+1]==='\n')i++;r.push(f);rows.push(r);r=[];f=''}else f+=c}if(f||r.length){r.push(f);rows.push(r)}return rows}
-async function importFile(file){
+async function importFile(file,kind){
   let book;
   try{if(/\.csv$/i.test(file.name)){const t=(await file.text()).replace(/^﻿/,''),rows=parseCSV(t);const h=rows.find(r=>r&&r.length>1)||[];
       const k=cellStr(h[0])==='วันที่'?'วันหยุด':h.some(x=>/ประเภทการลา/.test(x))?'ประวัติการลา':'บุคลากร';book={[k]:rows}}
     else book=await readXlsx(await file.arrayBuffer())}
   catch(e){return toast('อ่านไฟล์ไม่ได้ ใช้ไฟล์ .xlsx จาก “ดาวน์โหลดตารางนำเข้าข้อมูล” หรือ .csv',true)}
-  const SR=findSheet(book,'บุคลากร',IMP.staff)||[],LR=findSheet(book,'ประวัติการลา',IMP.leave)||[],HR=findSheet(book,'วันหยุด',IMP.hol)||[];
-  if(!SR.length&&!LR.length&&!HR.length)return toast('ไม่พบข้อมูลในไฟล์ (ตรวจชื่อชีตและแถวหัวตาราง)',true);
+  const want=k=>!kind||kind===k;
+  const SR=want('staff')&&findSheet(book,'บุคลากร',IMP.staff)||[],LR=want('leave')&&findSheet(book,'ประวัติการลา',IMP.leave)||[],HR=want('hol')&&findSheet(book,'วันหยุด',IMP.hol)||[];
+  if(!SR.length&&!LR.length&&!HR.length)return toast(kind?'ไม่พบข้อมูลในไฟล์ ใช้ตารางที่ดาวน์โหลดจากปุ่มคู่กันนี้ แล้วกรอกต่อจากแถวหัวตาราง':'ไม่พบข้อมูลในไฟล์ (ตรวจชื่อชีตและแถวหัวตาราง)',true);
   const deptMatch=v=>{v=norm(v);if(!v)return'';const d=S.depts.find(x=>norm(x.name)===v)||S.depts.find(x=>norm(x.name).includes(v)||v.includes(norm(x.name)));return d?d.name:v};
   const plan={upd:[],add:[],bad:[],lv:[],lvBad:[],lvDup:0,hol:[]};
   SR.forEach((r,i)=>{const code=cellStr(r[0]).replace(/\.0$/,'').replace(/-/g,''),name=cellStr(r[1]);if(!code&&!name)return;
@@ -1510,8 +1530,17 @@ async function importFile(file){
   if(store.cloud)LV=LV.filter(l=>l.fy===curFY());
   renderAll();toast(`นำเข้าแล้ว: บุคลากร ${plan.upd.length+plan.add.length} · ใบลา ${plan.lv.length} · วันหยุด ${plan.hol.length}`);
 }
-$('#impTpl').onclick=importTemplate;
-$('#impFile').onchange=e=>{const f=e.target.files[0];e.target.value='';if(f)importFile(f)};
+/* ---------- ศูนย์เพิ่ม/อัปโหลดข้อมูล ---------- */
+function gotoPanel(tab,sel,act){showTab(tab);setTimeout(()=>{const el=sel&&document.querySelector(sel);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});if(act)act()},80)}
+$('#add').addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b){({
+  back:()=>gotoPanel('back','#back',()=>$('#bkStaff').focus()),
+  staff1:()=>gotoPanel('staff','#bStaff',()=>$('#bAdd').click()),
+  dept1:()=>gotoPanel('staff','#dTable',()=>$('#dAdd').click()),
+  hol1:()=>gotoPanel('hol','#hol',()=>$('#hDate').focus()),
+  quota:()=>gotoPanel('staff','#qDefPanel')})[b.dataset.go]();return}
+  const t=e.target.closest('[data-tpl]');if(t)importTemplate(t.dataset.tpl)});
+$('#add').addEventListener('change',e=>{const i=e.target;if(i.dataset.up===undefined)return;const f=i.files[0];i.value='';if(f)importFile(f,i.dataset.up||'')});
+function renderAdd(){$('#addSum').textContent=`ตอนนี้มีเจ้าหน้าที่ ${S.staff.length} คน · ${S.depts.length} กลุ่มงาน · วันหยุด ${S.holidays.length} วัน`}
 
 /* ---------- ตรวจจับอุปกรณ์ ---------- */
 const DEV_T={mobile:'📱 มือถือ',tablet:'📲 แท็บเล็ต',desktop:'💻 คอมพิวเตอร์'};
