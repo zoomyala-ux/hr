@@ -1570,7 +1570,7 @@ function pvHist(r){const v=r.v,l=draftRec(r);l.start=v.start||todayISO();l.end=l
   let V;try{V=formVars(l)}catch(e){return''}
   const R=+((l.start>=period(1,l.fy)[0]&&l.start<=period(1,l.fy)[1])?1:2);
   return`<div class="pvstats"><div class="pvs-grid"><div>${halfStats(l,V,1)}${R===2?halfStats(l,V,2):''}</div><div class="pvvac">${vacStats(l.type==='ลาพักผ่อน'?l:{...l,days:0},V)}</div></div></div>`}
-function renderPv(r){const box=$('#pvBox');if(!box)return;const v=r.v,need=[];
+function renderPv(r){const box=$('#pvBox');if(!box)return;$('#pvPanel').style.display=isMgr()?'none':'';if(isMgr())return;const v=r.v,need=[];
   if(!v.st)need.push(isMgr()?'ชื่อผู้ขอลา':'เลข ID ของท่าน');if(!v.start)need.push('วันที่ลา');if(!v.note)need.push('เหตุผลการลา');if(v.type==='ลาพักผ่อน'&&!(v.sub&&staffByName(v.sub)))need.push('ผู้ปฏิบัติหน้าที่แทน');
   const ready=r.ok&&!need.length,was=$('#pvPanel').classList.contains('ready');$('#pvPanel').classList.toggle('ready',ready);if(ready&&!was&&document.documentElement.dataset.device!=='desktop')setTimeout(()=>$('#pvPanel').scrollIntoView({behavior:'smooth',block:'start'}),300);$('#pvBig').style.display=ready?'':'none';$('#pvAct').style.display=ready?'':'none';
   $('#pvTitle').textContent=ready?'📄 ใบลาที่จะยื่น (ตรวจสอบก่อนส่ง)':v.st?'📊 ประวัติการลา (ตามแบบฟอร์มใบลา)':'👁 ตัวอย่างใบลาที่จะพิมพ์';
@@ -1613,12 +1613,13 @@ function clearForm(keepPerson){editId=null;['fStart','fEnd','fNote','fContact','
 $('#bClear').onclick=()=>clearForm(isMgr()?false:true);
 $('#bSave').onclick=()=>{
   const r=checkForm();if(!r.ok){const m=r.msgs.find(x=>x[0]==='err')||r.msgs[0];if(m)toast(m[1],true);return}const v=r.v,t=T[v.type];
-  const rec=draftRec(r);if(!pvOk){openPv(rec);return}pvOk=false;
+  const rec=draftRec(r);if(!pvOk&&!isMgr()){openPv(rec);return}pvOk=false;
   if(!isMgr())lsSet(ME_K,{code:v.st.code||''});
   putLeave(rec);
   const msg=isMgr()?(editId?'แก้ไขรายการแล้ว':'บันทึกการลาแล้ว'):'บันทึกการลาแล้ว';
   clearForm(true);renderHeader();
-  if(pvPrint&&hasForm(rec)){toast(msg+' กำลังสร้างใบลา PDF…');leavePDF(rec)}else toast(msg);pvPrint=false;
+  if(isMgr()&&hasForm(rec)){const p=ask(`<b>${msg}</b><br>ต้องการพิมพ์ใบลา (PDF) หรือไม่?`);$('#mYes').textContent='🖨 พิมพ์ใบลา';$('#mNo').textContent='ไม่พิมพ์';p.then(y=>{$('#mNo').textContent='ยกเลิก';if(y)leavePDF(rec)})}
+  else if(pvPrint&&hasForm(rec)){toast(msg+' กำลังสร้างใบลา PDF…');leavePDF(rec)}else toast(msg);pvPrint=false;
 };
 $('#bDel').onclick=()=>editId&&delLeave(editId);
 async function delLeave(id){
