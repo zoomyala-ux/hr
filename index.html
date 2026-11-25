@@ -733,6 +733,15 @@ html[data-device=desktop] #home .hmain.v4 #hmLs span{font-size:11px!important}
 #adWho .person>div{display:flex;align-items:baseline;gap:6px;min-width:0}
 #adWho .person>div>b{flex:none;max-width:60%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #adWho .person>div>.muted{flex:1;min-width:0}
+.tb1{padding:8px 0;border-bottom:1px dashed #e2e8f0;cursor:pointer}.tb1:last-child{border-bottom:0}.tb1:hover{background:#f8fafc}
+.tb1 .hd{display:flex;justify-content:space-between;gap:8px;align-items:baseline;font-size:14.5px;margin-bottom:4px}
+.tb1 .hd>span{white-space:nowrap}.tb1 .hd .muted{font-size:12.5px}
+.tb1 .sb{height:18px;border-radius:6px}.tb1 .sb i{line-height:18px;font-size:11px}
+.tb1 .ch{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:5px;font-size:12.5px;color:#475569}
+.tb1 .ch span::before{content:'';display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--c);margin-right:4px}
+.tb1 .ch span.z{color:#cbd5e1}.tb1 .ch span b{color:var(--c)}
+@media(min-height:950px){html[data-device=desktop] .tb1{padding:14px 0}html[data-device=desktop] .tb1 .sb{height:22px}html[data-device=desktop] .tb1 .sb i{line-height:22px}}
+@media(max-height:900px){.tb1{padding:4px 0}.tb1 .hd{margin-bottom:2px;font-size:14px}.tb1 .ch{margin-top:3px}}
 </style>
 </head>
 <body class="staff">
@@ -815,7 +824,7 @@ html[data-device=desktop] #home .hmain.v4 #hmLs span{font-size:11px!important}
  <div class="kpi" id="adKpi"></div>
  <div class="hmain v4">
   <div class="panel p-att"><h3><span>🍩 การมาปฏิบัติงาน</span><span class="muted" id="adDonutT"></span></h3><div class="bd" id="adDonut"></div></div>
-  <div class="panel p-grp"><h3><span>🏢 แยกตามประเภท / กลุ่มงาน</span></h3><div class="bd" id="adGrp"></div></div>
+  <div class="panel p-grp"><h3><span>👥 แยกตามประเภทบุคลากร</span></h3><div class="bd" id="adGrp"></div></div>
   <div class="panel p-who"><h3><span>🙋 ผู้ไม่ได้ปฏิบัติงานวันนี้ / กำหนดการลา</span><span class="muted" id="adWhoN"></span></h3><div class="bd" id="adWho"></div></div>
   <div class="panel p-lv"><h3><span>📝 การลา รอบครึ่งปีนี้</span></h3><div class="bd" id="hmDonut"></div></div>
   <div class="panel p-todo"><h3><span>✅ รายการที่ควรดำเนินการ</span><span class="muted" id="hmTodoN"></span></h3><div class="bd" id="hmTodo"></div></div>
@@ -2377,10 +2386,9 @@ function homeAtt(){ATD=ATD||todayISO();$('#adDate').value=ATD;
   $('#adDonut').innerHTML=VS.length?`<div><svg class="donut" viewBox="0 0 140 140"><circle cx="70" cy="70" r="52" fill="none" stroke="#eef2f7" stroke-width="18"/>${D.map(o=>{const len=o.v/VS.length*C,el=`<circle cx="70" cy="70" r="52" fill="none" stroke="${o.x.c}" stroke-width="18" stroke-dasharray="0 ${C}" data-da="${len} ${C-len}" stroke-dashoffset="${-off}" transform="rotate(-90 70 70)"/>`;off+=len;return el}).join('')}<text x="70" y="70" text-anchor="middle" font-size="28" font-weight="700" fill="#0f172a" font-family="inherit">${pct(here,VS.length)}%</text><text x="70" y="90" text-anchor="middle" font-size="12" fill="#64748b" font-family="inherit">ปฏิบัติงาน</text></svg>
     <div class="legend">${D.map(o=>`<div><i style="background:${o.x.c}"></i>${stLbl(o.x.k)} <b>${o.v}</b> คน</div>`).join('')}</div></div>`:'<div class="empty">ไม่มีรายชื่อ</div>';
   requestAnimationFrame(()=>setTimeout(()=>document.querySelectorAll('#adDonut circle[data-da]').forEach(x=>x.setAttribute('stroke-dasharray',x.dataset.da)),60));
-  // by type / group bars (one line each)
-  const DP=role==='head'?[myDept()].filter(Boolean):g?[g]:S.depts;
-  const gb=(lbl,L,attr)=>{const cc=attCount(L,ATD,LM),n=L.length||1,h=cc['มา']+cc['สาย']+cc['ไปราชการ'];return`<div class="gl1" ${attr} title="${esc(lbl)} · ${[...AST,ASC['']].map(x=>stLbl(x.k)+' '+cc[x.k]).join(' · ')}"><span class="nm">${esc(lbl)}</span><div class="sb">${[...AST,ASC['']].map(x=>cc[x.k]?`<i style="background:${x.c}" data-w="${cc[x.k]/n*100}">${cc[x.k]}</i>`:'').join('')}</div><span class="pc">${h}/${L.length} · ${pct(h,L.length)}%</span></div>`};
-  $('#adGrp').innerHTML=(ETF?'':`<div class="gsub">ตามประเภทบุคลากร</div>${byEt(VS).map(x=>gb((x.k==='0'?'':x.k+'. ')+ETN[x.k],x.L,`data-et2="${x.k}"`)).join('')}<div class="gsub">ตามกลุ่มงาน</div>`)+DP.map(d=>{const L=VS.filter(st=>norm(st.dept)===norm(d.name));return L.length?gb(d.name,L,`data-gd="${d.id}"`):''}).join('');
+  // by employee type only
+  const tb=(k,L)=>{const cc=attCount(L,ATD,LM),n=L.length||1,h=cc['มา']+cc['สาย']+cc['ไปราชการ'];return`<div class="tb1" data-et2="${k}" title="กรองเฉพาะ${esc(ETN[k])}"><div class="hd"><b>${k==='0'?'':k+'. '}${esc(ETN[k])}</b><span><b>${pct(h,L.length)}%</b> <span class="muted">ปฏิบัติงาน ${h}/${L.length} คน</span></span></div><div class="sb">${[...AST,ASC['']].map(x=>cc[x.k]?`<i style="background:${x.c}" data-w="${cc[x.k]/n*100}">${cc[x.k]}</i>`:'').join('')}</div><div class="ch">${[...AST,ASC['']].map(x=>`<span class="${cc[x.k]?'':'z'}" style="--c:${x.c}">${stLbl(x.k)} <b>${cc[x.k]}</b></span>`).join('')}</div></div>`};
+  $('#adGrp').innerHTML=byEt(VS).map(x=>tb(x.k,x.L)).join('')||'<div class="empty">ไม่มีรายชื่อ</div>';
   requestAnimationFrame(()=>setTimeout(()=>document.querySelectorAll('#adGrp i[data-w]').forEach(i=>i.style.width=i.dataset.w+'%'),60));
   // who is away
   const away=A.filter(x=>x.a.s&&x.a.s!=='มา').sort((p,q)=>AST.findIndex(y=>y.k===p.a.s)-AST.findIndex(y=>y.k===q.a.s));
