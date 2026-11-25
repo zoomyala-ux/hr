@@ -171,11 +171,10 @@ body.head .adminonly{display:none!important}
 <div id="adminBar"><span id="abText"></span><span><button class="btn sec sm" id="chgPw">🔑 เปลี่ยนรหัสผ่าน</button> <button class="btn sec sm" id="exitAdmin">ออกจากระบบ</button></span></div>
 <nav id="tabs">
   <button data-t="home" class="adm">🏠 หน้าหลัก</button>
-  <button data-t="rec" class="on">📝 บันทึกการลา</button>
-  <button data-g="leave" class="adm">📋 ข้อมูลการลา</button>
-  <button data-g="report" class="adm">📊 สรุป / รายงาน</button>
-  <button data-t="staff" class="adm">👥 เจ้าหน้าที่ / กลุ่มงาน</button>
-  <button data-g="data" class="adm">📥 นำเข้า / ส่งออก</button>
+  <button data-g="leave" class="adm">📋 ใบลา</button>
+  <button data-g="report" class="adm">📊 สรุปวันลา</button>
+  <button data-t="staff" class="adm">👥 เจ้าหน้าที่</button>
+  <button data-g="data" class="adm">📁 ไฟล์ Excel / สำรองข้อมูล</button>
   <button data-g="set" class="adm adminonly">⚙️ ตั้งค่า</button>
   <span id="pendN" hidden></span>
 </nav>
@@ -204,7 +203,7 @@ body.head .adminonly{display:none!important}
    </div></div>
   </div>
   <div>
-   <div class="panel"><h3><span>สรุปการลาในรอบรายงาน</span><span id="pName" style="font-weight:400"></span></h3><div class="bd" id="pCard"></div></div>
+   <div class="panel"><h3><span>สรุปการลาในรอบครึ่งปี</span><span id="pName" style="font-weight:400"></span></h3><div class="bd" id="pCard"></div></div>
    <div class="panel"><h3><span>ประวัติการลา</span><select id="pRange" style="width:auto;max-width:60%;padding:2px 6px"></select></h3><div id="pHistSum" style="padding:8px 12px 0"></div><div class="tw" id="pHist" data-cardify></div></div>
   </div>
  </div>
@@ -226,15 +225,15 @@ body.head .adminonly{display:none!important}
  <p style="margin-top:0"><b>เลือกสิ่งที่ต้องการทำ</b> · <span class="muted" id="addSum"></span></p>
  <div class="grid2">
   <div>
-   <h3 style="margin:0 0 8px;color:var(--pri,#1f4e79)">✏️ เพิ่มทีละรายการ (กรอกในหน้าจอ)</h3>
-   <div class="panel"><h3>📝 เพิ่มใบลาย้อนหลัง ทีละครั้ง</h3><div class="bd"><p class="muted" style="margin-top:0">บันทึกการลาที่เกิดขึ้นก่อนใช้ระบบ เลือกชื่อ ประเภท และวันที่ เพิ่มหลายแถวแล้วกดบันทึกครั้งเดียวได้</p><div class="btns" style="margin:0"><button class="btn" data-go="back">ไปที่หน้าเพิ่มใบลาย้อนหลัง</button></div></div></div>
+   <h3 style="margin:0 0 8px;color:var(--pri,#1f4e79)">✏️ กรอกในหน้าจอ (ทีละรายการ)</h3>
+   <div class="panel"><h3>📝 เพิ่มใบลา (ย้อนหลังได้)</h3><div class="bd"><p class="muted" style="margin-top:0">บันทึกการลาที่เกิดขึ้นก่อนใช้ระบบ เลือกชื่อ ประเภท และวันที่ เพิ่มหลายแถวแล้วกดบันทึกครั้งเดียวได้</p><div class="btns" style="margin:0"><button class="btn" data-go="back">ไปที่หน้าเพิ่มใบลา</button></div></div></div>
    <div class="panel"><h3>👤 เพิ่มเจ้าหน้าที่ ทีละคน</h3><div class="bd"><p class="muted" style="margin-top:0">เพิ่มแถวใหม่ในตารางเจ้าหน้าที่ แล้วกรอกเลข ID ชื่อ ตำแหน่ง กลุ่มงาน ประเภท เลขบัตร และโควต้าวันลา (บันทึกอัตโนมัติ)</p><div class="btns" style="margin:0"><button class="btn" data-go="staff1">เพิ่มเจ้าหน้าที่ 1 คน</button></div></div></div>
    <div class="panel"><h3>🏢 เพิ่มกลุ่มงาน</h3><div class="bd"><p class="muted" style="margin-top:0">เพิ่มกลุ่มงานใหม่ พร้อมผู้บังคับบัญชาชั้นต้น (ผอ.กลุ่ม) และรหัสเข้าระบบของหัวหน้ากลุ่ม</p><div class="btns" style="margin:0"><button class="btn sec" data-go="dept1">เพิ่มกลุ่มงาน</button></div></div></div>
    <div class="panel"><h3>📅 เพิ่มวันหยุดราชการ ทีละวัน</h3><div class="bd"><p class="muted" style="margin-top:0">วันหยุดใช้คำนวณวันทำการในใบลา ไม่ต้องใส่เสาร์–อาทิตย์</p><div class="btns" style="margin:0"><button class="btn sec" data-go="hol1">ไปที่หน้าวันหยุด</button></div></div></div>
    <div class="panel"><h3>🎯 ตั้งโควต้าวันลา</h3><div class="bd"><p class="muted" style="margin-top:0">ตั้งค่าเริ่มต้นตามประเภทเจ้าหน้าที่ แล้วแก้รายคนได้ในตารางเจ้าหน้าที่</p><div class="btns" style="margin:0"><button class="btn sec" data-go="quota">ไปที่ตั้งโควต้าวันลา</button></div></div></div>
   </div>
   <div>
-   <h3 style="margin:0 0 8px;color:var(--pri,#1f4e79)">📤 อัปโหลดทีละเยอะ (ไฟล์ Excel)</h3>
+   <h3 style="margin:0 0 8px;color:var(--pri,#1f4e79)">📤 อัปโหลดไฟล์ Excel (ทีละมาก ๆ)</h3>
    <p class="muted" style="margin-top:0">ทุกแบบทำ 2 ขั้น: <b>1)</b> ดาวน์โหลดตาราง แล้วกรอกใน Excel <b>2)</b> อัปโหลดไฟล์กลับ ระบบจะสรุปให้ตรวจก่อนบันทึก (ไม่ลบข้อมูลเดิม)</p>
    <div class="panel"><h3>📚 อัปโหลดประวัติการลา หลายคน หลายครั้ง</h3><div class="bd"><p class="muted" style="margin-top:0">1 แถว = ใบลา 1 ครั้ง ใส่เลข ID ประเภทการลา วันเริ่ม วันสิ้นสุด ย้อนหลังได้หลายปี · ใบลาที่ซ้ำจะข้ามให้</p><div class="btns" style="margin:0"><button class="btn sec" data-tpl="leave">⬇ 1. ดาวน์โหลดตารางประวัติการลา</button><label class="btn" style="display:inline-block">⬆ 2. อัปโหลดตารางที่กรอกแล้ว<input type="file" data-up="leave" accept=".xlsx,.csv" hidden></label></div></div></div>
    <div class="panel"><h3>👥 อัปโหลดรายชื่อเจ้าหน้าที่ หลายคน</h3><div class="bd"><p class="muted" style="margin-top:0">ตารางมีรายชื่อปัจจุบันใส่ไว้ให้ แก้ไขหรือเพิ่มแถวได้ · เลข ID เดิม = แก้ไขข้อมูล · เลข ID ใหม่ = เพิ่มคน · ใช้กรอกเลขบัตรประชาชน วันพักผ่อนสะสม และโควต้าทีละหลายคน</p><div class="btns" style="margin:0"><button class="btn sec" data-tpl="staff">⬇ 1. ดาวน์โหลดตารางรายชื่อเจ้าหน้าที่</button><label class="btn" style="display:inline-block">⬆ 2. อัปโหลดตารางที่กรอกแล้ว<input type="file" data-up="staff" accept=".xlsx,.csv" hidden></label></div></div></div>
@@ -245,26 +244,26 @@ body.head .adminonly{display:none!important}
 </section>
 <!-- กรอกประวัติลาย้อนหลัง -->
 <section id="back">
- <p class="muted" style="margin-top:0">บันทึกการลาที่เกิดขึ้นก่อนเริ่มใช้ระบบ (ปีงบประมาณใดก็ได้) รายการที่บันทึกจะนับในแบบสรุปและรายงานของปีงบประมาณนั้นทันที</p>
- <div class="panel"><h3><span>กรอกทีละรายการ</span></h3><div class="bd">
-  <div class="filters" style="margin-bottom:8px"><label style="min-width:0">กลุ่มงาน</label><select class="grpF adminonly" title="กรองตามกลุ่มงาน" style="min-width:220px;font-weight:600"></select><label style="min-width:0">บุคลากร</label><select id="bkStaff" style="min-width:260px"></select><label style="min-width:0">ปีงบประมาณ</label><select id="bkFY"></select></div>
+ <p class="muted" style="margin-top:0">กรอกใบลาหลายใบในครั้งเดียว ใช้กับใบลาย้อนหลังได้ทุกปีงบ ใบลาที่บันทึกจะนับในสรุปวันลาของปีงบนั้นทันที</p>
+ <div class="panel"><h3><span>กรอกหลายใบ</span></h3><div class="bd">
+  <div class="filters" style="margin-bottom:8px"><label style="min-width:0">กลุ่มงาน</label><select class="grpF adminonly" title="กรองตามกลุ่มงาน" style="min-width:220px;font-weight:600"></select><label style="min-width:0">เจ้าหน้าที่</label><select id="bkStaff" style="min-width:260px"></select><label style="min-width:0">ปีงบประมาณ</label><select id="bkFY"></select></div>
   <div class="tw" id="bkRows" data-cardify></div>
   <div class="btns"><button class="btn sec" id="bkAdd">+ เพิ่มแถว</button><button class="btn" id="bkSave">💾 บันทึกทั้งหมด</button><button class="btn sec" id="bkClear">ล้างแถว</button></div>
   <div id="bkMsg" class="muted"></div>
  </div></div>
- <details class="panel"><summary style="padding:10px 12px;cursor:pointer;font-weight:600">📋 วางข้อมูลจาก Excel (กรอกหลายคนพร้อมกัน)</summary><div class="bd">
+ <details class="panel"><summary style="padding:10px 12px;cursor:pointer;font-weight:600">📋 คัดลอกจาก Excel มาวาง (หลายคนพร้อมกัน)</summary><div class="bd">
   <p class="muted" style="margin-top:0">คัดลอกจาก Excel แล้ววางได้เลย เรียงคอลัมน์: <b>เลข ID หรือชื่อ · ประเภทการลา · วันเริ่ม · วันสิ้นสุด · ครึ่งวัน (เช้า/บ่าย หรือเว้นว่าง) · เหตุผล</b><br>วันที่ใช้ได้ทั้ง 5/1/2568, 5 ม.ค. 2568 หรือ 2025-01-05 · ข้อมูลจะไปขึ้นในตารางด้านบนให้ตรวจก่อนบันทึก</p>
   <textarea id="bkPaste" rows="6" style="width:100%;font-family:inherit" placeholder="0407&#9;ลาป่วย&#9;5/1/2568&#9;6/1/2568&#9;&#9;ไข้หวัด"></textarea>
-  <div class="btns"><button class="btn sec" id="bkParse">นำเข้าตาราง</button></div>
+  <div class="btns"><button class="btn sec" id="bkParse">ใส่ลงตารางด้านบน</button></div>
  </div></details>
- <div class="panel"><h3><span>รายการลาของปีงบประมาณที่เลือก</span><span id="bkListN" style="font-weight:400"></span></h3><div class="tw" id="bkList" data-cardify></div></div>
+ <div class="panel"><h3><span>ใบลาที่มีอยู่แล้วในปีงบที่เลือก</span><span id="bkListN" style="font-weight:400"></span></h3><div class="tw" id="bkList" data-cardify></div></div>
 </section>
 
 <!-- ทั้งหมด -->
 <section id="all">
  <div class="filters stick">
   <select class="grpF adminonly" title="กรองตามกลุ่มงาน" style="min-width:220px;font-weight:600"></select><select id="aYear" title="ปีงบประมาณ"></select><input id="aStaff" placeholder="🔍 พิมพ์ชื่อค้นหา" style="min-width:200px"><select id="aType"></select><select id="aMonth"></select><select id="aStat" style="display:none"><option value="">— ทุกสถานะ —</option><option value="approved">อนุมัติ</option><option value="pending">รอตรวจสอบ</option><option value="rejected">ไม่อนุมัติ</option></select>
-  <label style="display:flex;gap:5px;align-items:center;min-width:0;white-space:nowrap"><input type="checkbox" id="aRound" style="width:auto" checked> เฉพาะรอบรายงาน</label>
+  <label style="display:flex;gap:5px;align-items:center;min-width:0;white-space:nowrap"><input type="checkbox" id="aRound" style="width:auto" checked> เฉพาะรอบครึ่งปี</label>
   <button class="btn sec" id="aCsv">ดาวน์โหลด Excel (CSV)</button>
  </div>
  <div class="tw" id="aTable" data-cardify></div>
@@ -294,7 +293,7 @@ body.head .adminonly{display:none!important}
 <section id="base">
  <div class="grid2">
   <div>
-   <div class="panel"><h3>ข้อมูลหน่วยงานและรอบรายงาน</h3><div class="bd">
+   <div class="panel"><h3>ข้อมูลหน่วยงานและรอบครึ่งปี</h3><div class="bd">
     <div class="row"><label>ชื่อหน่วยงาน</label><input id="bOrg"></div>
     <div class="row"><label>ผู้ลงนามในรายงาน</label><input id="bAdmin"></div>
     <div class="row"><label>รอบการรายงาน</label><select id="bRound"><option value="1">ครึ่งปีแรก (1 ต.ค. – 31 มี.ค.)</option><option value="2">ครึ่งปีหลัง (1 เม.ย. – 30 ก.ย.)</option></select></div>
@@ -322,7 +321,7 @@ body.head .adminonly{display:none!important}
  </div>
 </section>
 
-<!-- บุคลากร -->
+<!-- เจ้าหน้าที่ -->
 <section id="staff">
  <div class="filters stick"><select id="dCat" style="min-width:260px" title="เลือกกลุ่มงาน"></select><input id="stSearch" placeholder="🔍 ค้นหาชื่อ เลข ID หรือตำแหน่ง" style="min-width:220px"><button class="btn" id="bAdd">+ เพิ่มเจ้าหน้าที่</button><span class="muted" id="dInfo"></span></div>
  <div class="panel adminonly" id="topPanel"><h3><span>ผู้บังคับบัญชาสูงสุด <span style="font-weight:400">(ผู้อนุญาต · ใช้กับทุกกลุ่มงาน)</span></span></h3><div class="bd" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
@@ -338,18 +337,18 @@ body.head .adminonly{display:none!important}
  <p class="muted">ไม่ต้องใส่วันเสาร์–อาทิตย์ ระบบไม่นับให้อยู่แล้ว · วันที่มี * ควรตรวจกับประกาศจริง (วันตรุษตามประกาศจุฬาราชมนตรี และวันหยุดพิเศษตามมติ ครม.)</p>
  <div class="tw" id="hTable" data-cardify></div>
 </section>
-<!-- ส่งออก -->
+<!-- ดาวน์โหลด -->
 <section id="exp">
- <div class="filters stick"><select class="grpF adminonly" title="กรองตามกลุ่มงาน" style="min-width:220px;font-weight:600"></select><b>ช่วงข้อมูลการลา:</b><select id="xScope"><option value="round">รอบรายงานปัจจุบัน</option><option value="fy">ทั้งปีงบประมาณ</option></select><select id="xStat" style="display:none"><option value="approved">เฉพาะที่อนุมัติ</option><option value="">ทุกสถานะ</option></select><span class="muted" id="xInfo"></span></div>
+ <div class="filters stick"><select class="grpF adminonly" title="กรองตามกลุ่มงาน" style="min-width:220px;font-weight:600"></select><b>ช่วงข้อมูลการลา:</b><select id="xScope"><option value="round">รอบครึ่งปีปัจจุบัน</option><option value="fy">ทั้งปีงบประมาณ</option></select><select id="xStat" style="display:none"><option value="approved">เฉพาะที่อนุมัติ</option><option value="">ทุกสถานะ</option></select><span class="muted" id="xInfo"></span></div>
  <div class="grid2">
   <div>
    <div class="panel"><h3>Excel (.xlsx)</h3><div class="bd">
-    <div class="btns" style="margin:0"><button class="btn" data-x="xlsx-all">ส่งออกทั้งหมด (ไฟล์เดียว หลายชีต)</button></div>
-    <p class="muted">ชีต: แบบสรุปวันลา · ข้อมูลการลา · รายเดือน · บุคลากร · วันหยุด</p>
+    <div class="btns" style="margin:0"><button class="btn" data-x="xlsx-all">ดาวน์โหลดทุกรายงาน (ไฟล์เดียว)</button></div>
+    <p class="muted">ชีต: แบบสรุปวันลา · ข้อมูลการลา · รายเดือน · เจ้าหน้าที่ · วันหยุด</p>
     <div class="btns"><button class="btn sec" data-x="xlsx-sum">แบบสรุปวันลา</button><button class="btn sec" data-x="xlsx-leaves">ข้อมูลการลา</button><button class="btn sec" data-x="xlsx-month">รายเดือน</button></div>
    </div></div>
    <details class="panel"><summary style="padding:10px 12px;cursor:pointer;font-weight:600">CSV (ไฟล์แบบอื่น เปิดได้ทุกโปรแกรม)</summary><div class="bd"><div class="btns" style="margin:0">
-    <button class="btn sec" data-x="csv-sum">แบบสรุปวันลา</button><button class="btn sec" data-x="csv-leaves">ข้อมูลการลา</button><button class="btn sec" data-x="csv-month">รายเดือน</button><button class="btn sec" data-x="csv-staff">บุคลากร</button><button class="btn sec" data-x="csv-hol">วันหยุด</button>
+    <button class="btn sec" data-x="csv-sum">แบบสรุปวันลา</button><button class="btn sec" data-x="csv-leaves">ข้อมูลการลา</button><button class="btn sec" data-x="csv-month">รายเดือน</button><button class="btn sec" data-x="csv-staff">เจ้าหน้าที่</button><button class="btn sec" data-x="csv-hol">วันหยุด</button>
    </div></div></details>
    <div class="panel"><h3>รายงานสำหรับพิมพ์ / บันทึกเป็น PDF</h3><div class="bd">
     <div class="btns" style="margin:0"><button class="btn sec" data-x="html-sum">แบบสรุปวันลา</button><button class="btn sec" data-x="html-month">รายงานรายเดือน</button><button class="btn sec" data-x="html-ind">รายบุคคล (ทุกคน)</button></div>
@@ -491,7 +490,7 @@ const HEADS_SRC='ทำเนียบหัวหน้าส่วนราช
 const HEADS={};
 function importHeads(force){let n=0;S.depts.forEach(d=>{const h=HEADS[d.name];if(!h)return;if(force||!d.headName||d.headSrc){if(d.headName!==h[0]||d.headPos!==h[1]){d.headName=h[0];d.headPos=h[1];n++}d.headSrc=HEADS_SRC}if(!d.code&&h[2]&&!S.depts.some(x=>x!==d&&x.code===h[2]))d.code=h[2]});
   S.settings.headsImport=HEADS_SRC;saveDepts();saveSet();return n}
-const DIR_SRC='รายชื่อบุคลากรสำนักงานจังหวัดยะลา ข้อมูล ณ 15 ก.ย. 2569';
+const DIR_SRC='รายชื่อเจ้าหน้าที่สำนักงานจังหวัดยะลา ข้อมูล ณ 15 ก.ย. 2569';
 const DATA_V='pao-2569-09-15';
 // [หมวด, กระทรวง/กรม, หน่วยงาน, ชื่อหัวหน้า, ตำแหน่งหัวหน้า, รหัสเข้าระบบ] — เฉพาะหน่วยงานระดับจังหวัด
 const DIR=[["สำนักงานจังหวัดยะลา", "สำนักงานจังหวัดยะลา", "สำนักงานจังหวัดยะลา (หัวหน้าสำนักงาน)", "นายเกียรติศักดิ์ มณีรัตน์", "หัวหน้าสำนักงานจังหวัดยะลา", "0100", "นายเกียรติศักดิ์ มณีรัตน์", "หัวหน้าสำนักงานจังหวัดยะลา"], ["สำนักงานจังหวัดยะลา", "สำนักงานจังหวัดยะลา", "กลุ่มงานศูนย์ดำรงธรรมจังหวัด", "นายเกียรติศักดิ์ มณีรัตน์", "หัวหน้าสำนักงานจังหวัดยะลา", "0200", "นายภูริวัจน์ นิธินันท์พิบูล", "ผู้อำนวยการกลุ่มงานศูนย์ดำรงธรรมจังหวัด"], ["สำนักงานจังหวัดยะลา", "สำนักงานจังหวัดยะลา", "กลุ่มงานยุทธศาสตร์และข้อมูลเพื่อการพัฒนาจังหวัด", "นายเกียรติศักดิ์ มณีรัตน์", "หัวหน้าสำนักงานจังหวัดยะลา", "0300", "นายศุภวัฒน์ พันธุ์พณาสกุล", "ผู้อำนวยการกลุ่มงานยุทธศาสตร์และข้อมูลฯ"], ["สำนักงานจังหวัดยะลา", "สำนักงานจังหวัดยะลา", "กลุ่มงานอำนวยการ", "นายเกียรติศักดิ์ มณีรัตน์", "หัวหน้าสำนักงานจังหวัดยะลา", "0400", "นางสาวจารุณี ทองใส", "ผู้อำนวยการกลุ่มงานอำนวยการ"], ["สำนักงานจังหวัดยะลา", "สำนักงานจังหวัดยะลา", "หน่วยตรวจสอบภายในจังหวัดยะลา", "นายเกียรติศักดิ์ มณีรัตน์", "หัวหน้าสำนักงานจังหวัดยะลา", "0500", "นางปฏิมา ทวีสุวรรณ", "หัวหน้าหน่วยตรวจสอบภายในจังหวัด"], ["สำนักงานจังหวัดยะลา", "สำนักงานจังหวัดยะลา", "กลุ่มงานบริหารทรัพยากรบุคคล", "นายเกียรติศักดิ์ มณีรัตน์", "หัวหน้าสำนักงานจังหวัดยะลา", "0600", "นางสาวภัทรนิษฐ์ คงอินทร์", "ผู้อำนวยการกลุ่มงานบริหารทรัพยากรบุคคล"], ["กลุ่มจังหวัดภาคใต้ชายแดน", "กลุ่มจังหวัดภาคใต้ชายแดน", "กลุ่มงานบริหารยุทธศาสตร์กลุ่มจังหวัดภาคใต้ชายแดน (OSM)", "นายเกียรติศักดิ์ มณีรัตน์", "หัวหน้าสำนักงานจังหวัดยะลา", "0700", "นายชัชชัยย์ อัลอิสฮักก์", "ผอ.กลุ่มงานบริหารยุทธศาตร์กลุ่มจังหวัดภาคใต้ชายแดน"]];
@@ -571,7 +570,7 @@ async function boot(){
   catch(e){if(store.cloud){store.cloud=false;toast('เชื่อมต่อฐานข้อมูลออนไลน์ไม่ได้ ใช้ข้อมูลในเครื่องนี้แทน',true);try{await loadCfg()}catch(_){}}}
   $('#mode').textContent=store.cloud?'☁ ออนไลน์':'💾 เก็บในเครื่องนี้';
   if(!store.cloud&&db)toast('โหมดทดลองใช้: ข้อมูลจะเก็บในเครื่องของคุณเท่านั้น');
-  $('#bModeNote').textContent=store.cloud?'ข้อมูลเก็บออนไลน์ในหน้านี้ ผู้กรอกที่เปิดหน้านี้จะส่งใบลาเข้ามาที่เดียวกัน ควรดาวน์โหลดไฟล์สำรองไว้เป็นระยะ':'ข้อมูลเก็บในเบราว์เซอร์ของเครื่องนี้เท่านั้น หากล้างประวัติเบราว์เซอร์ข้อมูลจะหาย ควรดาวน์โหลดไฟล์สำรองไว้เป็นระยะ';
+  $('#bModeNote').textContent=store.cloud?'ข้อมูลเก็บออนไลน์ในหน้านี้ ผู้ยื่นใบลาที่เปิดหน้านี้จะส่งใบลาเข้ามาที่เดียวกัน ควรดาวน์โหลดไฟล์สำรองไว้เป็นระยะ':'ข้อมูลเก็บในเบราว์เซอร์ของเครื่องนี้เท่านั้น หากล้างประวัติเบราว์เซอร์ข้อมูลจะหาย ควรดาวน์โหลดไฟล์สำรองไว้เป็นระยะ';
   subLeaves();
   await initFileDB();
   if((!store.cloud||store.owner)&&S.settings.dataV!==DATA_V)await resetToDirectory();
@@ -724,12 +723,12 @@ function printHTML(html){$('#printArea').innerHTML=html.replace(/^[\s\S]*?<body>
 
 /* ---------- tabs ---------- */
 const ACC={home:'mgr',rec:'all',all:'mgr',back:'admin',pend:'mgr',sum:'mgr',rep:'mgr',staff:'mgr',add:'admin',exp:'mgr',base:'admin',hol:'admin',form:'admin'};
-const GROUPS={leave:[['all','📋 ข้อมูลการลาทั้งหมด'],['back','➕ เพิ่มใบลาย้อนหลัง']],report:[['sum','แบบสรุปวันลา'],['rep','รายงาน / กราฟ / รายบุคคล']],data:[['add','📤 เพิ่ม / อัปโหลดข้อมูล'],['exp','⬇ ดาวน์โหลดรายงาน / สำรองข้อมูล']],set:[['base','ข้อมูลพื้นฐาน / รหัสผ่าน'],['hol','วันหยุดราชการ'],['form','แบบฟอร์มใบลา']]};
+const GROUPS={leave:[['all','📋 ใบลาทั้งหมด (ค้นหา/แก้ไข/พิมพ์)'],['rec','➕ เพิ่มใบลา 1 ใบ'],['back','➕ เพิ่มใบลาหลายใบ']],report:[['sum','ตารางสรุปรายคน'],['rep','กราฟ / รายเดือน / รายคน']],data:[['add','⬆ อัปโหลดไฟล์ Excel'],['exp','⬇ ดาวน์โหลดรายงาน / สำรองข้อมูล']],set:[['base','ปีงบ / เกณฑ์ / รหัสผ่าน'],['hol','วันหยุดราชการ'],['form','หน้าตาใบลา']]};
 const canTab=t=>{const a=ACC[t]||'mgr';return a==='all'||(a==='mgr'&&isMgr())||(a==='admin'&&role==='admin')};
 const grpOf=t=>Object.keys(GROUPS).find(g=>GROUPS[g].some(x=>x[0]===t));
 let curT='rec';const lastInG={};
 function showTab(t){if(t==='pend')t='all';if(!canTab(t))t=isMgr()?(canTab('home')?'home':'all'):'rec';curT=t;
-  const g=grpOf(t);if(g)lastInG[g]=t;
+  const g=grpOf(t);if(g&&isMgr())lastInG[g]=t;
   document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x.dataset.t===t||(!!g&&x.dataset.g===g)));
   const sub=g?GROUPS[g].filter(x=>canTab(x[0])):[];const sn=$('#subnav');sn.className=sub.length>1?'show':'';sn.innerHTML=sub.length>1?sub.map(([k,l])=>`<button data-t="${k}" class="${k===t?'on':''}">${l}</button>`).join(''):'';
   document.querySelectorAll('main section').forEach(s=>s.classList.toggle('on',s.id===t));renderTab(t);if(typeof setNavH==='function')setNavH()}
@@ -750,7 +749,7 @@ function renderPend(){
 }
 function linkStaff(info){
   let st=staffByName(info.nm);
-  if(!st){st={id:uid(),name:norm(info.nm),pos:info.pos||'',dept:info.dept||'',tel:info.tel||'',etype:'ข้าราชการ',...qDefOf('ข้าราชการ'),qCarry:0,...(info.demo?{demo:1}:{})};S.staff.push(st);saveStaff();toast('เพิ่ม '+st.name+' เข้ารายชื่อบุคลากรแล้ว')}
+  if(!st){st={id:uid(),name:norm(info.nm),pos:info.pos||'',dept:info.dept||'',tel:info.tel||'',etype:'ข้าราชการ',...qDefOf('ข้าราชการ'),qCarry:0,...(info.demo?{demo:1}:{})};S.staff.push(st);saveStaff();toast('เพิ่ม '+st.name+' เข้ารายชื่อเจ้าหน้าที่แล้ว')}
   else{let ch=0;['pos','dept','tel'].forEach(f=>{if(!st[f]&&info[f]){st[f]=info[f];ch=1}});if(ch)saveStaff()}
   return st;
 }
@@ -781,7 +780,7 @@ $('#fContact').addEventListener('input',()=>contactAuto=false);
 $('#fSub').addEventListener('focus',()=>{const me=formVals().st,L=me?subPool(me):[];$('#subList').innerHTML=L.map(x=>`<option value="${esc(x.name)}">${esc(x.pos||'')}</option>`).join('')});
 attachSug($('#fName'),$('#fSug'),st=>{if(editId)clearForm(true);fillFromStaff(st);renderPerson();updForm()});
 function renderRec(){
-  $('#formTitle').textContent=editId?'แก้ไขรายการการลา':(isMgr()?'บันทึกการลา (ผู้ดูแล)':'ยื่นใบลา');
+  $('#formTitle').textContent=editId?'แก้ไขรายการการลา':(isMgr()?'เพิ่มใบลา 1 ใบ':'ยื่นใบลา');
   $('#bSave').textContent=editId?'บันทึกการแก้ไข':(isMgr()?'บันทึก':'ส่งใบลา');
   const byCid=$('#whoCid')&&$('#whoCid').checked;$('#fName').placeholder=isMgr()?'🔍 พิมพ์ชื่อ เลข ID หรือเลขบัตรประชาชน':byCid?'เลขบัตรประชาชน 13 หลัก':'ใส่เลข ID ของคุณ';
   $('#lWho').textContent=isMgr()?'ค้นหาผู้ขอลา':byCid?'เลขบัตรประชาชน':'เลข ID ผู้ขอลา';$('#whoPick').style.display=isMgr()?'none':'';$('#fName').inputMode=isMgr()?'text':'numeric';
@@ -794,7 +793,7 @@ function formVals(){
 }
 function renderWho(v){
   const b=$('#fInfo');if(!v.q){b.innerHTML='';return}
-  if(!v.st){b.innerHTML=`<div class="who no">✗ ไม่พบ${isMgr()?'ชื่อหรือ':''}เลข ID “${esc(v.q)}” ในฐานข้อมูล${isMgr()?' — เพิ่มได้ที่แท็บบุคลากร':' — โปรดติดต่อผู้ดูแลข้อมูล'}</div>`;return}
+  if(!v.st){b.innerHTML=`<div class="who no">✗ ไม่พบ${isMgr()?'ชื่อหรือ':''}เลข ID “${esc(v.q)}” ในฐานข้อมูล${isMgr()?' — เพิ่มได้ที่แท็บเจ้าหน้าที่':' — โปรดติดต่อผู้ดูแลระบบ'}</div>`;return}
   const s=v.st;b.innerHTML=`<div class="who"><b>✓ ${esc(s.name)}</b>${s.code?` <span class="muted">(ID ${esc(s.code)})</span>`:''}<br>ตำแหน่ง ${esc(s.pos||'-')}${s.dept?` · ${esc(s.dept)}`:''}${s.tel?` · โทร ${esc(s.tel)}`:''}${(()=>{const p=supOf(s);const h=topOf(s);return (p.name?`<br>ผู้บังคับบัญชาชั้นต้น: ${esc(p.name)}${p.pos?` (${esc(p.pos)})`:''}`:'')+(h?`<br>ผู้บังคับบัญชาสูงสุด: ${esc(h.name||'-')}${h.pos?` (${esc(h.pos)})`:''}`:'')})()}</div>`;
 }
 function checkForm(){
@@ -809,14 +808,14 @@ function checkForm(){
   else if(v.start&&!t.late&&!t.cal&&days===0){msgs.push(['err','ช่วงวันที่เลือกเป็นวันหยุดทั้งหมด']);ok=false}
   if(v.type==='ลาพักผ่อน'){const s2=v.sub&&staffByName(v.sub);
     if(!v.sub){msgs.push(['err','ลาพักผ่อนต้องระบุผู้ปฏิบัติหน้าที่แทน']);ok=false}
-    else if(!s2){msgs.push(['err','เลือกผู้ปฏิบัติหน้าที่แทนจากรายชื่อบุคลากร']);ok=false}
+    else if(!s2){msgs.push(['err','เลือกผู้ปฏิบัติหน้าที่แทนจากรายชื่อเจ้าหน้าที่']);ok=false}
     else if(v.st&&s2.id===v.st.id){msgs.push(['err','ผู้ปฏิบัติหน้าที่แทนต้องไม่ใช่ตัวผู้ขอลาเอง']);ok=false}
     else if(v.st&&!lvlOK(v.st.etype,s2.etype)){msgs.push(['err',`${v.st.etype}ต้องมอบหมายให้${subRule(v.st.etype)}เท่านั้น (${s2.name} เป็น${s2.etype||'-'})`]);ok=false}
     else if(v.st&&!subOK(v.st,s2)){msgs.push(['err',`ผู้ปฏิบัติหน้าที่แทนต้องอยู่ใน${v.st.dept||'กลุ่มงานเดียวกัน'}เท่านั้น`]);ok=false}}
   if(ok){
     const [a,b]=curPeriod(),fy=fyOf(v.start),e=v.end||v.start;
     if(fy!==curFY())msgs.push(['warn',`วันที่นี้อยู่ในปีงบประมาณ ${fy} ไม่ใช่ปีงบ ${curFY()} ที่ตั้งไว้`]);
-    else if(v.start<a||v.start>b)msgs.push(['warn','วันที่นี้ไม่อยู่ในรอบรายงานปัจจุบัน']);
+    else if(v.start<a||v.start>b)msgs.push(['warn','วันที่นี้ไม่อยู่ในรอบครึ่งปีปัจจุบัน']);
     if(!t.late){const ov=LV.find(l=>active(l)&&keyOf(l)===v.key&&l.id!==editId&&!T[l.type]?.late&&l.start<=e&&(l.end||l.start)>=v.start&&!(l.half&&v.half&&l.half!==v.half));
       if(ov){msgs.push(['err',`ซ้ำกับ ${ov.type} ${thD(ov.start)}${ov.end&&ov.end!==ov.start?' – '+thD(ov.end):''} (${STX[ov.status]})`]);ok=false}}
     if(fy===curFY()&&v.start>=a&&v.start<=b){
@@ -884,10 +883,10 @@ function renderPerson(){
   $('#pName').textContent=v.nm;
   if(!v.st){$('#pCard').innerHTML=`<div class="empty">${isMgr()?'พิมพ์ชื่อหรือเลข ID เพื่อดูข้อมูลการลา':'ใส่เลข ID เพื่อดูข้อมูลและประวัติการลาของคุณ'}</div>`;$('#pHist').innerHTML='';return}
   const mineAll=fyAll().filter(l=>keyOf(l)===v.key);
-  if(!v.st&&!mineAll.length){$('#pCard').innerHTML=`<div class="empty">${isMgr()?'ไม่พบชื่อนี้ในรายชื่อบุคลากร':'ยังไม่มีประวัติการลาในปีงบประมาณนี้'}</div>`;$('#pHist').innerHTML='';return}
+  if(!v.st&&!mineAll.length){$('#pCard').innerHTML=`<div class="empty">${isMgr()?'ไม่พบชื่อนี้ในรายชื่อเจ้าหน้าที่':'ยังไม่มีประวัติการลาในปีงบประมาณนี้'}</div>`;$('#pHist').innerHTML='';return}
   const s=stats(v.key,roundLeaves()),q=v.st?(+v.st.vac||0):10,vu=vacUsed(v.key);
   const pend=mineAll.filter(l=>l.status==='pending'&&inRound(l)).length;
-  $('#pCard').innerHTML=`<div class="chips">${TYPES.map(t=>`<span class="chip">${t.s}: <b>${s.o[t.n].c}</b> ครั้ง${t.late?'':` / <b>${fmt(s.o[t.n].d)}</b> วัน`}</span>`).join('')}</div>
+  $('#pCard').innerHTML=`<div class="chips">${(TYPES.filter(t=>s.o[t.n].c).length?TYPES.filter(t=>s.o[t.n].c):[]).map(t=>`<span class="chip">${t.s}: <b>${s.o[t.n].c}</b> ครั้ง${t.late?'':` / <b>${fmt(s.o[t.n].d)}</b> วัน`}</span>`).join('')}</div>
    <div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:8px;align-items:center">
    <span>รวมวันลา <b>${fmt(s.total)}</b> วัน</span>·<span>ป่วย+กิจ ${s.qc}/${S.settings.maxTimes} ครั้ง ${fmt(s.qd)}/${S.settings.maxDays} วัน</span>·<span>มาสาย ${s.late}/${S.settings.maxLate}</span>
    ${s.over.length?`<span class="st bad">เกินเกณฑ์</span>`:`<span class="st ok">อยู่ในเกณฑ์</span>`}</div>
@@ -898,7 +897,7 @@ function renderPerson(){
 let histSeq=0,histKey='';
 async function renderHist(v,mineAll){
   const sel=$('#pRange'),yrs=yearsList(),key=v.key+'|'+yrs.join(',');
-  if(histKey!==key||!sel.options.length){const cur=sel.value||'round';sel.innerHTML=opt('round','รอบรายงานปัจจุบัน')+yrs.map(y=>opt('fy:'+y,'ปีงบประมาณ '+y)).join('')+opt('all','ทั้งหมดทุกปี');sel.value=[...sel.options].some(o=>o.value===cur)?cur:'round';histKey=key}
+  if(histKey!==key||!sel.options.length){const cur=sel.value||'round';sel.innerHTML=opt('round','รอบครึ่งปีปัจจุบัน')+yrs.map(y=>opt('fy:'+y,'ปีงบประมาณ '+y)).join('')+opt('all','ทั้งหมดทุกปี');sel.value=[...sel.options].some(o=>o.value===cur)?cur:'round';histKey=key}
   const r=sel.value,seq=++histSeq;let L;
   if(r==='round')L=mineAll.filter(inRound);
   else{$('#pHist').innerHTML='<div class="empty">กำลังโหลด…</div>';const fys=r==='all'?yrs:[+r.slice(3)];L=[];for(const y of fys)L=L.concat((await leavesOfFY(y)).filter(l=>keyOf(l)===v.key));if(seq!==histSeq)return}
@@ -906,8 +905,8 @@ async function renderHist(v,mineAll){
   const ap=L.filter(l=>l.status==='approved'),tot={};ap.forEach(l=>{tot[l.type]=tot[l.type]||{c:0,d:0};tot[l.type].c++;tot[l.type].d+=+l.days||0});
   $('#pHistSum').innerHTML=L.length?`<div class="chips">${Object.entries(tot).map(([t,x])=>`<span class="chip">${esc(T[t]?T[t].s:t)}: <b>${x.c}</b> ครั้ง${T[t]?.late?'':` / <b>${fmt(x.d)}</b> วัน`}</span>`).join('')||'<span class="muted">ยังไม่มีรายการ</span>'}</div><div class="muted" style="margin:4px 0">${L.length} รายการ</div>`:'';
   const cnt={};
-  $('#pHist').innerHTML=L.length?`<table><thead><tr><th>ปีงบ/รอบ</th><th>ครั้ง</th><th>ลา</th><th>ตั้งแต่</th><th>ถึง</th><th>รวม</th><th>สถานะ</th><th></th></tr></thead><tbody>${L.map(l=>{const ok=l.status==='approved',k=l.fy+'|'+halfOf(l)+'|'+l.type;if(ok)cnt[k]=(cnt[k]||0)+1;const can=isMgr()||l.status==='pending';
-    return`<tr class="${l.id===editId?'edit':''}"><td class="c" style="white-space:nowrap">${roundName(l)}</td><td class="c">${ok?cnt[k]:'-'}</td><td>${esc(l.type)}${l.half?` <span class="muted">(${esc(l.half)})</span>`:''}${l.note?`<div class="muted">${esc(l.note)}</div>`:''}${l.reason?`<div class="muted" style="color:var(--red)">เหตุผล: ${esc(l.reason)}</div>`:''}</td><td class="c">${thD(l.start)}</td><td class="c">${T[l.type]?.late?'-':thD(l.end)}</td><td class="c">${fmt(l.days)}</td><td class="c">${sx(l.status)}</td><td class="c" style="white-space:nowrap">${pdfBtn(l)} ${can?`<button class="btn sec sm" data-edit="${l.id}">แก้ไข</button>`:''}${!isMgr()&&l.status==='pending'?` <button class="btn red sm" data-del="${l.id}">ลบ</button>`:''}</td></tr>`}).join('')}</tbody></table>`:`<div class="empty">ไม่มีประวัติการลาในช่วงนี้</div>`;
+  $('#pHist').innerHTML=L.length?`<table><thead><tr><th>ปีงบ/รอบ</th><th>ครั้ง</th><th>ลา</th><th>ตั้งแต่</th><th>ถึง</th><th>รวม</th><th></th></tr></thead><tbody>${L.map(l=>{const ok=l.status==='approved',k=l.fy+'|'+halfOf(l)+'|'+l.type;if(ok)cnt[k]=(cnt[k]||0)+1;const can=isMgr()||l.status==='pending';
+    return`<tr class="${l.id===editId?'edit':''}"><td class="c" style="white-space:nowrap">${roundName(l)}</td><td class="c">${ok?cnt[k]:'-'}</td><td>${esc(l.type)}${l.half?` <span class="muted">(${esc(l.half)})</span>`:''}${l.note?`<div class="muted">${esc(l.note)}</div>`:''}${l.reason?`<div class="muted" style="color:var(--red)">เหตุผล: ${esc(l.reason)}</div>`:''}</td><td class="c">${thD(l.start)}</td><td class="c">${T[l.type]?.late?'-':thD(l.end)}</td><td class="c">${fmt(l.days)}</td><td class="c" style="white-space:nowrap">${pdfBtn(l)} ${can?`<button class="btn sec sm" data-edit="${l.id}">แก้ไข</button>`:''}${!isMgr()&&l.status==='pending'?` <button class="btn red sm" data-del="${l.id}">ลบ</button>`:''}</td></tr>`}).join('')}</tbody></table>`:`<div class="empty">ไม่มีประวัติการลาในช่วงนี้</div>`;
 }
 $('#pRange').addEventListener('change',()=>renderPerson());
 
@@ -928,7 +927,7 @@ async function renderAllList(){
   const seq=++allSeq,L=await filtered();if(seq!==allSeq)return;
   if(!L.length){$('#aTable').innerHTML='<div class="empty">ไม่มีรายการ</div>';return}
   let td=0;
-  $('#aTable').innerHTML=`<table><thead><tr><th>ที่</th><th>ปีงบ/รอบ</th><th>ชื่อ-สกุล</th><th>ตำแหน่ง</th><th>ประเภท</th><th>ตั้งแต่</th><th>ถึง</th><th>รวม</th><th>สถานะ</th><th>หมายเหตุ</th><th></th></tr></thead><tbody>${L.map((l,i)=>{if(isLeave(l)&&l.status==='approved')td+=+l.days||0;return`<tr><td class="c">${i+1}</td><td class="c" style="white-space:nowrap">${roundName(l)}</td><td>${esc(staffName(l))}</td><td>${esc(posOf(l))}</td><td>${esc(l.type)}${l.half?` (${esc(l.half)})`:''}</td><td class="c">${thD(l.start)}</td><td class="c">${T[l.type]?.late?'-':thD(l.end)}</td><td class="c">${fmt(l.days)} ${T[l.type]?.late?'ครั้ง':'วัน'}</td><td class="c">${sx(l.status)}</td><td>${esc(l.note)}${l.reason?` <span style="color:var(--red)">(${esc(l.reason)})</span>`:''}</td><td class="c" style="white-space:nowrap">${l.status==='pending'?`<button class="btn sm" data-ok="${l.id}">อนุมัติ</button> `:''}${pdfBtn(l)} <button class="btn sec sm" data-edit="${l.id}">แก้ไข</button> <button class="btn red sm" data-del="${l.id}">ลบ</button></td></tr>`}).join('')}</tbody><tfoot><tr><td colspan="7" class="n">รวม ${L.length} รายการ · วันลา (ไม่รวมมาสาย/ขาด)</td><td class="c">${fmt(td)}</td><td colspan="3"></td></tr></tfoot></table>`;
+  $('#aTable').innerHTML=`<table><thead><tr><th>ที่</th><th>ปีงบ/รอบ</th><th>ชื่อ-สกุล</th><th>ตำแหน่ง</th><th>ประเภท</th><th>ตั้งแต่</th><th>ถึง</th><th>รวม</th><th>หมายเหตุ</th><th></th></tr></thead><tbody>${L.map((l,i)=>{if(isLeave(l)&&l.status==='approved')td+=+l.days||0;return`<tr><td class="c">${i+1}</td><td class="c" style="white-space:nowrap">${roundName(l)}</td><td>${esc(staffName(l))}</td><td>${esc(posOf(l))}</td><td>${esc(l.type)}${l.half?` (${esc(l.half)})`:''}</td><td class="c">${thD(l.start)}</td><td class="c">${T[l.type]?.late?'-':thD(l.end)}</td><td class="c">${fmt(l.days)} ${T[l.type]?.late?'ครั้ง':'วัน'}</td><td>${esc(l.note)}${l.reason?` <span style="color:var(--red)">(${esc(l.reason)})</span>`:''}</td><td class="c" style="white-space:nowrap">${l.status==='pending'?`<button class="btn sm" data-ok="${l.id}">อนุมัติ</button> `:''}${pdfBtn(l)} <button class="btn sec sm" data-edit="${l.id}">แก้ไข</button> <button class="btn red sm" data-del="${l.id}">ลบ</button></td></tr>`}).join('')}</tbody><tfoot><tr><td colspan="7" class="n">รวม ${L.length} รายการ · วันลา (ไม่รวมมาสาย/ขาด)</td><td class="c">${fmt(td)}</td><td colspan="3"></td></tr></tfoot></table>`;
 }
 ['aYear','aType','aMonth','aRound','aStat'].forEach(i=>$('#'+i).addEventListener('change',renderAllList));$('#aStaff').addEventListener('input',renderAllList);$('#pSearch').addEventListener('input',renderPend);$('#sSearch').addEventListener('input',renderSum);
 $('#aCsv').onclick=async()=>{const L=await filtered();saveFile(`ข้อมูลการลา_${S.settings.year}.csv`,toCSV([['ที่','ชื่อ-สกุล','ตำแหน่ง','ประเภท','ครึ่งวัน','ตั้งแต่','ถึง','รวม','หน่วย','สถานะ','หมายเหตุ'],...L.map((l,i)=>{return[i+1,staffName(l),posOf(l),l.type,l.half||'',thD(l.start),thD(l.end),l.days,T[l.type]?.late?'ครั้ง':'วัน',STX[l.status],l.note||'']})]),'text/csv')};
@@ -947,7 +946,7 @@ function renderSum(){
   const st=S.settings,[a,b]=curPeriod();
   $('#sTitle').textContent='แบบสรุปวันลา '+(gDept()?gDept().name+' ':'')+(st.org||'');
   $('#sSub').textContent=`รอบ${+st.round===1?'ครึ่งปีแรก':'ครึ่งปีหลัง'} ปีงบประมาณ ${st.year} (${thDL(a)} – ${thDL(b)})`;
-  $('#sTable').innerHTML=S.staff.length?sumTable(false):'<div class="empty">ยังไม่มีรายชื่อบุคลากร</div>';
+  $('#sTable').innerHTML=S.staff.length?sumTable(false):'<div class="empty">ยังไม่มีรายชื่อเจ้าหน้าที่</div>';
   const bad=sumRows().filter(x=>x.r.over.length),p=fyAll().filter(l=>l.status==='pending'&&inRound(l)).length;
   $('#sNote').innerHTML=`เกณฑ์: ลาป่วย+ลากิจ ไม่เกิน ${st.maxTimes} ครั้ง / ${st.maxDays} วัน, มาสายไม่เกิน ${st.maxLate} ครั้ง ต่อรอบ`+(bad.length?`<br><b style="color:var(--red)">เกินเกณฑ์ ${bad.length} คน:</b> ${bad.map(x=>esc(x.s.name)+' ('+esc(x.r.over.join(', '))+')').join('; ')}`:'');
 }
@@ -972,7 +971,7 @@ function indTable(id){
 function renderRep(){
   const L=roundLeaves().filter(inScope),R=sumRows();
   const totalDays=L.filter(isLeave).reduce((a,l)=>a+(+l.days||0),0);
-  $('#rCards').innerHTML=[['บุคลากรทั้งหมด',visStaff().length+' คน'],['การลาในรอบ',L.filter(isLeave).length+' ครั้ง'],['รวมวันลา',fmt(totalDays)+' วัน'],['มาสาย',L.filter(l=>T[l.type]?.late).length+' ครั้ง'],['ผู้ที่เกินเกณฑ์',R.filter(x=>x.r.over.length).length+' คน']].map(([l,v])=>`<div class="card"><div class="l">${l}</div><div class="big">${v}</div></div>`).join('');
+  $('#rCards').innerHTML=[['เจ้าหน้าที่ทั้งหมด',visStaff().length+' คน'],['การลาในรอบ',L.filter(isLeave).length+' ครั้ง'],['รวมวันลา',fmt(totalDays)+' วัน'],['มาสาย',L.filter(l=>T[l.type]?.late).length+' ครั้ง'],['ผู้ที่เกินเกณฑ์',R.filter(x=>x.r.over.length).length+' คน']].map(([l,v])=>`<div class="card"><div class="l">${l}</div><div class="big">${v}</div></div>`).join('');
   const bars=TYPES.filter(t=>!t.late).map(t=>({t,d:L.filter(l=>l.type===t.n).reduce((a,l)=>a+(+l.days||0),0)})),mx=Math.max(1,...bars.map(b=>b.d));
   $('#rBars').innerHTML=bars.map(b=>`<div class="bar"><span>${b.t.s}</span><span class="t"><i style="width:${b.d/mx*100}%;background:${b.t.c}"></i></span><span class="n">${fmt(b.d)} วัน</span></div>`).join('');
   $('#rMonth').innerHTML=monthTable();
@@ -992,7 +991,7 @@ function renderBase(){
   const st=S.settings,[a,b]=curPeriod();
   $('#bOrg').value=st.org||'';$('#bAdmin').value=st.admin||'';$('#bRound').value=st.round;$('#bYear').value=st.year;
   $('#bPeriod').value=`${thDL(a)} – ${thDL(b)}`;$('#bMaxT').value=st.maxTimes;$('#bMaxD').value=st.maxDays;$('#bMaxL').value=st.maxLate;
-  $('#demoNote').textContent=hasDemo()?'ตอนนี้มีใบลาตัวอย่างของกลุ่มงานบริหารทรัพยากรบุคคล (ใช้บุคลากรจริง 6 คน) กด “ลบข้อมูลตัวอย่าง” ก่อนเริ่มใช้งานจริง':'ใส่ใบลาตัวอย่าง 22 รายการ ให้บุคลากรกลุ่มงานบริหารทรัพยากรบุคคล (ปีงบ 2569 และ 2570) เพื่อทดสอบ';
+  $('#demoNote').textContent=hasDemo()?'ตอนนี้มีใบลาตัวอย่างของกลุ่มงานบริหารทรัพยากรบุคคล (ใช้เจ้าหน้าที่จริง 6 คน) กด “ลบข้อมูลตัวอย่าง” ก่อนเริ่มใช้งานจริง':'ใส่ใบลาตัวอย่าง 22 รายการ ให้เจ้าหน้าที่กลุ่มงานบริหารทรัพยากรบุคคล (ปีงบ 2569 และ 2570) เพื่อทดสอบ';
   $('#bPinNote').textContent=st.adminHash?'เปลี่ยนรหัสผ่านผู้ดูแลระบบจากค่าเริ่มต้นแล้ว':'ยังใช้รหัสผ่านเริ่มต้น ควรเปลี่ยนก่อนใช้งานจริง';0&&(st.pinHash?'ตั้งรหัสไว้แล้ว ผู้กรอกต้องใส่รหัสนี้จึงจะเข้าส่วนผู้ดูแลได้':'ยังไม่ได้ตั้งรหัส — ใครก็เข้าส่วนผู้ดูแลได้ ควรตั้งรหัสก่อนให้ผู้อื่นใช้');
 
 }
@@ -1045,7 +1044,7 @@ $('#stSearch').addEventListener('input',()=>renderStaff());$('#dCat').addEventLi
   S.depts.forEach(d=>{d.headName=n;d.headPos=p;delete d.headSrc});clearTimeout(deptTimer);deptTimer=setTimeout(()=>{saveDepts();$('#topNote').textContent='บันทึกแล้ว'},600)}));
 async function hImportClick(){if(!await ask(`อัปเดตกลุ่มงานและผู้บังคับบัญชาจาก${DIR_SRC}?<br><span class="muted">ชื่อหัวหน้าที่คุณพิมพ์แก้เองจะไม่ถูกแทนที่</span>`))return;const r=importDirectory();renderStaff();toast(`เพิ่ม ${r.add} · อัปเดต ${r.upd} กลุ่มงาน`)}
 $('#grpPanel').addEventListener('click',async e=>{if(e.target.id==='hImport')return hImportClick();if(e.target.id==='dAdd')return dAddClick();const sel=e.target.dataset.dsel;if(sel){GF=sel;renderStaff();$('#grpPanel').scrollIntoView({behavior:'smooth'});return}const rs=e.target.dataset.dreset;if(rs){const d=S.depts.find(x=>x.id===rs);if(d&&await ask(`รีเซ็ตรหัสผ่านของ ${esc(d.name)} กลับเป็นรหัสเข้าระบบ (${esc(d.code)})?`)){delete d.pwHash;saveDepts();renderStaff();toast('รีเซ็ตรหัสผ่านแล้ว')}return}const id=e.target.dataset.drm;if(!id)return;const d=S.depts.find(x=>x.id===id),n=S.staff.filter(x=>norm(x.dept)===norm(d.name)).length;
-  if(!await ask(`ลบกลุ่มงาน <b>${esc(d.name||'(ไม่มีชื่อ)')}</b>?${n?`<br>มีบุคลากร ${n} คนอยู่ในกลุ่มนี้ ต้องเลือกกลุ่มงานใหม่ให้ภายหลัง`:''}`))return;S.depts=S.depts.filter(x=>x!==d);saveDepts();GF='';renderStaff()});
+  if(!await ask(`ลบกลุ่มงาน <b>${esc(d.name||'(ไม่มีชื่อ)')}</b>?${n?`<br>มีเจ้าหน้าที่ ${n} คนอยู่ในกลุ่มนี้ ต้องเลือกกลุ่มงานใหม่ให้ภายหลัง`:''}`))return;S.depts=S.depts.filter(x=>x!==d);saveDepts();GF='';renderStaff()});
 function dAddClick(){const t=S.depts[0]||{},n=S.depts.map(d=>parseInt(d.code,10)).filter(x=>!isNaN(x)),nd={id:uid(),name:'',cat:t.cat||'อื่นๆ',min:t.min||'',code:String((n.length?Math.max(...n):0)+100).padStart(4,'0'),supName:'',supPos:'',headName:t.headName||'',headPos:t.headPos||''};S.depts.push(nd);saveDepts();GF=nd.id;renderStaff();const i=document.querySelector('#dTable input[data-f="name"]');if(i)i.focus()}
 $('#bStaff').addEventListener('change',e=>{const f=e.target.dataset.f;if(f==='dept'){saveStaff();renderStaff()}if(f==='etype'){const st=staffById(e.target.dataset.sid);if(st){st.etype=e.target.value;const d=qDefOf(st.etype);Object.assign(st,{qVac:d.qVac,qSick:d.qSick,qBiz:d.qBiz});saveStaff();renderStaff();toast('ตั้งโควต้าตามประเภท '+st.etype+' แล้ว (แก้รายคนได้)')}}});
 let setTimer;
@@ -1084,8 +1083,8 @@ $('#bRestore').onchange=async e=>{
   let d;try{d=JSON.parse(await f.text())}catch(_){return toast('ไฟล์ไม่ถูกต้อง',true)}
   if(!validDB(d))return toast('ไม่ใช่ไฟล์ฐานข้อมูลของระบบนี้',true);
   const n=(Array.isArray(d.leaves)?d.leaves:Object.values(d.leaves||{}).flat()).length;
-  if(!await ask(`นำเข้าข้อมูลจากไฟล์ (บุคลากร ${d.staff.length} คน, การลา ${n} รายการ)?<br><span style="color:var(--red)">การตั้งค่า รายชื่อ และวันหยุดจะถูกแทนที่ · รายการลาที่ซ้ำจะถูกเขียนทับ</span>`))return;
-  toast('กำลังนำเข้า…');await applyData(d,false);toast('นำเข้าข้อมูลแล้ว');
+  if(!await ask(`กู้คืนข้อมูลจากไฟล์สำรอง (เจ้าหน้าที่ ${d.staff.length} คน, การลา ${n} รายการ)?<br><span style="color:var(--red)">การตั้งค่า รายชื่อ และวันหยุดจะถูกแทนที่ · รายการลาที่ซ้ำจะถูกเขียนทับ</span>`))return;
+  toast('กำลังกู้คืน…');await applyData(d,false);toast('กู้คืนข้อมูลแล้ว');
 };
 
 /* ---------- วันหยุด ---------- */
@@ -1130,7 +1129,7 @@ function loadDemo(){let n=0;
   renderAll();toast(`ใส่ข้อมูลตัวอย่างแล้ว ${n} รายการ (กลุ่มงานบริหารทรัพยากรบุคคล)`);
 }
 async function clearDemo(){
-  if(!await ask('ลบข้อมูลตัวอย่างทั้งหมด (บุคลากรตัวอย่างและใบลาตัวอย่าง)?<br>ข้อมูลที่คุณกรอกเองจะไม่ถูกลบ'))return;
+  if(!await ask('ลบข้อมูลตัวอย่างทั้งหมด (เจ้าหน้าที่ตัวอย่างและใบลาตัวอย่าง)?<br>ข้อมูลที่คุณกรอกเองจะไม่ถูกลบ'))return;
   LV.filter(l=>l.demo).map(l=>l.id).forEach(removeLeave);
   if(store.cloud)DEMO_HR.forEach((_,i)=>qWrite('L:demoHR'+(i+1),()=>store.db.doc('leaves/demoHR'+(i+1)).delete()));for(const k in histCache)delete histCache[k];
   const dg=new Set(S.staff.filter(s=>s.demo).map(s=>norm(s.dept)));S.staff=S.staff.filter(s=>!s.demo);saveStaff();
@@ -1183,34 +1182,34 @@ function dSum(){const list=xLeaves().filter(l=>l.status==='approved');
   return{head:['ที่','เลข ID','ชื่อ-สกุล','ตำแหน่ง','สังกัด',...LEAVE_T.flatMap(t=>[t.s+' (ครั้ง)',t.s+' (วัน)']),'มาสาย (ครั้ง)','ขาดราชการ (วัน)','รวมวันลา (วัน)','สถานะ'],
    rows:visStaff().map((s,i)=>{const r=stats(s.id,list);return[i+1,s.code||'',s.name,s.pos||'',s.dept||'',...LEAVE_T.flatMap(t=>[r.o[t.n].c,r.o[t.n].d]),r.late,r.o['ขาดราชการ'].d,r.total,r.over.length?'เกินเกณฑ์: '+r.over.join(', '):'ปกติ']}),
    widths:[5,9,26,28,22,...LEAVE_T.flatMap(()=>[9,9]),11,13,13,30]}}
-function dLeaves(){return{head:['ที่','เลข ID','ชื่อ-สกุล','ตำแหน่ง','สังกัด','เบอร์โทร','ประเภทการลา','ครึ่งวัน','ตั้งแต่','ถึง','จำนวน','หน่วย','สถานะ','หมายเหตุ','หมายเหตุเพิ่มเติม','วันที่บันทึก'],
-  rows:xLeaves().map((l,i)=>{const st=staffById(l.staffId)||staffByName(l.nm);return[i+1,(st&&st.code)||'',staffName(l),posOf(l),l.dept||(st&&st.dept)||'',l.tel||(st&&st.tel)||'',l.type,l.half||'',thD(l.start),T[l.type]?.late?'':thD(l.end),+l.days||0,T[l.type]?.late?'ครั้ง':'วัน',STX[l.status]||l.status,l.note||'',l.reason||'',thTime(l.ts)]}),
-  widths:[5,9,26,28,22,14,26,12,14,14,8,7,12,26,24,18]}}
+function dLeaves(){return{head:['ที่','เลข ID','ชื่อ-สกุล','ตำแหน่ง','สังกัด','เบอร์โทร','ประเภทการลา','ครึ่งวัน','ตั้งแต่','ถึง','จำนวน','หน่วย','เหตุผลการลา','ผู้ปฏิบัติหน้าที่แทน','วันที่บันทึก'],
+  rows:xLeaves().map((l,i)=>{const st=staffById(l.staffId)||staffByName(l.nm);return[i+1,(st&&st.code)||'',staffName(l),posOf(l),l.dept||(st&&st.dept)||'',l.tel||(st&&st.tel)||'',l.type,l.half||'',thD(l.start),T[l.type]?.late?'':thD(l.end),+l.days||0,T[l.type]?.late?'ครั้ง':'วัน',l.note||'',l.sub||'',thTime(l.ts)]}),
+  widths:[5,9,26,28,22,14,26,12,14,14,8,7,30,26,18]}}
 function dMonth(){const L=xLeaves().filter(l=>l.status==='approved');
   const M=$('#xScope').value==='fy'?monthsOfFY().map(m=>({k:m.k,t:m.t})):roundMonths();
   return{head:['เดือน',...TYPES.map(t=>t.s+(t.late?' (ครั้ง)':' (วัน)')),'รวมวันลา'],
    rows:[...M.map(m=>[m.t,...TYPES.map(t=>mVal(L,m.k,t)),LEAVE_T.reduce((a,t)=>a+mVal(L,m.k,t),0)]),['รวม',...TYPES.map(t=>M.reduce((a,m)=>a+mVal(L,m.k,t),0)),M.reduce((a,m)=>a+LEAVE_T.reduce((b,t)=>b+mVal(L,m.k,t),0),0)]],
    widths:[18,...TYPES.map(()=>12),12]}}
-function dStaff(){return{head:['ที่','เลข ID','ชื่อ-สกุล','ตำแหน่ง','สังกัด/กลุ่มงาน','เบอร์โทร','ที่อยู่ติดต่อ','ผู้บังคับบัญชาชั้นต้น','ตำแหน่งผู้บังคับบัญชา','ผู้บังคับบัญชาสูงสุด','ตำแหน่งผู้บังคับบัญชาสูงสุด','ประเภทบุคลากร','โควต้าพักผ่อน (ปีนี้+สะสม)','พักผ่อนใช้แล้ว','พักผ่อนคงเหลือ','โควต้าป่วย','ป่วยใช้แล้ว','ป่วยคงเหลือ','โควต้ากิจ','กิจใช้แล้ว','กิจคงเหลือ'],rows:visStaff().map((s,i)=>{const q=quotaOf(s),u=t=>usedOf(s.id,t);return[i+1,s.code||'',s.name,s.pos||'',s.dept||'',s.tel||'',s.addr||'',supOf(s).name,supOf(s).pos,(topOf(s)||{}).name||'',(topOf(s)||{}).pos||'',s.etype||'',q.vacTot,u('ลาพักผ่อน'),q.vacTot-u('ลาพักผ่อน'),q.sick,u('ลาป่วย'),q.sick-u('ลาป่วย'),q.biz,u('ลากิจส่วนตัว'),q.biz-u('ลากิจส่วนตัว')]}),widths:[5,9,26,28,24,14,30,24,26,24,26,16,14,12,12,10,10,10,10,10,10]}}
+function dStaff(){return{head:['ที่','เลข ID','ชื่อ-สกุล','ตำแหน่ง','สังกัด/กลุ่มงาน','เบอร์โทร','ที่อยู่ติดต่อ','ผู้บังคับบัญชาชั้นต้น','ตำแหน่งผู้บังคับบัญชา','ผู้บังคับบัญชาสูงสุด','ตำแหน่งผู้บังคับบัญชาสูงสุด','ประเภทเจ้าหน้าที่','โควต้าพักผ่อน (ปีนี้+สะสม)','พักผ่อนใช้แล้ว','พักผ่อนคงเหลือ','โควต้าป่วย','ป่วยใช้แล้ว','ป่วยคงเหลือ','โควต้ากิจ','กิจใช้แล้ว','กิจคงเหลือ'],rows:visStaff().map((s,i)=>{const q=quotaOf(s),u=t=>usedOf(s.id,t);return[i+1,s.code||'',s.name,s.pos||'',s.dept||'',s.tel||'',s.addr||'',supOf(s).name,supOf(s).pos,(topOf(s)||{}).name||'',(topOf(s)||{}).pos||'',s.etype||'',q.vacTot,u('ลาพักผ่อน'),q.vacTot-u('ลาพักผ่อน'),q.sick,u('ลาป่วย'),q.sick-u('ลาป่วย'),q.biz,u('ลากิจส่วนตัว'),q.biz-u('ลากิจส่วนตัว')]}),widths:[5,9,26,28,24,14,30,24,26,24,26,16,14,12,12,10,10,10,10,10,10]}}
 function dHol(){return{head:['ที่','วันที่','วัน','ชื่อวันหยุด','ปีงบประมาณ'],rows:[...S.holidays].sort((a,b)=>a.date<b.date?-1:1).map((h,i)=>[i+1,thDL(h.date),WD[pd(h.date).getUTCDay()],h.name,fyOf(h.date)]),widths:[5,22,6,44,12]}}
 const sheetOf=(name,title,d)=>({name,rows:[[title],[S.settings.org+' · '+scopeText()],[],d.head,...d.rows],titles:2,hdr:3,widths:d.widths});
 const fname=n=>`${n}_${S.settings.year}${$('#xScope').value==='fy'?'':'_รอบ'+S.settings.round}`;
 function htmlTable(d){return`<table><thead><tr>${d.head.map(h=>`<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${d.rows.map(r=>`<tr>${r.map((v,i)=>`<td class="${typeof v==='number'?'c':''}">${esc(typeof v==='number'?fmt(v):v)}</td>`).join('')}</tr>`).join('')}</tbody></table>`}
 const XA={
-  'xlsx-all':()=>saveFile(fname('ระบบการลา')+'.xlsx',xlsxBlob([sheetOf('แบบสรุปวันลา','แบบสรุปวันลา',dSum()),sheetOf('ข้อมูลการลา','ข้อมูลการลา',dLeaves()),sheetOf('รายเดือน','รายงานการลารายเดือน (วัน)',dMonth()),sheetOf('บุคลากร','รายชื่อบุคลากร',dStaff()),sheetOf('วันหยุด','วันหยุดราชการ',dHol())])),
+  'xlsx-all':()=>saveFile(fname('ระบบการลา')+'.xlsx',xlsxBlob([sheetOf('แบบสรุปวันลา','แบบสรุปวันลา',dSum()),sheetOf('ข้อมูลการลา','ข้อมูลการลา',dLeaves()),sheetOf('รายเดือน','รายงานการลารายเดือน (วัน)',dMonth()),sheetOf('เจ้าหน้าที่','รายชื่อเจ้าหน้าที่',dStaff()),sheetOf('วันหยุด','วันหยุดราชการ',dHol())])),
   'xlsx-sum':()=>saveFile(fname('แบบสรุปวันลา')+'.xlsx',xlsxBlob([sheetOf('แบบสรุปวันลา','แบบสรุปวันลา',dSum())])),
   'xlsx-leaves':()=>saveFile(fname('ข้อมูลการลา')+'.xlsx',xlsxBlob([sheetOf('ข้อมูลการลา','ข้อมูลการลา',dLeaves())])),
   'xlsx-month':()=>saveFile(fname('รายงานรายเดือน')+'.xlsx',xlsxBlob([sheetOf('รายเดือน','รายงานการลารายเดือน (วัน)',dMonth())])),
   'csv-sum':()=>{const d=dSum();saveFile(fname('แบบสรุปวันลา')+'.csv',toCSV([d.head,...d.rows]))},
   'csv-leaves':()=>{const d=dLeaves();saveFile(fname('ข้อมูลการลา')+'.csv',toCSV([d.head,...d.rows]))},
   'csv-month':()=>{const d=dMonth();saveFile(fname('รายงานรายเดือน')+'.csv',toCSV([d.head,...d.rows]))},
-  'csv-staff':()=>{const d=dStaff();saveFile(`บุคลากร_${S.settings.year}.csv`,toCSV([d.head,...d.rows]))},
+  'csv-staff':()=>{const d=dStaff();saveFile(`เจ้าหน้าที่_${S.settings.year}.csv`,toCSV([d.head,...d.rows]))},
   'csv-hol':()=>{const d=dHol();saveFile('วันหยุด.csv',toCSV([d.head,...d.rows]))},
   'html-sum':()=>saveFile(fname('แบบสรุปวันลา')+'.html',reportDoc('แบบสรุปวันลา',htmlTable(dSum()))),
   'html-month':()=>saveFile(fname('รายงานรายเดือน')+'.html',reportDoc('รายงานการลารายเดือน',htmlTable(dMonth()))),
   'html-ind':()=>saveFile(`รายงานรายบุคคล_${S.settings.year}.html`,reportDoc('รายงานการลารายบุคคล',visStaff().map(s=>`<div style="page-break-after:always">${indTable(s.id)}</div>`).join('')))
 };
-$('#exp').addEventListener('click',e=>{const b=e.target.closest('[data-x]');if(!b)return;if(!S.staff.length&&!/hol/.test(b.dataset.x))return toast('ยังไม่มีข้อมูลบุคลากร',true);XA[b.dataset.x]()});
+$('#exp').addEventListener('click',e=>{const b=e.target.closest('[data-x]');if(!b)return;if(!S.staff.length&&!/hol/.test(b.dataset.x))return toast('ยังไม่มีข้อมูลเจ้าหน้าที่',true);XA[b.dataset.x]()});
 ['xScope','xStat'].forEach(i=>$('#'+i).addEventListener('change',renderExp));
 function renderExp(){$('#xInfo').textContent=`${scopeText()} · ${xLeaves().length} รายการ`;updFileUI()}
 
@@ -1232,7 +1231,7 @@ const FTYPES=[{description:'ฐานข้อมูลการลา',accept:{
 function updFileUI(){
   const st=$('#fdbStatus');if(!st)return;
   const fb=$('#fileBtn');
-  if(!fsOK){st.className='msg warn';st.textContent=store.cloud?'ตอนนี้ข้อมูลเก็บออนไลน์อยู่แล้ว ใช้ “ส่งออกไฟล์ฐานข้อมูล” ด้านล่างเพื่อเก็บสำเนาเป็นไฟล์':'เบราว์เซอร์นี้เชื่อมต่อไฟล์โดยตรงไม่ได้ (ต้องเปิดไฟล์ .html ด้วย Chrome หรือ Edge บนคอมพิวเตอร์) ใช้ปุ่มส่งออก/นำเข้าด้านล่างแทน';$('#fdbBtns').style.display='none';fb.style.display='none';return}
+  if(!fsOK){st.className='msg warn';st.textContent=store.cloud?'ตอนนี้ข้อมูลเก็บออนไลน์อยู่แล้ว ใช้ “ดาวน์โหลดไฟล์สำรองข้อมูลทั้งหมด” ด้านล่างเพื่อเก็บสำเนาเป็นไฟล์':'เบราว์เซอร์นี้เชื่อมต่อไฟล์โดยตรงไม่ได้ (ต้องเปิดไฟล์ .html ด้วย Chrome หรือ Edge บนคอมพิวเตอร์) ใช้ปุ่มสำรอง/กู้คืนด้านล่างแทน';$('#fdbBtns').style.display='none';fb.style.display='none';return}
   if(fileH){st.className=fileErr?'msg err':'msg ok';st.textContent=fileErr||`เชื่อมต่อกับไฟล์ “${fileH.name}” แล้ว · บันทึกอัตโนมัติ${fileSaved?' ล่าสุด '+fileSaved.toLocaleTimeString('th-TH'):''}`;$('#fdbOff').style.display='';fb.style.display='none'}
   else{st.className='msg info';st.textContent=savedH?`เคยเชื่อมต่อไฟล์ “${savedH.name}” — กดปุ่มสีเหลืองด้านบนเพื่อเชื่อมต่ออีกครั้ง`:'ยังไม่ได้เชื่อมต่อไฟล์ ข้อมูลเก็บในเบราว์เซอร์อย่างเดียว';$('#fdbOff').style.display='none';
     fb.style.display=savedH?'':'none';fb.textContent='🔗 เชื่อมต่อไฟล์ฐานข้อมูล '+(savedH?savedH.name:'')}
@@ -1255,13 +1254,13 @@ async function connectHandle(h,ask1){
   if((await h.queryPermission({mode:'readwrite'}))!=='granted'&&(await h.requestPermission({mode:'readwrite'}))!=='granted')return toast('ไม่ได้รับสิทธิ์เขียนไฟล์',true);
   const txt=await (await h.getFile()).text();let d=null;
   if(txt.trim()){try{d=JSON.parse(txt)}catch(e){return toast('ไฟล์นี้ไม่ใช่ฐานข้อมูลของระบบ',true)}if(!validDB(d))return toast('ไฟล์นี้ไม่ใช่ฐานข้อมูลของระบบ',true)}
-  if(d&&ask1&&!await ask(`โหลดข้อมูลจากไฟล์ “${esc(h.name)}” (บุคลากร ${d.staff.length} คน, การลา ${(Array.isArray(d.leaves)?d.leaves:[]).length} รายการ)?<br><span style="color:var(--red)">ข้อมูลในเบราว์เซอร์จะถูกแทนที่ด้วยข้อมูลในไฟล์</span>`))return;
+  if(d&&ask1&&!await ask(`โหลดข้อมูลจากไฟล์ “${esc(h.name)}” (เจ้าหน้าที่ ${d.staff.length} คน, การลา ${(Array.isArray(d.leaves)?d.leaves:[]).length} รายการ)?<br><span style="color:var(--red)">ข้อมูลในเบราว์เซอร์จะถูกแทนที่ด้วยข้อมูลในไฟล์</span>`))return;
   fileH=h;savedH=h;await idbSet('fileH',h);
   if(d){await applyData(d,true);fileSaved=new Date();updFileUI()}else await writeFileDB();
   toast('เชื่อมต่อไฟล์ฐานข้อมูลแล้ว');
 }
 $('#fdbOpen').onclick=async()=>{try{const[h]=await showOpenFilePicker({types:FTYPES});await connectHandle(h,true)}catch(e){if(e.name!=='AbortError')toast('เปิดไฟล์ไม่สำเร็จ',true)}};
-$('#fileBtn').onclick=async()=>{if(savedH)try{await connectHandle(savedH,false)}catch(e){toast('เชื่อมต่อไม่สำเร็จ ลองเปิดไฟล์ใหม่ที่แท็บส่งออก',true)}};
+$('#fileBtn').onclick=async()=>{if(savedH)try{await connectHandle(savedH,false)}catch(e){toast('เชื่อมต่อไม่สำเร็จ ลองเปิดไฟล์ใหม่ที่เมนูไฟล์ Excel / สำรองข้อมูล',true)}};
 $('#fdbOff').onclick=async()=>{fileH=null;savedH=null;await idbSet('fileH',null);updFileUI();toast('เลิกเชื่อมต่อไฟล์แล้ว (ไฟล์ยังอยู่)')};
 async function initFileDB(){if(!fsOK||store.cloud)return;savedH=await idbGet('fileH');updFileUI()}
 
@@ -1420,7 +1419,7 @@ function bkDays(r){if(!r.type||!r.start)return 0;const t=T[r.type],e=t.late?r.st
 function bkNew(){const fy=+$('#bkFY').value||curFY()-1,last=BK[BK.length-1];return{st:$('#bkStaff').value||(last&&last.st)||'',type:'ลาป่วย',start:'',end:'',half:'',note:'',fy}}
 function renderBackRows(){
   const so=bkStaffOpts;
-  $('#bkRows').innerHTML=BK.length?`<table><thead><tr><th>ที่</th><th>บุคลากร</th><th>ประเภทการลา</th><th>ตั้งแต่</th><th>ถึง</th><th>ครึ่งวัน</th><th>เหตุผล</th><th>รวม</th><th></th></tr></thead><tbody>${BK.map((r,i)=>{const d=bkDays(r),bad=!r.st||!r.type||!r.start;return`<tr${bad&&(r.start||r.note)?' style="background:#fff4e5"':''}>
+  $('#bkRows').innerHTML=BK.length?`<table><thead><tr><th>ที่</th><th>เจ้าหน้าที่</th><th>ประเภทการลา</th><th>ตั้งแต่</th><th>ถึง</th><th>ครึ่งวัน</th><th>เหตุผล</th><th>รวม</th><th></th></tr></thead><tbody>${BK.map((r,i)=>{const d=bkDays(r),bad=!r.st||!r.type||!r.start;return`<tr${bad&&(r.start||r.note)?' style="background:#fff4e5"':''}>
    <td class="c">${i+1}</td><td><select data-bi="${i}" data-f="st" style="min-width:200px">${so(r.st)}</select></td>
    <td><select data-bi="${i}" data-f="type">${opt('','— เลือก —')+TYPES.map(t=>opt(t.n,t.n,t.n===r.type)).join('')}</select></td>
    <td><input type="date" data-bi="${i}" data-f="start" value="${esc(r.start)}"></td>
@@ -1434,7 +1433,7 @@ async function renderBackList(){
   const fy=+$('#bkFY').value||curFY()-1,sid=$('#bkStaff').value;
   const L=(await leavesOfFY(fy)).filter(l=>inScope(l)&&(!sid||keyOf(l)===sid)).sort((a,b)=>a.start<b.start?-1:1);
   $('#bkListN').textContent=` · ปีงบประมาณ ${fy}${sid?' · '+(staffById(sid)||{}).name:''} · ${L.length} รายการ`;
-  $('#bkList').innerHTML=L.length?`<table><thead><tr><th>ที่</th><th>ชื่อ-สกุล</th><th>ประเภท</th><th>ตั้งแต่</th><th>ถึง</th><th>รวม</th><th>เหตุผล</th><th>สถานะ</th><th></th></tr></thead><tbody>${L.map((l,i)=>`<tr><td class="c">${i+1}</td><td>${esc(staffName(l))}</td><td>${esc(l.type)}${l.half?' ('+esc(l.half)+')':''}</td><td class="c">${thD(l.start)}</td><td class="c">${T[l.type]&&T[l.type].late?'-':thD(l.end)}</td><td class="c">${fmt(l.days)}</td><td>${esc(l.note)}</td><td class="c">${STX[l.status]||''}${l.hist?'<div class="muted">กรอกย้อนหลัง</div>':''}</td><td><button class="btn red sm" data-bkrm="${l.id}" data-fy="${l.fy}">ลบ</button></td></tr>`).join('')}</tbody></table>`:'<div class="empty">ยังไม่มีรายการ</div>';
+  $('#bkList').innerHTML=L.length?`<table><thead><tr><th>ที่</th><th>ชื่อ-สกุล</th><th>ประเภท</th><th>ตั้งแต่</th><th>ถึง</th><th>รวม</th><th>เหตุผล</th><th></th></tr></thead><tbody>${L.map((l,i)=>`<tr><td class="c">${i+1}</td><td>${esc(staffName(l))}</td><td>${esc(l.type)}${l.half?' ('+esc(l.half)+')':''}</td><td class="c">${thD(l.start)}</td><td class="c">${T[l.type]&&T[l.type].late?'-':thD(l.end)}</td><td class="c">${fmt(l.days)}</td><td>${esc(l.note)}</td><td><button class="btn red sm" data-bkrm="${l.id}" data-fy="${l.fy}">ลบ</button></td></tr>`).join('')}</tbody></table>`:'<div class="empty">ยังไม่มีรายการ</div>';
 }
 function renderBack(){
   const fv=$('#bkFY').value||String(curFY()-1),sv=$('#bkStaff').value;
@@ -1463,12 +1462,12 @@ $('#bkParse').onclick=()=>{
     BK.push({st:st.id,type,start,end,half,note:c[5]||(half?'':hv)||''});ok++});
   BK=BK.filter(r=>r.start||r.note);if(!BK.length)BK=[bkNew()];
   renderBackRows();$('#bkPaste').value=bad.length?lines.filter((_,i)=>bad.includes(i+1)).join('\n'):'';
-  toast(`นำเข้า ${ok} แถว`+(bad.length?` · อ่านไม่ได้ ${bad.length} แถว (เหลือไว้ในช่องให้แก้)`:''),!!bad.length);
+  toast(`ใส่ลงตาราง ${ok} แถว`+(bad.length?` · อ่านไม่ได้ ${bad.length} แถว (เหลือไว้ในช่องให้แก้)`:''),!!bad.length);
 };
 $('#bkSave').onclick=async()=>{
   const R=BK.filter(r=>r.st||r.start||r.note);if(!R.length)return toast('ยังไม่มีรายการ',true);
   const bad=R.map((r,i)=>(!r.st||!r.type||!r.start)?i+1:0).filter(Boolean);
-  if(bad.length)return toast(`แถวที่ ${bad.join(', ')} ยังไม่ครบ (ต้องมีบุคลากร ประเภท และวันเริ่ม)`,true);
+  if(bad.length)return toast(`แถวที่ ${bad.join(', ')} ยังไม่ครบ (ต้องมีเจ้าหน้าที่ ประเภท และวันเริ่ม)`,true);
   const future=R.filter(r=>r.start>new Date().toISOString().slice(0,10)).length;
   const dup=[];for(const r of R){const L=await leavesOfFY(fyOf(r.start));const e=T[r.type].late?r.start:(r.end||r.start);if(L.some(l=>keyOf(l)===r.st&&l.status!=='rejected'&&l.start<=e&&(l.end||l.start)>=r.start))dup.push(`${(staffById(r.st)||{}).name} ${thD(r.start)}`)}
   if(!await ask(`บันทึกประวัติการลา ${R.length} รายการ?`+(dup.length?`<br><span style="color:var(--red)">วันที่ซ้ำกับที่มีอยู่แล้ว ${dup.length} รายการ: ${esc(dup.slice(0,5).join(', '))}${dup.length>5?' …':''}</span>`:'')+(future?`<br><span class="muted">มี ${future} รายการเป็นวันในอนาคต</span>`:'')))return;
@@ -1486,40 +1485,40 @@ $('#bkList').addEventListener('click',async e=>{const id=e.target.dataset.bkrm;i
   if(LV.some(l=>l.id===id))removeLeave(id);else if(store.cloud)qWrite('L:'+id,()=>store.db.doc('leaves/'+id).delete());
   delete histCache[fy];setTimeout(renderBackList,300);toast('ลบแล้ว')});
 
-/* ---------- โควต้าเริ่มต้นตามประเภทบุคลากร ---------- */
+/* ---------- โควต้าเริ่มต้นตามประเภทเจ้าหน้าที่ ---------- */
 function renderQDef(){const D=qDefs(),cnt=e=>S.staff.filter(s=>s.etype===e).length;
-  $('#qDef').innerHTML=`<table><thead><tr><th>ประเภทบุคลากร</th><th>จำนวน</th><th>พักผ่อน/ปี</th><th>ป่วย/ปี</th><th>กิจ/ปี</th><th></th></tr></thead><tbody>${ETYPES.map(e=>`<tr><td>${e}</td><td class="c">${cnt(e)} คน</td>${['qVac','qSick','qBiz'].map(k=>`<td><input type="number" min="0" max="365" step="0.5" data-qe="${e}" data-qk="${k}" value="${D[e][k]}" style="width:70px"></td>`).join('')}<td><button class="btn sec sm" data-qapply="${e}">ใช้กับทุกคนในประเภทนี้</button></td></tr>`).join('')}</tbody></table>`}
+  $('#qDef').innerHTML=`<table><thead><tr><th>ประเภทเจ้าหน้าที่</th><th>จำนวน</th><th>พักผ่อน/ปี</th><th>ป่วย/ปี</th><th>กิจ/ปี</th><th></th></tr></thead><tbody>${ETYPES.map(e=>`<tr><td>${e}</td><td class="c">${cnt(e)} คน</td>${['qVac','qSick','qBiz'].map(k=>`<td><input type="number" min="0" max="365" step="0.5" data-qe="${e}" data-qk="${k}" value="${D[e][k]}" style="width:70px"></td>`).join('')}<td><button class="btn sec sm" data-qapply="${e}">ใช้กับทุกคนในประเภทนี้</button></td></tr>`).join('')}</tbody></table>`}
 $('#qDef').addEventListener('input',e=>{const i=e.target;if(!i.dataset.qe)return;const q=S.settings.qdef=S.settings.qdef||{};q[i.dataset.qe]={...qDefOf(i.dataset.qe),[i.dataset.qk]:+i.value||0};clearTimeout(setTimer);setTimer=setTimeout(saveSet,600)});
 $('#qDef').addEventListener('click',async e=>{const et=e.target.dataset.qapply;if(!et)return;const L=S.staff.filter(s=>s.etype===et);
   if(!await ask(`ตั้งโควต้าพักผ่อน/ป่วย/กิจ ของ${et} ทั้ง ${L.length} คน ตามค่าในตาราง?<br><span class="muted">ค่าที่แก้รายคนไว้จะถูกแทนที่ (วันพักผ่อนสะสมไม่เปลี่ยน)</span>`))return;
   const d=qDefOf(et);L.forEach(s=>Object.assign(s,{qVac:d.qVac,qSick:d.qSick,qBiz:d.qBiz}));saveStaff();renderStaff();toast(`ตั้งโควต้าให้ ${L.length} คนแล้ว`)});
 
 /* ---------- ตารางนำเข้าข้อมูล (Excel) ---------- */
-const IMP={staff:['เลข ID','ชื่อ-สกุล','ตำแหน่ง','ประเภทบุคลากร','กลุ่มงาน','เบอร์โทร','ที่อยู่ติดต่อ','พักผ่อนปีนี้ (วัน)','พักผ่อนสะสม (วัน)','ลาป่วย (วัน/ปี)','ลากิจ (วัน/ปี)','เลขบัตรประชาชน'],
+const IMP={staff:['เลข ID','ชื่อ-สกุล','ตำแหน่ง','ประเภทเจ้าหน้าที่','กลุ่มงาน','เบอร์โทร','ที่อยู่ติดต่อ','พักผ่อนปีนี้ (วัน)','พักผ่อนสะสม (วัน)','ลาป่วย (วัน/ปี)','ลากิจ (วัน/ปี)','เลขบัตรประชาชน'],
   leave:['เลข ID','ชื่อ-สกุล (ไม่บังคับ)','ประเภทการลา','วันเริ่ม','วันสิ้นสุด','ครึ่งวัน (เช้า/บ่าย)','เหตุผล','ผู้ปฏิบัติหน้าที่แทน'],
   hol:['วันที่','ชื่อวันหยุด']};
 const thSlash=d=>{const[y,m,dd]=d.split('-').map(Number);return`${dd}/${m}/${y+543}`};
 function importTemplate(kind){
   const sorted=[...S.staff].sort((a,b)=>String(a.code).localeCompare(String(b.code)));
-  const help=[['ตารางนำเข้าข้อมูล ระบบบันทึกข้อมูลการลา'],[S.settings.org||''],[],['หัวข้อ','รายละเอียด'],
-   ['วิธีใช้','กรอก/แก้ไขในชีต “บุคลากร” “ประวัติการลา” “วันหยุด” แล้วบันทึกไฟล์ จากนั้นไปที่แท็บ นำเข้า/ส่งออก → เลือกไฟล์นำเข้า ระบบจะแสดงสรุปให้ตรวจก่อนบันทึก'],
+  const help=[['ตารางกรอกข้อมูล ระบบบันทึกข้อมูลการลา'],[S.settings.org||''],[],['หัวข้อ','รายละเอียด'],
+   ['วิธีใช้','กรอก/แก้ไขในชีต “เจ้าหน้าที่” “ประวัติการลา” “วันหยุด” แล้วบันทึกไฟล์ จากนั้นไปที่เมนู 📁 ไฟล์ Excel → อัปโหลดไฟล์ Excel ระบบจะแสดงสรุปให้ตรวจก่อนบันทึก'],
    ['ห้ามแก้','แถวหัวตาราง (แถวที่ 4 ของแต่ละชีต) และชื่อชีต'],
    ['เลขบัตรประชาชน','13 หลัก มีหรือไม่มีขีดก็ได้ ระบบตรวจหลักสุดท้ายให้ · ไฟล์นี้มีข้อมูลส่วนบุคคล เก็บรักษาให้ดี ไม่ควรส่งต่อทางแชตกลุ่ม'],
-   ['ชีตบุคลากร','ใส่รายชื่อปัจจุบันไว้ให้แล้ว แก้ได้เลย · เลข ID ตรงกับที่มีอยู่ = อัปเดต · เลข ID ใหม่ = เพิ่มคน · ช่องที่เว้นว่างจะไม่ไปเปลี่ยนค่าเดิม · ไม่มีการลบคนออกจากระบบ'],
+   ['ชีตเจ้าหน้าที่','ใส่รายชื่อปัจจุบันไว้ให้แล้ว แก้ได้เลย · เลข ID ตรงกับที่มีอยู่ = อัปเดต · เลข ID ใหม่ = เพิ่มคน · ช่องที่เว้นว่างจะไม่ไปเปลี่ยนค่าเดิม · ไม่มีการลบคนออกจากระบบ'],
    ['ชีตประวัติการลา','1 แถว = ใบลา 1 ครั้ง · ใช้เลข ID เป็นหลัก · วันที่ใส่ได้ทั้ง 5/1/2568 หรือ 5 ม.ค. 2568 หรือวันที่แบบ Excel · วันสิ้นสุดเว้นได้ (= ลาวันเดียว) · ใบลาที่ซ้ำ (คนเดียวกัน ประเภทเดียวกัน วันเริ่มเดียวกัน) จะข้าม'],
    ['ตัวอย่างประวัติการลา','0407 | | ลาป่วย | 5/1/2568 | 6/1/2568 | | ไข้หวัด |'],
    ['','0407 | | ลาพักผ่อน | 14/4/2568 | 18/4/2568 | | พักผ่อน | นายอามีน บินดาวุด'],
    ['','0407 | | ลากิจส่วนตัว | 3/3/2568 | | บ่าย | ติดต่อราชการ |'],
    ['ชีตวันหยุด','ใส่วันหยุดราชการไว้ให้แล้ว เพิ่มแถวได้ (วันที่ซ้ำจะข้าม)'],
-   [],['ประเภทการลาที่ใช้ได้',TYPES.map(t=>t.n).join(' · ')],['ประเภทบุคลากร',ETYPES.join(' · ')],['กลุ่มงาน',S.depts.map(d=>d.name).join(' · ')]];
+   [],['ประเภทการลาที่ใช้ได้',TYPES.map(t=>t.n).join(' · ')],['ประเภทเจ้าหน้าที่',ETYPES.join(' · ')],['กลุ่มงาน',S.depts.map(d=>d.name).join(' · ')]];
   const sh=(name,title,head,rows,widths)=>({name,rows:[[title],[S.settings.org||''],[],head,...rows],titles:2,hdr:3,widths});
   const SH=[
-    sh('บุคลากร','ข้อมูลบุคลากร',IMP.staff,sorted.map(st=>{const q=quotaOf(st);return[st.code||'',st.name,st.pos||'',st.etype||'',st.dept||'',st.tel||'',st.addr||'',q.vac,q.carry,q.sick,q.biz,st.cid?cidFmt(st.cid):'']}),[10,30,40,18,42,14,30,12,12,12,12,20]),
+    sh('เจ้าหน้าที่','ข้อมูลเจ้าหน้าที่',IMP.staff,sorted.map(st=>{const q=quotaOf(st);return[st.code||'',st.name,st.pos||'',st.etype||'',st.dept||'',st.tel||'',st.addr||'',q.vac,q.carry,q.sick,q.biz,st.cid?cidFmt(st.cid):'']}),[10,30,40,18,42,14,30,12,12,12,12,20]),
     sh('ประวัติการลา','ประวัติการลา (กรอกเพิ่มได้หลายปีงบประมาณ)',IMP.leave,[],[10,28,22,14,14,16,30,28]),
     sh('วันหยุด','วันหยุดราชการ',IMP.hol,[...S.holidays].sort((a,b)=>a.date<b.date?-1:1).map(h=>[thSlash(h.date),h.name]),[16,44])];
   const pick={staff:0,leave:1,hol:2}[kind],names={staff:'รายชื่อเจ้าหน้าที่',leave:'ประวัติการลา',hol:'วันหยุด'};
   const blob=xlsxBlob([{name:'คำอธิบาย',rows:help,titles:2,hdr:3,widths:[22,120]},...(pick==null?SH:[SH[pick]])]);
-  saveFile(`ตาราง${kind?names[kind]:'นำเข้าข้อมูล'}_ระบบการลา.xlsx`,blob,blob.type);
+  saveFile(`ตาราง${kind?names[kind]:'กรอกข้อมูล'}_ระบบการลา.xlsx`,blob,blob.type);
 }
 // --- xlsx reader (ไม่ต้องใช้อินเทอร์เน็ต) ---
 async function unzip(buf){
@@ -1555,23 +1554,23 @@ function parseCSV(t){const rows=[];let r=[],f='',q=false;for(let i=0;i<t.length;
 async function importFile(file,kind){
   let book;
   try{if(/\.csv$/i.test(file.name)){const t=(await file.text()).replace(/^﻿/,''),rows=parseCSV(t);const h=rows.find(r=>r&&r.length>1)||[];
-      const k=cellStr(h[0])==='วันที่'?'วันหยุด':h.some(x=>/ประเภทการลา/.test(x))?'ประวัติการลา':'บุคลากร';book={[k]:rows}}
+      const k=cellStr(h[0])==='วันที่'?'วันหยุด':h.some(x=>/ประเภทการลา/.test(x))?'ประวัติการลา':'เจ้าหน้าที่';book={[k]:rows}}
     else book=await readXlsx(await file.arrayBuffer())}
-  catch(e){return toast('อ่านไฟล์ไม่ได้ ใช้ไฟล์ .xlsx จาก “ดาวน์โหลดตารางนำเข้าข้อมูล” หรือ .csv',true)}
+  catch(e){return toast('อ่านไฟล์ไม่ได้ ใช้ไฟล์ .xlsx จาก ตารางที่ดาวน์โหลดจากระบบ หรือ .csv',true)}
   const want=k=>!kind||kind===k;
-  const SR=want('staff')&&findSheet(book,'บุคลากร',IMP.staff)||[],LR=want('leave')&&findSheet(book,'ประวัติการลา',IMP.leave)||[],HR=want('hol')&&findSheet(book,'วันหยุด',IMP.hol)||[];
+  const SR=want('staff')&&(findSheet(book,'เจ้าหน้าที่',IMP.staff)||findSheet(book,'บุคลากร',IMP.staff))||[],LR=want('leave')&&findSheet(book,'ประวัติการลา',IMP.leave)||[],HR=want('hol')&&findSheet(book,'วันหยุด',IMP.hol)||[];
   if(!SR.length&&!LR.length&&!HR.length)return toast(kind?'ไม่พบข้อมูลในไฟล์ ใช้ตารางที่ดาวน์โหลดจากปุ่มคู่กันนี้ แล้วกรอกต่อจากแถวหัวตาราง':'ไม่พบข้อมูลในไฟล์ (ตรวจชื่อชีตและแถวหัวตาราง)',true);
   const deptMatch=v=>{v=norm(v);if(!v)return'';const d=S.depts.find(x=>norm(x.name)===v)||S.depts.find(x=>norm(x.name).includes(v)||v.includes(norm(x.name)));return d?d.name:v};
   const plan={upd:[],add:[],bad:[],lv:[],lvBad:[],lvDup:0,hol:[]};
   SR.forEach((r,i)=>{const code=cellStr(r[0]).replace(/\.0$/,'').replace(/-/g,''),name=cellStr(r[1]);if(!code&&!name)return;
-    if(!code){plan.bad.push(`บุคลากร แถว ${i+5}: ไม่มีเลข ID`);return}
+    if(!code){plan.bad.push(`เจ้าหน้าที่ แถว ${i+5}: ไม่มีเลข ID`);return}
     const f={};const set=(k,v)=>{if(cellStr(v)!=='')f[k]=v};set('name',norm(name));set('pos',cellStr(r[2]));
     if(cellStr(r[3])){const et=ETYPES.find(e=>cellStr(r[3]).includes(e))||cellStr(r[3]);f.etype=et}
     set('dept',deptMatch(r[4]));set('tel',cellStr(r[5]));set('addr',cellStr(r[6]));
     [['qVac',7],['qCarry',8],['qSick',9],['qBiz',10]].forEach(([k,c])=>{if(cellStr(r[c])!==''&&!isNaN(+r[c]))f[k]=+r[c]});
-    if(cellStr(r[11])){const cd=cidDigits(typeof r[11]==='number'?r[11].toFixed(0):r[11]);if(cidValid(cd))f.cid=cd;else plan.bad.push(`บุคลากร แถว ${i+5}: เลขบัตรประชาชน ${cellStr(r[11])} ไม่ถูกต้อง (ข้ามเฉพาะช่องนี้)`)}
+    if(cellStr(r[11])){const cd=cidDigits(typeof r[11]==='number'?r[11].toFixed(0):r[11]);if(cidValid(cd))f.cid=cd;else plan.bad.push(`เจ้าหน้าที่ แถว ${i+5}: เลขบัตรประชาชน ${cellStr(r[11])} ไม่ถูกต้อง (ข้ามเฉพาะช่องนี้)`)}
     const code4=/^\d+$/.test(code)&&code.length<4?code.padStart(4,'0'):code,st=staffByCode(code4);
-    if(st)plan.upd.push([st,f]);else if(f.name)plan.add.push({id:uid(),code:code4,...qDefOf(f.etype),qCarry:0,addr:'',...f});else plan.bad.push(`บุคลากร แถว ${i+5}: เลข ID ${code} ไม่มีในระบบและไม่มีชื่อ`)});
+    if(st)plan.upd.push([st,f]);else if(f.name)plan.add.push({id:uid(),code:code4,...qDefOf(f.etype),qCarry:0,addr:'',...f});else plan.bad.push(`เจ้าหน้าที่ แถว ${i+5}: เลข ID ${code} ไม่มีในระบบและไม่มีชื่อ`)});
   const newBy=c=>plan.add.find(a=>a.code===c);
   const exist=new Set();for(const fy of new Set(LR.map(r=>{const d=cellDT(r[3]);return d?fyOf(d):0}).filter(Boolean)))(await leavesOfFY(fy)).forEach(l=>exist.add(keyOf(l)+'|'+l.type+'|'+l.start));
   LR.forEach((r,i)=>{const code=cellStr(r[0]).replace(/\.0$/,''),nm=cellStr(r[1]),code4=/^\d+$/.test(code)&&code.length<4?code.padStart(4,'0'):code;
@@ -1585,7 +1584,7 @@ async function importFile(file,kind){
     plan.lv.push({st,type,start,end:T[type].late?start:end,half:T[type].late||T[type].cal?'':half,note:cellStr(r[6]),sub:cellStr(r[7])})});
   const hs=holSet();HR.forEach(r=>{const d=cellDT(r[0]),n=cellStr(r[1]);if(d&&n&&!hs.has(d)){hs.add(d);plan.hol.push({date:d,name:n})}});
   const bad=[...plan.bad,...plan.lvBad];
-  const ok=await ask(`<b>ตรวจก่อนนำเข้า</b><br>บุคลากร: อัปเดต ${plan.upd.length} คน · เพิ่มใหม่ ${plan.add.length} คน<br>ประวัติการลา: ${plan.lv.length} รายการ${plan.lvDup?` · ข้ามที่ซ้ำ ${plan.lvDup}`:''}<br>วันหยุด: เพิ่ม ${plan.hol.length} วัน`+
+  const ok=await ask(`<b>ตรวจก่อนบันทึก</b><br>เจ้าหน้าที่: อัปเดต ${plan.upd.length} คน · เพิ่มใหม่ ${plan.add.length} คน<br>ประวัติการลา: ${plan.lv.length} รายการ${plan.lvDup?` · ข้ามที่ซ้ำ ${plan.lvDup}`:''}<br>วันหยุด: เพิ่ม ${plan.hol.length} วัน`+
     (bad.length?`<br><span style="color:var(--red)">ข้าม ${bad.length} แถวที่มีปัญหา:</span><div class="muted" style="max-height:140px;overflow:auto;text-align:left">${bad.slice(0,50).map(esc).join('<br>')}${bad.length>50?'<br>…':''}</div>`:''));
   if(!ok)return;
   plan.upd.forEach(([st,f])=>Object.assign(st,f));S.staff.push(...plan.add);if(plan.upd.length||plan.add.length)saveStaff();
@@ -1593,7 +1592,7 @@ async function importFile(file,kind){
   const fys=new Set();plan.lv.forEach(r=>{const st=r.st,e=r.end,fy=fyOf(r.start);fys.add(fy);
     putLeave({id:uid(),staffId:st.id,nm:st.name,pos:st.pos,dept:st.dept,tel:st.tel,type:r.type,start:r.start,end:e,half:r.half,note:r.note,contact:'',sub:r.sub,days:calcDays(r.type,r.start,e,r.half),fy,status:'approved',by:'admin',ts:Date.now(),...(fy<curFY()?{hist:1}:{})});delete histCache[fy]});
   if(store.cloud)LV=LV.filter(l=>l.fy===curFY());
-  renderAll();toast(`นำเข้าแล้ว: บุคลากร ${plan.upd.length+plan.add.length} · ใบลา ${plan.lv.length} · วันหยุด ${plan.hol.length}`);
+  renderAll();toast(`บันทึกจากไฟล์แล้ว: เจ้าหน้าที่ ${plan.upd.length+plan.add.length} · ใบลา ${plan.lv.length} · วันหยุด ${plan.hol.length}`);
 }
 /* ---------- ศูนย์เพิ่ม/อัปโหลดข้อมูล ---------- */
 function gotoPanel(tab,sel,act){showTab(tab);setTimeout(()=>{const el=sel&&document.querySelector(sel);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});if(act)act()},80)}
@@ -1615,7 +1614,7 @@ function renderHome(){
   const leaves=RL.filter(isLeave),days=leaves.reduce((a,l)=>a+(+l.days||0),0),late=RL.filter(l=>T[l.type]?.late).length;
   const over=sumRows().filter(x=>x.r.over.length).length;
   const qOver=VS.filter(s=>{const q=quotaOf(s);return Object.entries(QT).some(([t,k])=>usedOf(s.id,t)>q[k])}).length;
-  const K=[[VS.length+' คน','เจ้าหน้าที่','staff'],[leaves.length+' ครั้ง','ลาในรอบรายงานนี้','all'],[fmt(days)+' วัน','รวมวันลาในรอบ','sum'],[late+' ครั้ง','มาสายในรอบ','all'],[over+' คน','เกินเกณฑ์ ป่วย+กิจ/มาสาย','sum'],[qOver+' คน','ใช้วันลาเกินโควต้า','rep']];
+  const K=[[VS.length+' คน','เจ้าหน้าที่','staff'],[leaves.length+' ครั้ง','ลาในรอบครึ่งปีนี้','all'],[fmt(days)+' วัน','รวมวันลาในรอบนี้','sum'],[late+' ครั้ง','มาสายในรอบนี้','all'],[over+' คน','ลาป่วย/กิจ/มาสาย เกินเกณฑ์','sum'],[qOver+' คน','ใช้วันลาเกินสิทธิ์','rep']];
   $('#hmKpi').innerHTML=K.map(([n,l,t],i)=>`<button class="hcard" data-go2="${t}"><div class="n" style="${(i>=4&&parseInt(n))?'color:var(--red)':''}">${n}</div><div class="l">${l} →</div></button>`).join('');
   const on=FL.filter(l=>isLeave(l)&&l.start<=wk&&(l.end||l.start)>=td).sort((a,b)=>a.start<b.start?-1:1);
   const now=on.filter(l=>l.start<=td),soon=on.filter(l=>l.start>td);
@@ -1639,10 +1638,10 @@ function renderHome(){
   }
   if(over)T2.push([`มีเจ้าหน้าที่ ${over} คน ลาเกินเกณฑ์ในรอบนี้`,'sum','ดูแบบสรุป']);
   $('#hmTodo').innerHTML=T2.length?T2.map(([t,go,b])=>`<div class="alert" data-go2="${go}"><span>⚠️ ${esc(t)}</span><span class="btn sec sm">${b} →</span></div>`).join(''):'<div class="alert ok">✅ ข้อมูลครบ ไม่มีสิ่งที่ต้องทำ</div>';
-  const NAV=[['rec','📝','บันทึกการลา','บันทึกใบลาครั้งใหม่ แล้วพิมพ์ใบลา PDF'],['all','📋','ข้อมูลการลาทั้งหมด','ค้นหา แก้ไข ลบ พิมพ์ใบลาย้อนหลัง'],['back','➕','เพิ่มใบลาย้อนหลัง','กรอกประวัติการลาก่อนใช้ระบบ ทีละครั้ง'],
-    ['sum','📊','แบบสรุปวันลา','สรุปรายคนในรอบรายงาน ตรวจเกินเกณฑ์'],['rep','📈','รายงาน / กราฟ','รายเดือน แยกประเภท และรายบุคคล'],['staff','👥','เจ้าหน้าที่ / กลุ่มงาน','รายชื่อ เลข ID โควต้าวันลา ผู้บังคับบัญชา'],
-    ['add','📤','เพิ่ม / อัปโหลดข้อมูล','อัปโหลด Excel รายชื่อ ประวัติการลา วันหยุด'],['exp','⬇','ดาวน์โหลดรายงาน / สำรอง','Excel / CSV / พิมพ์ และไฟล์สำรองข้อมูล'],
-    ['base','⚙️','ข้อมูลพื้นฐาน','ปีงบ รอบรายงาน เกณฑ์ รหัสผ่าน'],['hol','🗓️','วันหยุดราชการ','ใช้คำนวณวันทำการ'],['form','🖨','แบบฟอร์มใบลา','ข้อความและผู้ลงนามในใบลา']].filter(x=>canTab(x[0]));
+  const NAV=[['all','📋','ใบลาทั้งหมด','ค้นหา แก้ไข ลบ พิมพ์ใบลา'],['rec','➕','เพิ่มใบลา 1 ใบ','กรอกใบลาแล้วพิมพ์ใบลา PDF'],['back','➕','เพิ่มใบลาหลายใบ','กรอกหลายใบพร้อมกัน ใช้กับใบลาย้อนหลัง'],
+    ['sum','📊','ตารางสรุปรายคน','วันลาของแต่ละคนในรอบครึ่งปี ใครเกินเกณฑ์'],['rep','📈','กราฟ / รายเดือน / รายคน','ดูภาพรวมและพิมพ์รายงานรายคน'],['staff','👥','เจ้าหน้าที่','รายชื่อ เลข ID โควต้าวันลา กลุ่มงาน'],
+    ['add','⬆','อัปโหลดไฟล์ Excel','เพิ่มรายชื่อ ใบลา วันหยุด ทีละมาก ๆ'],['exp','⬇','ดาวน์โหลดรายงาน / สำรองข้อมูล','ไฟล์ Excel รายงานพิมพ์ และไฟล์สำรอง'],
+    ['base','⚙️','ปีงบ / เกณฑ์ / รหัสผ่าน','ตั้งปีงบ รอบครึ่งปี เกณฑ์การลา'],['hol','🗓️','วันหยุดราชการ','ใช้นับวันทำการในใบลา'],['form','🖨','หน้าตาใบลา','ข้อความและผู้ลงนามในใบลาที่พิมพ์']].filter(x=>canTab(x[0]));
   $('#hmNav').innerHTML=NAV.map(([t,i,n,d])=>`<button class="hcard" data-go2="${t}"><b>${i} ${n}</b><span class="l">${d}</span></button>`).join('');
 }
 $('#home').addEventListener('click',e=>{const b=e.target.closest('[data-go2]');if(b)showTab(b.dataset.go2)});
