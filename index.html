@@ -300,16 +300,13 @@ body.head .adminonly{display:none!important}
 
 <!-- บุคลากร -->
 <section id="staff">
- <div class="panel adminonly"><h3><span>กลุ่มงาน / สายบังคับบัญชา</span><span><button class="btn sec sm" id="hImport">อัปเดตจากรายชื่อ สนจ.ยล.</button> <button class="btn sec sm" id="dAdd">+ เพิ่มหน่วยงาน/กลุ่มงาน</button></span></h3>
-  <div class="filters stick" style="padding:10px 12px 8px;margin:0"><input id="dSearch" placeholder="🔍 ค้นหาชื่อกลุ่มงานหรือหัวหน้า" style="min-width:240px"><select id="dCat"></select><span class="muted" id="dInfo"></span></div>
-  <div class="tw" id="dTable" data-cardify></div>
-  <p class="muted" style="padding:0 12px">ตั้งชื่อหัวหน้าครั้งเดียว บุคลากรที่สังกัดกลุ่มงานนั้นจะได้สายบังคับบัญชาอัตโนมัติ: <b>ผู้บังคับบัญชาชั้นต้น</b> → ช่องความเห็นในใบลา · <b>ผู้บังคับบัญชาสูงสุด</b> → “เรียน” และช่องคำสั่งอนุญาตในใบลา (ถ้าเว้นว่างจะใช้ค่าในแท็บแบบฟอร์มใบลา) · <b>รหัสเข้าระบบ</b> ใช้เป็นชื่อผู้ใช้ของหัวหน้ากลุ่มงาน รหัสผ่านเริ่มต้นเหมือนรหัสเข้าระบบ</p></div>
-  <div class="panel" id="qDefPanel"><h3><span>โควต้าวันลาเริ่มต้นตามประเภทบุคลากร (วันทำการต่อปีงบประมาณ)</span></h3><div class="tw" id="qDef" data-cardify></div>
-  <p class="muted" style="padding:0 12px">ค่าเริ่มต้นนี้ใช้เมื่อเลือกประเภทบุคลากร แก้โควต้ารายคนได้ในตารางรายชื่อด้านล่าง · <b>พักผ่อนสะสม</b> = วันลาพักผ่อนที่ยกมาจากปีก่อน (แต่ละคนไม่เท่ากัน)</p></div>
-  <div class="panel"><h3><span>รายชื่อบุคลากร</span><button class="btn sec sm" id="bAdd">+ เพิ่มเจ้าหน้าที่ 1 คน</button></h3>
-  <div class="tw" id="bStaff" data-cardify></div>
-  <p class="muted" style="padding:0 12px">เลข ID ใช้ให้ผู้ขอลากรอกแทนข้อมูลส่วนตัว ห้ามซ้ำกัน (แนะนำเลขประจำตัวในหน่วยงาน ไม่ควรใช้เลขบัตรประชาชน) · ผู้บังคับบัญชาชั้นต้นมาจากกลุ่มงานที่เลือกโดยอัตโนมัติ · สิทธิ์ลาพักผ่อน = จำนวนวันที่ลาได้ในปีงบประมาณ (รวมวันสะสม)</p>
- </div>
+ <div class="filters stick"><select id="dCat" style="min-width:260px" title="เลือกกลุ่มงาน"></select><input id="stSearch" placeholder="🔍 ค้นหาชื่อ เลข ID หรือตำแหน่ง" style="min-width:220px"><button class="btn" id="bAdd">+ เพิ่มเจ้าหน้าที่</button><span class="muted" id="dInfo"></span></div>
+ <div class="panel adminonly" id="topPanel"><h3><span>ผู้บังคับบัญชาสูงสุด <span style="font-weight:400">(ผู้อนุญาต · ใช้กับทุกกลุ่มงาน)</span></span></h3><div class="bd" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+  <input id="topName" list="topList" placeholder="ชื่อ-สกุล" style="flex:1 1 220px"><input id="topPos" placeholder="ตำแหน่ง" style="flex:1 1 220px"><datalist id="topList"></datalist><span class="muted" id="topNote"></span></div></div>
+ <div class="panel adminonly" id="grpPanel"><h3><span id="grpTitle">กลุ่มงาน</span><span id="grpBtns"></span></h3><div id="dTable"></div></div>
+ <div class="panel"><h3><span id="stTitle">เจ้าหน้าที่</span></h3><div class="tw" id="bStaff" data-cardify></div>
+  <p class="muted" style="padding:0 12px">แก้ข้อมูลในตารางได้เลย ระบบบันทึกอัตโนมัติ · เลข ID ห้ามซ้ำ · โควต้าวันลา = วันทำการต่อปีงบประมาณ (พักผ่อนสะสม = วันที่ยกมาจากปีก่อน) · เปลี่ยนประเภทแล้วโควต้าจะตั้งตามค่าเริ่มต้นของประเภทนั้น</p></div>
+ <details class="panel adminonly" id="qDefPanel"><summary style="padding:10px 12px;cursor:pointer;font-weight:600">⚙️ โควต้าวันลาเริ่มต้นตามประเภทเจ้าหน้าที่</summary><div class="tw" id="qDef" data-cardify></div></details>
 </section>
 <!-- วันหยุด -->
 <section id="hol">
@@ -962,28 +959,56 @@ function renderBase(){
 
 }
 
+function grpStaff(d){return S.staff.filter(x=>norm(x.dept)===norm(d.name))}
 function renderStaff(){
-  if($('#qDefPanel'))$('#qDefPanel').style.display=role==='admin'?'':'none';renderQDef();
-  const dq=norm($('#dSearch').value).toLowerCase(),dc=$('#dCat').value;
-  const cs=$('#dCat'),cv=cs.value;cs.innerHTML=opt('','— ทุกกลุ่ม —')+S.depts.map(d=>opt(d.id,(d.code?d.code+' ':'')+d.name,d.id===cv)).join('');
-  const DL=S.depts.filter(d=>(!dc||d.id===dc)&&(!dq||[d.name,d.headName,d.min,d.code].some(x=>String(x||'').toLowerCase().includes(dq))));
-  const din=(d,f,w)=>`<input data-did="${d.id}" data-f="${f}" value="${esc(d[f])}" style="min-width:${w}px">`;
-  $('#dInfo').textContent=`แสดง ${DL.length} จาก ${S.depts.length} กลุ่มงาน · ข้อมูลจาก${S.settings.dirImport||DIR_SRC}`;
-  $('#dTable').innerHTML=DL.length?`<table><thead><tr><th>ที่</th><th>สังกัด</th><th>รหัสเข้าระบบ<br>(หัวหน้ากลุ่มงาน)</th><th>ชื่อหน่วยงาน / กลุ่มงาน</th><th>ผู้บังคับบัญชาสูงสุด<br>(ผู้อนุญาต)</th><th>ตำแหน่ง</th><th>ผู้บังคับบัญชาชั้นต้น</th><th>ตำแหน่ง</th><th>บุคลากร<br>ในระบบ</th><th></th></tr></thead><tbody>${DL.map((d,i)=>`<tr><td class="c">${i+1}</td><td style="min-width:130px;font-size:13px">${esc(d.min||d.cat||'-')}</td><td style="white-space:nowrap">${din(d,'code',90)}${d.pwHash?` <button class="btn sec sm" data-dreset="${d.id}" title="รีเซ็ตรหัสผ่านกลับเป็นรหัสเข้าระบบ">↺</button>`:''}</td><td>${din(d,'name',240)}</td><td>${din(d,'headName',160)}</td><td>${din(d,'headPos',170)}</td><td>${din(d,'supName',160)}</td><td>${din(d,'supPos',170)}</td><td class="c">${S.staff.filter(x=>norm(x.dept)===norm(d.name)).length}</td><td class="c"><button class="btn red sm" data-drm="${d.id}">ลบ</button></td></tr>`).join('')}</tbody></table>`:'<div class="empty">ไม่พบหน่วยงาน</div>';
-  const dopts=cur=>opt('','— เลือกกลุ่มงาน —')+dcats().map(c=>{const L=S.depts.filter(d=>(d.cat||'อื่นๆ')===c);return L.length?`<optgroup label="${c}">${L.map(d=>opt(d.name,d.name,norm(d.name)===norm(cur))).join('')}</optgroup>`:''}).join('')+(cur&&!S.depts.some(d=>norm(d.name)===norm(cur))?opt(cur,cur+' (ยังไม่มีในรายการ)',true):'');
-  const selD=dc&&S.depts.find(d=>d.id===dc),VS=visStaff().filter(x=>!selD||norm(x.dept)===norm(selD.name));$('#bStaff').innerHTML=VS.length?`<table><thead><tr><th>No</th><th>เลข ID</th><th>ชื่อ-สกุล</th><th>ตำแหน่ง</th><th>หน่วยงาน/กลุ่มงาน</th><th>ผู้บังคับบัญชาชั้นต้น (อัตโนมัติ)</th><th>เบอร์โทร</th><th>ที่อยู่ติดต่อ</th>${role==='admin'?'<th>เลขบัตรประชาชน</th>':''}<th>ประเภทบุคลากร</th><th>พักผ่อน<br>ปีนี้</th><th>พักผ่อน<br>สะสม</th><th>ป่วย</th><th>กิจ</th><th></th></tr></thead><tbody>${VS.map((s,i)=>{const p=supOf(s);return`<tr><td class="c">${i+1}</td><td><input data-sid="${s.id}" data-f="code" value="${esc(s.code)}" style="width:90px" class="${s.code&&S.staff.filter(x=>norm(x.code)===norm(s.code)).length>1?'dup':''}"></td><td><input data-sid="${s.id}" data-f="name" value="${esc(s.name)}" style="min-width:170px"></td><td><input data-sid="${s.id}" data-f="pos" value="${esc(s.pos)}" style="min-width:170px"></td><td><select data-sid="${s.id}" data-f="dept" style="min-width:170px"${role==='head'?' disabled':''}>${dopts(s.dept)}</select></td><td style="min-width:170px">${p.name?`${esc(p.name)}<div class="muted">${esc(p.pos)}</div>`:`<span class="muted">${deptOf(s)?'(หน่วยงานนี้ยังไม่ได้ตั้งผู้บังคับบัญชาชั้นต้น)':'— เลือกหน่วยงาน —'}</span>`}</td><td><input data-sid="${s.id}" data-f="tel" value="${esc(s.tel)}" style="width:120px"></td><td><input data-sid="${s.id}" data-f="addr" value="${esc(s.addr)}" style="min-width:180px"></td>${role==='admin'?`<td><input data-sid="${s.id}" data-f="cid" value="${esc(cidFmt(s.cid))}" inputmode="numeric" maxlength="17" style="width:150px" class="${s.cid&&!cidValid(s.cid)?'dup':''}" title="${s.cid&&!cidValid(s.cid)?'เลขบัตรไม่ถูกต้อง':''}"></td>`:''}<td><select data-sid="${s.id}" data-f="etype" style="min-width:130px">${opt('','— เลือก —')+ETYPES.map(e=>opt(e,e,e===s.etype)).join('')}</select></td>${(()=>{const q=quotaOf(s);return[['qVac',q.vac],['qCarry',q.carry],['qSick',q.sick],['qBiz',q.biz]].map(([f,v])=>`<td><input type="number" min="0" max="365" step="0.5" data-sid="${s.id}" data-f="${f}" value="${v}" style="width:64px"></td>`).join('')})()}<td class="c" style="white-space:nowrap">${i&&role!=='head'?`<button class="btn sec sm" data-up="${s.id}">▲</button> `:''}<button class="btn red sm" data-rm="${s.id}">ลบ</button></td></tr>`}).join('')}</tbody></table>`:'<div class="empty">ยังไม่มีรายชื่อ กด “+ เพิ่มรายชื่อ”</div>';
+  const isA=role==='admin';renderQDef();
+  const cs=$('#dCat');let dc=cs.value;if(role==='head'){const md=myDept();dc=md?md.id:''}
+  cs.innerHTML=(isA?opt('','— ทุกกลุ่มงาน —'):'')+S.depts.filter(d=>isA||d.id===dc).map(d=>opt(d.id,`${d.code?d.code+' ':''}${d.name||'(กลุ่มใหม่)'} (${grpStaff(d).length} คน)`,d.id===dc)).join('');cs.value=dc;cs.disabled=!isA;
+  const D=dc&&S.depts.find(d=>d.id===dc);
+  const tops=[...new Set(S.depts.map(d=>(d.headName||'')+'|'+(d.headPos||'')))];
+  if(document.activeElement!==$('#topName')&&document.activeElement!==$('#topPos')){const t=(tops[0]||'|').split('|');$('#topName').value=t[0];$('#topPos').value=t[1]}
+  $('#topNote').textContent=tops.length>1?'⚠ แต่ละกลุ่มตั้งไว้ไม่เหมือนกัน แก้ที่นี่เพื่อใช้ชื่อเดียวทุกกลุ่ม':'';
+  $('#topList').innerHTML=S.staff.map(x=>`<option value="${esc(x.name)}">${esc(x.pos||'')}</option>`).join('');
+  const din=(f,ph,w)=>`<input data-did="${D.id}" data-f="${f}" value="${esc(D[f]||'')}" placeholder="${ph}" style="min-width:${w}px;flex:1 1 ${w}px"${f==='supName'?' list="supList"':''}>`;
+  if(D){$('#grpTitle').textContent='ข้อมูลกลุ่มงาน';$('#grpBtns').innerHTML=`<button class="btn red sm" data-drm="${D.id}">ลบกลุ่มงานนี้</button>`;
+    $('#dTable').innerHTML=`<div class="bd"><div class="grid2" style="gap:10px 16px">
+     <div class="row"><label>ชื่อกลุ่มงาน</label>${din('name','ชื่อกลุ่มงาน',220)}</div>
+     <div class="row"><label>รหัสเข้าระบบ<br><span class="muted" style="font-weight:400">หัวหน้ากลุ่มงาน</span></label><div style="display:flex;gap:6px;align-items:center">${din('code','เช่น 0800',90)}${D.pwHash?`<button class="btn sec sm" data-dreset="${D.id}">รีเซ็ตรหัสผ่าน</button>`:'<span class="muted">รหัสผ่าน = รหัสเข้าระบบ</span>'}</div></div>
+     <div class="row"><label>ผู้บังคับบัญชาชั้นต้น<br><span class="muted" style="font-weight:400">ผอ./หัวหน้ากลุ่ม</span></label>${din('supName','เลือกจากเจ้าหน้าที่ในกลุ่ม',220)}</div>
+     <div class="row"><label>ตำแหน่ง</label>${din('supPos','ตำแหน่ง (เติมให้อัตโนมัติ)',220)}</div></div>
+     <datalist id="supList">${grpStaff(D).map(x=>`<option value="${esc(x.name)}">${esc(x.pos||'')}</option>`).join('')}</datalist></div>`}
+  else{$('#grpTitle').textContent=`กลุ่มงานทั้งหมด (${S.depts.length})`;$('#grpBtns').innerHTML=`<button class="btn sec sm" id="hImport">อัปเดตจากรายชื่อ สนจ.ยล.</button> <button class="btn sec sm" id="dAdd">+ เพิ่มกลุ่มงาน</button>`;
+    $('#dTable').innerHTML=`<div class="tw" data-cardify><table><thead><tr><th>รหัสเข้าระบบ</th><th>กลุ่มงาน</th><th>ผู้บังคับบัญชาชั้นต้น</th><th>เจ้าหน้าที่</th><th></th></tr></thead><tbody>${S.depts.map(d=>`<tr><td class="c">${esc(d.code||'-')}</td><td>${esc(d.name||'(ยังไม่ตั้งชื่อ)')}</td><td>${d.supName?`${esc(d.supName)}<div class="muted">${esc(d.supPos||'')}</div>`:'<span class="muted">ยังไม่ได้ตั้ง</span>'}</td><td class="c">${grpStaff(d).length} คน</td><td class="c"><button class="btn sec sm" data-dsel="${d.id}">เปิด / แก้ไข</button></td></tr>`).join('')}</tbody></table></div>`}
+  const q=norm($('#stSearch').value).toLowerCase();
+  const VS=visStaff().filter(x=>(!D||norm(x.dept)===norm(D.name))&&(!q||[x.code,x.name,x.pos].some(v=>String(v||'').toLowerCase().includes(q)))).sort((a,b)=>String(a.code).localeCompare(String(b.code)));
+  $('#stTitle').textContent=`เจ้าหน้าที่${D?' — '+D.name:' ทุกกลุ่มงาน'} (${VS.length} คน)`;
+  $('#dInfo').textContent=D&&D.supName?`ผู้บังคับบัญชาชั้นต้น: ${D.supName}`:'';
+  const dopts=cur=>opt('','— เลือกกลุ่มงาน —')+S.depts.map(d=>opt(d.name,d.name,norm(d.name)===norm(cur))).join('')+(cur&&!S.depts.some(d=>norm(d.name)===norm(cur))?opt(cur,cur+' (ไม่มีในรายการ)',true):'');
+  const inp=(s,f,w,extra='')=>`<input data-sid="${s.id}" data-f="${f}" value="${esc(s[f]??'')}" style="${w}"${extra}>`;
+  $('#bStaff').innerHTML=VS.length?`<table><thead><tr><th>เลข ID</th><th>ชื่อ-สกุล</th><th>ตำแหน่ง</th><th>ประเภท</th>${D?'':'<th>กลุ่มงาน</th>'}<th>เบอร์โทร</th><th>ที่อยู่ติดต่อ</th>${isA?'<th>เลขบัตรประชาชน</th>':''}<th>พักผ่อน<br>ปีนี้</th><th>พักผ่อน<br>สะสม</th><th>ป่วย</th><th>กิจ</th><th></th></tr></thead><tbody>${VS.map(s=>{const Q=quotaOf(s),isSup=D&&norm(D.supName)===norm(s.name);return`<tr>
+   <td>${inp(s,'code','width:80px',` class="${s.code&&S.staff.filter(x=>norm(x.code)===norm(s.code)).length>1?'dup':''}"`)}</td>
+   <td>${inp(s,'name','min-width:170px')}${isSup?'<div class="muted">★ ผู้บังคับบัญชาชั้นต้น</div>':''}</td><td>${inp(s,'pos','min-width:170px')}</td>
+   <td><select data-sid="${s.id}" data-f="etype" style="min-width:120px">${opt('','— เลือก —')+ETYPES.map(e=>opt(e,e,e===s.etype)).join('')}</select></td>
+   ${D?'':`<td><select data-sid="${s.id}" data-f="dept" style="min-width:170px"${role==='head'?' disabled':''}>${dopts(s.dept)}</select></td>`}
+   <td>${inp(s,'tel','width:115px')}</td><td>${inp(s,'addr','min-width:150px')}</td>
+   ${isA?`<td><input data-sid="${s.id}" data-f="cid" value="${esc(cidFmt(s.cid))}" inputmode="numeric" maxlength="17" style="width:145px" class="${s.cid&&!cidValid(s.cid)?'dup':''}"></td>`:''}
+   ${[['qVac',Q.vac],['qCarry',Q.carry],['qSick',Q.sick],['qBiz',Q.biz]].map(([f,v])=>`<td><input type="number" min="0" max="365" step="0.5" data-sid="${s.id}" data-f="${f}" value="${v}" style="width:60px"></td>`).join('')}
+   <td class="c"><button class="btn red sm" data-rm="${s.id}">ลบ</button></td></tr>`}).join('')}</tbody></table>`:'<div class="empty">ไม่พบเจ้าหน้าที่</div>';
 }
 let deptTimer;
 $('#dTable').addEventListener('input',e=>{const i=e.target,d=S.depts.find(x=>x.id===i.dataset.did);if(!d)return;
   if(i.dataset.f==='name'){const old=d.name,nw=i.value.trim();let ch=0;S.staff.forEach(st=>{if(old&&norm(st.dept)===norm(old)){st.dept=nw;ch=1}});d.name=nw;if(ch){clearTimeout(staffTimer);staffTimer=setTimeout(saveStaff,600)}}
-  else{d[i.dataset.f]=i.value.trim();if(i.dataset.f==='headName'||i.dataset.f==='headPos')delete d.headSrc}
+  else{d[i.dataset.f]=i.value.trim();if(i.dataset.f==='headName'||i.dataset.f==='headPos')delete d.headSrc;if(i.dataset.f==='supName'){const m=S.staff.find(x=>norm(x.name)===norm(d.supName));if(m&&m.pos){d.supPos=m.pos;const p=document.querySelector('#dTable [data-f="supPos"]');if(p)p.value=m.pos}}}
   clearTimeout(deptTimer);deptTimer=setTimeout(()=>{saveDepts();const f=document.activeElement;renderStaffTableOnly()},600)});
 function renderStaffTableOnly(){const ae=document.activeElement,id=ae&&ae.dataset&&ae.dataset.did,f=ae&&ae.dataset&&ae.dataset.f,pos=ae&&ae.selectionStart;renderStaff();if(id){const el=document.querySelector(`#dTable [data-did="${id}"][data-f="${f}"]`);if(el){el.focus();try{el.setSelectionRange(pos,pos)}catch(e){}}}}
-$('#dSearch').addEventListener('input',()=>renderStaff());$('#dCat').addEventListener('change',()=>renderStaff());
-$('#hImport').onclick=async()=>{if(!await ask(`อัปเดตกลุ่มงานและผู้บังคับบัญชาจาก${DIR_SRC}?<br><span class="muted">ชื่อหัวหน้าที่คุณพิมพ์แก้เองจะไม่ถูกแทนที่</span>`))return;const r=importDirectory();renderStaff();toast(`เพิ่ม ${r.add} · อัปเดต ${r.upd} หน่วยงาน`)};
-$('#dTable').addEventListener('click',async e=>{const rs=e.target.dataset.dreset;if(rs){const d=S.depts.find(x=>x.id===rs);if(d&&await ask(`รีเซ็ตรหัสผ่านของ ${esc(d.name)} กลับเป็นรหัสเข้าระบบ (${esc(d.code)})?`)){delete d.pwHash;saveDepts();renderStaff();toast('รีเซ็ตรหัสผ่านแล้ว')}return}const id=e.target.dataset.drm;if(!id)return;const d=S.depts.find(x=>x.id===id),n=S.staff.filter(x=>norm(x.dept)===norm(d.name)).length;
-  if(!await ask(`ลบกลุ่มงาน <b>${esc(d.name||'(ไม่มีชื่อ)')}</b>?${n?`<br>มีบุคลากร ${n} คนอยู่ในกลุ่มนี้ ต้องเลือกกลุ่มงานใหม่ให้ภายหลัง`:''}`))return;S.depts=S.depts.filter(x=>x!==d);saveDepts();renderStaff()});
-$('#dAdd').onclick=()=>{$('#dSearch').value='';$('#dCat').value='';S.depts.push({id:uid(),name:'',cat:'อื่นๆ',supName:'',supPos:'',headName:'',headPos:''});saveDepts();renderStaff();const ins=document.querySelectorAll('#dTable input[data-f="name"]');ins[ins.length-1].focus()};
+$('#stSearch').addEventListener('input',()=>renderStaff());$('#dCat').addEventListener('change',()=>{$('#stSearch').value='';renderStaff()});
+['topName','topPos'].forEach(id=>$('#'+id).addEventListener('input',()=>{const n=$('#topName').value.trim();let p=$('#topPos').value.trim();
+  if(id==='topName'){const m=S.staff.find(x=>norm(x.name)===norm(n));if(m&&m.pos){p=m.pos;$('#topPos').value=p}}
+  S.depts.forEach(d=>{d.headName=n;d.headPos=p;delete d.headSrc});clearTimeout(deptTimer);deptTimer=setTimeout(()=>{saveDepts();$('#topNote').textContent='บันทึกแล้ว'},600)}));
+async function hImportClick(){if(!await ask(`อัปเดตกลุ่มงานและผู้บังคับบัญชาจาก${DIR_SRC}?<br><span class="muted">ชื่อหัวหน้าที่คุณพิมพ์แก้เองจะไม่ถูกแทนที่</span>`))return;const r=importDirectory();renderStaff();toast(`เพิ่ม ${r.add} · อัปเดต ${r.upd} กลุ่มงาน`)}
+$('#grpPanel').addEventListener('click',async e=>{if(e.target.id==='hImport')return hImportClick();if(e.target.id==='dAdd')return dAddClick();const sel=e.target.dataset.dsel;if(sel){$('#dCat').value=sel;renderStaff();$('#grpPanel').scrollIntoView({behavior:'smooth'});return}const rs=e.target.dataset.dreset;if(rs){const d=S.depts.find(x=>x.id===rs);if(d&&await ask(`รีเซ็ตรหัสผ่านของ ${esc(d.name)} กลับเป็นรหัสเข้าระบบ (${esc(d.code)})?`)){delete d.pwHash;saveDepts();renderStaff();toast('รีเซ็ตรหัสผ่านแล้ว')}return}const id=e.target.dataset.drm;if(!id)return;const d=S.depts.find(x=>x.id===id),n=S.staff.filter(x=>norm(x.dept)===norm(d.name)).length;
+  if(!await ask(`ลบกลุ่มงาน <b>${esc(d.name||'(ไม่มีชื่อ)')}</b>?${n?`<br>มีบุคลากร ${n} คนอยู่ในกลุ่มนี้ ต้องเลือกกลุ่มงานใหม่ให้ภายหลัง`:''}`))return;S.depts=S.depts.filter(x=>x!==d);saveDepts();$('#dCat').value='';renderStaff()});
+function dAddClick(){const t=S.depts[0]||{},n=S.depts.map(d=>parseInt(d.code,10)).filter(x=>!isNaN(x)),nd={id:uid(),name:'',cat:t.cat||'อื่นๆ',min:t.min||'',code:String((n.length?Math.max(...n):0)+100).padStart(4,'0'),supName:'',supPos:'',headName:t.headName||'',headPos:t.headPos||''};S.depts.push(nd);saveDepts();$('#dCat').value=nd.id;renderStaff();const i=document.querySelector('#dTable input[data-f="name"]');if(i)i.focus()}
 $('#bStaff').addEventListener('change',e=>{const f=e.target.dataset.f;if(f==='dept'){saveStaff();renderStaff()}if(f==='etype'){const st=staffById(e.target.dataset.sid);if(st){st.etype=e.target.value;const d=qDefOf(st.etype);Object.assign(st,{qVac:d.qVac,qSick:d.qSick,qBiz:d.qBiz});saveStaff();renderStaff();toast('ตั้งโควต้าตามประเภท '+st.etype+' แล้ว (แก้รายคนได้)')}}});
 let setTimer;
 function setChanged(){
@@ -1006,7 +1031,7 @@ $('#bStaff').addEventListener('click',async e=>{
     if(!await ask(`ลบ <b>${esc(s.name||'(ไม่มีชื่อ)')}</b> ออกจากรายชื่อ?${n?`<br><span style="color:var(--red)">มีประวัติการลา ${n} รายการ (ยังเก็บไว้ แต่จะไม่แสดงในแบบสรุป)</span>`:''}`))return;
     S.staff=S.staff.filter(x=>x.id!==rm);saveStaff();renderStaff();toast('ลบรายชื่อแล้ว')}
 });
-$('#bAdd').onclick=()=>{const n=S.staff.map(x=>parseInt(x.code,10)).filter(x=>!isNaN(x));S.staff.push({id:uid(),code:String(n.length?Math.max(...n)+1:1001),name:'',pos:'',etype:'ข้าราชการ',...qDefOf('ข้าราชการ'),qCarry:0,dept:role==='head'&&myDept()?myDept().name:''});saveStaff();renderStaff();const ins=document.querySelectorAll('#bStaff input[data-f="name"]');ins[ins.length-1].focus()};
+$('#bAdd').onclick=()=>{const D=role==='head'?myDept():S.depts.find(d=>d.id===$('#dCat').value);$('#stSearch').value='';const pool=(D?grpStaff(D):S.staff).map(x=>parseInt(x.code,10)).filter(x=>!isNaN(x));let code=pool.length?Math.max(...pool)+1:(D&&parseInt(D.code,10)?parseInt(D.code,10)+1:1001);while(staffByCode(String(code).padStart(4,'0')))code++;const st={id:uid(),code:String(code).padStart(4,'0'),name:'',pos:'',etype:'ข้าราชการ',...qDefOf('ข้าราชการ'),qCarry:0,dept:D?D.name:''};S.staff.push(st);saveStaff();renderStaff();const el=document.querySelector(`#bStaff input[data-sid="${st.id}"][data-f="name"]`);if(el){el.focus();el.scrollIntoView({block:'center'})}toast(D?`เพิ่มแถวใหม่ใน${D.name} กรอกชื่อได้เลย`:'เพิ่มแถวใหม่แล้ว อย่าลืมเลือกกลุ่มงาน')};
 async function allLeaves(){
   if(!store.cloud)return LV;
   const out=[];for(let y=curFY()-5;y<=curFY()+1;y++){const s=await store.db.collection('leaves').where('fy','==',y).get();s.docs.forEach(d=>out.push({...d.data()}))}return out;
@@ -1536,9 +1561,9 @@ function gotoPanel(tab,sel,act){showTab(tab);setTimeout(()=>{const el=sel&&docum
 $('#add').addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b){({
   back:()=>gotoPanel('back','#back',()=>$('#bkStaff').focus()),
   staff1:()=>gotoPanel('staff','#bStaff',()=>$('#bAdd').click()),
-  dept1:()=>gotoPanel('staff','#dTable',()=>$('#dAdd').click()),
+  dept1:()=>gotoPanel('staff','#grpPanel',()=>dAddClick()),
   hol1:()=>gotoPanel('hol','#hol',()=>$('#hDate').focus()),
-  quota:()=>gotoPanel('staff','#qDefPanel')})[b.dataset.go]();return}
+  quota:()=>gotoPanel('staff','#qDefPanel',()=>{$('#qDefPanel').open=true})})[b.dataset.go]();return}
   const t=e.target.closest('[data-tpl]');if(t)importTemplate(t.dataset.tpl)});
 $('#add').addEventListener('change',e=>{const i=e.target;if(i.dataset.up===undefined)return;const f=i.files[0];i.value='';if(f)importFile(f,i.dataset.up||'')});
 function renderAdd(){$('#addSum').textContent=`ตอนนี้มีเจ้าหน้าที่ ${S.staff.length} คน · ${S.depts.length} กลุ่มงาน · วันหยุด ${S.holidays.length} วัน`}
