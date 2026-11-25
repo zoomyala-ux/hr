@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>ระบบบันทึกข้อมูลการลา</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@500;600;700&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai+Looped:wght@400;500;600;700&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{--navy:#1F4E79;--navy2:#2E6DA4;--bg:#DDEBF7;--line:#c9d6e3;--red:#c62828;--green:#2e7d32;--amber:#b26a00;--inp:#FFFBEA}
 *{box-sizing:border-box}
@@ -86,7 +86,7 @@ tr.edit td{background:#fff6d6!important}
 /* ===== THEME (ร่วมสมัย) ===== */
 :root{--navy:#1e3a8a;--navy2:#2563eb;--bg:#f1f5fb;--line:#e2e8f0;--inp:#fff;--ink:#0f172a;--sub:#64748b;--grad:linear-gradient(135deg,#1e3a8a 0%,#2563eb 55%,#0ea5e9 100%);--r:14px;--sh:0 1px 2px #0f172a0f,0 4px 16px #0f172a0a}
 body{background:var(--bg);color:var(--ink);font-family:Sarabun,'Noto Sans Thai',Tahoma,sans-serif}
-h1,h2,h3,.panel>h3,nav button,.btn,.hcard .n,.hero h2,.big{font-family:Prompt,Sarabun,sans-serif}
+h1,h2,h3,.panel>h3,nav button,.btn,.hcard .n,.hero h2,.big{font-family:var(--ff)}
 header{background:var(--grad);padding:16px 24px;box-shadow:0 2px 12px #1e3a8a33;position:relative;overflow:hidden}
 header::after{content:"";position:absolute;right:-60px;top:-80px;width:260px;height:260px;border-radius:50%;background:#ffffff14;pointer-events:none}
 header h1{font-size:22px;font-weight:600;letter-spacing:.2px}
@@ -108,7 +108,7 @@ section.on{animation:fadeIn .25s ease}
 .panel>h3{background:#fff;color:var(--ink);font-size:16px;font-weight:600;padding:13px 18px;border-bottom:1px solid #eef2f7;position:relative}
 .panel>h3::before{content:"";position:absolute;left:0;top:12px;bottom:12px;width:4px;border-radius:0 4px 4px 0;background:var(--grad)}
 .panel>.bd{padding:16px 18px}
-details.panel>summary{padding:13px 18px!important;font-family:Prompt,Sarabun,sans-serif;list-style:none}
+details.panel>summary{padding:13px 18px!important;font-family:var(--ff);list-style:none}
 details.panel>summary::-webkit-details-marker{display:none}
 details.panel>summary::after{content:"▾";float:right;color:var(--sub)}
 details.panel[open]>summary{border-bottom:1px solid #eef2f7}
@@ -172,11 +172,11 @@ section>.tw,section>div>.tw{background:#fff;border:1px solid var(--line);border-
 .hnav{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
 .hnav .hcard{display:flex;gap:12px;align-items:flex-start;padding:14px}
 .hnav .hcard .ic{margin:0}
-.hnav .hcard b{display:block;font-size:15px;margin-bottom:2px;font-family:Prompt,Sarabun,sans-serif;font-weight:500}
+.hnav .hcard b{display:block;font-size:15px;margin-bottom:2px;font-family:var(--ff);font-weight:500}
 .alert{border-radius:12px;background:#fffbeb;border-color:#fde68a;transition:.15s}
 .alert:hover:not(.ok){border-color:#f59e0b;transform:translateX(2px)}
 .alert.ok{background:#ecfdf5;border-color:#a7f3d0}
-.sec-title{font-family:Prompt,Sarabun,sans-serif;font-weight:600;font-size:17px;margin:20px 2px 10px;color:var(--ink)}
+.sec-title{font-family:var(--ff);font-weight:600;font-size:17px;margin:20px 2px 10px;color:var(--ink)}
 #fbFab{position:fixed;right:18px;bottom:18px;z-index:30;border:0;border-radius:999px;padding:11px 16px;background:var(--grad);color:#fff;font:inherit;font-weight:600;box-shadow:0 6px 18px #1e3a8a55;cursor:pointer;animation:up .4s ease}
 #fbFab:hover{transform:translateY(-2px)}
 body:not(.staff) #fbFab{display:none}
@@ -190,7 +190,7 @@ html[data-device=mobile] #fbFab{padding:10px 13px;font-size:14px;bottom:12px;rig
 /* ===== หน้าอัปโหลด ===== */
 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
 .steps>div{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;box-shadow:var(--sh);display:flex;gap:12px;align-items:center}
-.steps .no{width:36px;height:36px;border-radius:50%;background:var(--grad);color:#fff;display:grid;place-items:center;font-weight:700;font-family:Prompt,sans-serif;flex:none}
+.steps .no{width:36px;height:36px;border-radius:50%;background:var(--grad);color:#fff;display:grid;place-items:center;font-weight:700;font-family:var(--ff);flex:none}
 @media(max-width:720px){.steps{grid-template-columns:1fr}}
 .upgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:16px}
 .upcard .bd{display:flex;flex-direction:column;gap:12px}
@@ -360,6 +360,34 @@ input,select,textarea{font-size:15.5px}
 #home .dgrid2 .panel>.bd{padding:8px 12px}
 body:has(#home.on) main{padding-bottom:8px}
 #home .dgrid2 .panel{margin-bottom:0}
+/* ===== ฟอนต์อ่านง่าย ===== */
+:root{--ff:'IBM Plex Sans Thai Looped',Sarabun,Tahoma,sans-serif}
+body,button,input,select,textarea,.btn,nav button,.panel>h3,.hero h2,.hcard .n,.big,h1,h2,h3{font-family:var(--ff)}
+.lf,.lf *{font-family:Sarabun,Tahoma,sans-serif}
+/* ===== หน้าหลัก: เต็มจอพอดี ปรับตามขนาดจอ ===== */
+html[data-device=desktop] #home.on{display:grid;grid-template-rows:auto auto minmax(0,1.2fr) minmax(0,1fr);gap:12px;height:var(--homeh,auto);min-height:600px}
+html[data-device=desktop] #home>*{margin:0!important;min-height:0}
+html[data-device=desktop] #home .dgrid{grid-template-columns:1fr 1.45fr 1.25fr;height:100%}
+html[data-device=desktop] #home .dgrid2{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);height:100%}
+html[data-device=desktop] #home .panel{display:flex;flex-direction:column;min-height:0;height:100%;margin:0}
+html[data-device=desktop] #home .panel>.bd{flex:1;min-height:0;height:auto!important;overflow:auto}
+html[data-device=desktop] #home #hmDonut,html[data-device=desktop] #home #hmBars{overflow:hidden}
+#hmDonut>div{height:100%;flex-wrap:nowrap!important}
+#hmDonut .donut{height:100%;width:auto;max-height:230px;min-height:110px;aspect-ratio:1}
+#hmBars{display:flex;flex-direction:column}
+#hmBars .vbars{flex:1;height:auto;min-height:100px}
+#home .legend{font-size:16px}
+#home #hmTodo .alert{font-size:15.5px!important;padding:8px 12px}
+#home .hnav{grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:minmax(36px,1fr);height:100%}
+#home .hnav .hcard{height:100%}
+#home .hnav .hcard b{font-size:15px}
+html[data-device=desktop] body:has(#home.on) main{padding-bottom:12px}
+main,nav,#subnav{max-width:min(1720px,100%)!important}
+#subnav{max-width:min(1696px,100%)!important}
+#home .legend>div{white-space:nowrap}
+#home .hnav{grid-auto-rows:minmax(0,1fr)}
+#home .hnav .hcard{padding:2px 8px;min-height:0;overflow:hidden}
+#home .hnav .hcard .ic{width:26px;height:26px;font-size:14px}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.hcard{opacity:1}}
 /* ---- ปรับตามอุปกรณ์ ---- */
 html[data-device=desktop] nav{flex-wrap:wrap;row-gap:4px}
@@ -1920,7 +1948,7 @@ const AVC=['#2563eb','#0ea5e9','#7c3aed','#db2777','#ea580c','#16a34a','#0891b2'
 const avOf=n=>{const t=String(n||'?').replace(/^(นาย|นางสาว|นาง|ว่าที่ร้อยตรี|ดร\.)\s*/,'');let h=0;for(const c of t)h=(h*31+c.charCodeAt(0))>>>0;return`<span class="av" style="background:${AVC[h%AVC.length]}">${esc(t.slice(0,1))}</span>`};
 function countUp(root){root.querySelectorAll('[data-count]').forEach(el=>{const to=+el.dataset.count,suf=el.dataset.suf||'',t0=performance.now(),d=900;
   const f=now=>{const p=Math.min(1,(now-t0)/d),e=1-Math.pow(1-p,3);el.textContent=fmt(Math.round(to*e*10)/10)+suf;if(p<1)requestAnimationFrame(f)};requestAnimationFrame(f)})}
-function renderHome(){
+function renderHome(){setTimeout(fitHome,0);
   const g=gDept(),VS=visStaff(),RL=roundLeaves().filter(inScope),FL=fyLeaves().filter(inScope),td=todayISO(),wk=iso(new Date(pd(td).getTime()+7*864e5));
   const hr=new Date(Date.now()+7*36e5).getUTCHours();$('#hmHello').textContent=`${hr<12?'สวัสดีตอนเช้า':hr<17?'สวัสดีตอนบ่าย':'สวัสดีตอนเย็น'} ${role==='admin'?'ผู้ดูแลระบบ':'หัวหน้ากลุ่มงาน'} 👋`;
   $('#hmSub').textContent=`${g?g.name:(role==='head'&&myDept()?myDept().name:'ทุกกลุ่มงาน')} · วันนี้ ${thDL(td)} · ${$('#hSub').textContent.split(' · ').slice(1).join(' · ')}`;
@@ -1932,7 +1960,7 @@ function renderHome(){
   countUp($('#hmKpi'));
   // donut
   const TD=LEAVE_T.map(t=>({t,v:leaves.filter(l=>l.type===t.n).reduce((a,l)=>a+(+l.days||0),0)})).filter(x=>x.v>0),tot=TD.reduce((a,x)=>a+x.v,0),C=2*Math.PI*52;
-  let off=0;$('#hmDonut').innerHTML=tot?`<div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;justify-content:center"><svg class="donut" viewBox="0 0 140 140" width="150" height="150"><circle cx="70" cy="70" r="52" fill="none" stroke="#eef2f7" stroke-width="18"/>${TD.map(x=>{const len=x.v/tot*C,el=`<circle cx="70" cy="70" r="52" fill="none" stroke="${x.t.c}" stroke-width="18" stroke-dasharray="0 ${C}" data-da="${len} ${C-len}" stroke-dashoffset="${-off}" transform="rotate(-90 70 70)" stroke-linecap="butt"/>`;off+=len;return el}).join('')}<text x="70" y="68" text-anchor="middle" font-size="26" font-weight="700" fill="#0f172a" font-family="Prompt">${fmt(tot)}</text><text x="70" y="90" text-anchor="middle" font-size="13" fill="#64748b">วันลา</text></svg>
+  let off=0;$('#hmDonut').innerHTML=tot?`<div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;justify-content:center"><svg class="donut" viewBox="0 0 140 140" width="150" height="150"><circle cx="70" cy="70" r="52" fill="none" stroke="#eef2f7" stroke-width="18"/>${TD.map(x=>{const len=x.v/tot*C,el=`<circle cx="70" cy="70" r="52" fill="none" stroke="${x.t.c}" stroke-width="18" stroke-dasharray="0 ${C}" data-da="${len} ${C-len}" stroke-dashoffset="${-off}" transform="rotate(-90 70 70)" stroke-linecap="butt"/>`;off+=len;return el}).join('')}<text x="70" y="68" text-anchor="middle" font-size="26" font-weight="700" fill="#0f172a" font-family="inherit">${fmt(tot)}</text><text x="70" y="90" text-anchor="middle" font-size="13" fill="#64748b">วันลา</text></svg>
     <div class="legend">${TD.map(x=>`<div><i style="background:${x.t.c}"></i>${x.t.s} <b>${fmt(x.v)}</b> วัน</div>`).join('')}</div></div>`:'<div class="empty">ยังไม่มีการลาในรอบนี้</div>';
   requestAnimationFrame(()=>setTimeout(()=>document.querySelectorAll('#hmDonut circle[data-da]').forEach(c=>c.setAttribute('stroke-dasharray',c.dataset.da)),60));
   // monthly bars
@@ -1969,6 +1997,8 @@ function renderHome(){
     ['base','⚙️','ตั้งค่าปีงบ/เกณฑ์','ตั้งปีงบ รอบครึ่งปี เกณฑ์การลา'],['hol','🗓️','วันหยุดราชการ','ใช้นับวันทำการในใบลา'],['form','🖨️','หน้าตาใบลา','ข้อความและผู้ลงนามในใบลาที่พิมพ์'],['fb','💬','แจ้งปัญหา/แนะนำ',role==='admin'?'ดูเรื่องที่ผู้ใช้แจ้ง เพื่อนำไปพัฒนาระบบ':'บอกปัญหาหรือสิ่งที่อยากให้ปรับปรุง']].filter(x=>canTab(x[0]));
   $('#hmNav').innerHTML=NAV.map(([t,i,n,d],k)=>`<button class="hcard" data-go2="${t}" title="${esc(d)}" style="animation-delay:${200+k*30}ms"><span class="ic">${i}</span><b>${n}</b></button>`).join('');
 }
+function fitHome(){const el=$('#home');if(!el||!el.classList.contains('on'))return;const top=el.getBoundingClientRect().top+window.scrollY;document.documentElement.style.setProperty('--homeh',Math.max(600,window.innerHeight-top-14)+'px')}
+window.addEventListener('resize',()=>{clearTimeout(window._fh);window._fh=setTimeout(fitHome,80)});
 $('#home').addEventListener('click',e=>{const b=e.target.closest('[data-go2]');if(b)showTab(b.dataset.go2)});
 
 /* ---------- แจ้งปัญหา / ข้อเสนอแนะ ---------- */
