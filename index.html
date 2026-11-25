@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>ระบบบันทึกข้อมูลการลา</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@500;600;700&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{--navy:#1F4E79;--navy2:#2E6DA4;--bg:#DDEBF7;--line:#c9d6e3;--red:#c62828;--green:#2e7d32;--amber:#b26a00;--inp:#FFFBEA}
 *{box-sizing:border-box}
@@ -83,6 +83,124 @@ tfoot td{font-weight:700;background:#e8eff6}
 tr.edit td{background:#fff6d6!important}
 .editing{outline:3px solid #f0b400}
 #printArea{display:none}
+/* ===== THEME (ร่วมสมัย) ===== */
+:root{--navy:#1e3a8a;--navy2:#2563eb;--bg:#f1f5fb;--line:#e2e8f0;--inp:#fff;--ink:#0f172a;--sub:#64748b;--grad:linear-gradient(135deg,#1e3a8a 0%,#2563eb 55%,#0ea5e9 100%);--r:14px;--sh:0 1px 2px #0f172a0f,0 4px 16px #0f172a0a}
+body{background:var(--bg);color:var(--ink);font-family:Sarabun,'Noto Sans Thai',Tahoma,sans-serif}
+h1,h2,h3,.panel>h3,nav button,.btn,.hcard .n,.hero h2,.big{font-family:Prompt,Sarabun,sans-serif}
+header{background:var(--grad);padding:16px 24px;box-shadow:0 2px 12px #1e3a8a33;position:relative;overflow:hidden}
+header::after{content:"";position:absolute;right:-60px;top:-80px;width:260px;height:260px;border-radius:50%;background:#ffffff14;pointer-events:none}
+header h1{font-size:22px;font-weight:600;letter-spacing:.2px}
+.badge{background:#ffffff1f;border-color:#ffffff40;backdrop-filter:blur(4px)}
+#adminBar{max-width:1320px;margin:10px auto 0;padding:8px 16px!important;background:#fff!important;border:1px solid var(--line)!important;border-radius:12px;box-shadow:var(--sh);color:var(--ink)}
+nav{max-width:1320px;margin:0 auto;background:#f1f5fbe6;backdrop-filter:blur(8px);padding:12px 12px 8px;gap:6px}
+nav button{background:transparent;color:#475569;border-radius:12px;padding:9px 16px;font-weight:500;transition:.15s}
+nav button:hover{background:#fff;color:var(--navy)}
+nav button.on{background:#fff;color:var(--navy);box-shadow:var(--sh);font-weight:600}
+#subnav{max-width:1296px;margin:0 auto 10px;background:transparent;padding:0 12px;border-radius:0}
+#subnav button{background:#fff;border:1px solid var(--line);color:#334155;padding:6px 14px;border-radius:999px;transition:.15s}
+#subnav button:hover{border-color:var(--navy2);color:var(--navy2)}
+#subnav button.on{background:var(--grad);color:#fff;border-color:transparent;box-shadow:0 2px 8px #2563eb40}
+main{max-width:1320px;margin:0 auto;padding:0 12px 48px}
+section{background:transparent;border-radius:0;padding:4px 0;min-height:0}
+section.on{animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.panel{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;margin-bottom:16px}
+.panel>h3{background:#fff;color:var(--ink);font-size:16px;font-weight:600;padding:13px 18px;border-bottom:1px solid #eef2f7;position:relative}
+.panel>h3::before{content:"";position:absolute;left:0;top:12px;bottom:12px;width:4px;border-radius:0 4px 4px 0;background:var(--grad)}
+.panel>.bd{padding:16px 18px}
+details.panel>summary{padding:13px 18px!important;font-family:Prompt,Sarabun,sans-serif;list-style:none}
+details.panel>summary::-webkit-details-marker{display:none}
+details.panel>summary::after{content:"▾";float:right;color:var(--sub)}
+details.panel[open]>summary{border-bottom:1px solid #eef2f7}
+input,select,textarea{background:#fff;border:1px solid #cbd5e1;border-radius:10px;padding:8px 11px;transition:.15s}
+input:hover,select:hover,textarea:hover{border-color:#94a3b8}
+input:focus,select:focus,textarea:focus{outline:0;border-color:var(--navy2);box-shadow:0 0 0 3px #2563eb26}
+.btn{border-radius:10px;padding:8px 16px;background:var(--grad);box-shadow:0 2px 6px #2563eb33;transition:.15s;font-weight:500}
+.btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px #2563eb40}
+.btn:disabled{opacity:.5;transform:none;box-shadow:none;cursor:not-allowed}
+.btn.sec{background:#eef2ff;color:var(--navy);box-shadow:none}
+.btn.sec:hover{background:#e0e7ff}
+.btn.red{background:#ef4444;box-shadow:0 2px 6px #ef444433}
+.btn.sm{padding:4px 11px;border-radius:8px}
+th{background:#f8fafc;color:#334155;border:0;border-bottom:1px solid var(--line);padding:10px 8px;font-weight:600}
+td{border:0;border-bottom:1px solid #eef2f7;padding:8px}
+tbody tr:nth-child(even){background:#fcfdff}
+tbody tr:hover{background:#f1f5ff}
+tfoot td{background:#f1f5f9}
+.tw{border-radius:10px}
+section>.tw,section>div>.tw{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh)}
+.filters.stick,.btns.stick{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh);padding:10px 12px!important;margin-bottom:14px!important}
+.chip{border-radius:999px;background:#f1f5ff;border-color:#e0e7ff;padding:5px 12px}
+.msg{border-radius:10px}
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh)}
+.bar .t{height:12px;border-radius:999px}.bar .t i{border-radius:999px}
+#modal .box{border-radius:16px;box-shadow:0 20px 60px #0f172a40}
+#toast{border-radius:12px;box-shadow:0 8px 24px #0f172a33}
+.big{color:var(--navy)}
+/* ===== DASHBOARD ===== */
+.hero{position:relative;overflow:hidden;border-radius:20px;background:var(--grad);color:#fff;padding:22px 26px;margin-bottom:16px;box-shadow:0 10px 30px #1e3a8a33}
+.hero h2{margin:0 0 4px;font-size:24px;font-weight:600}
+.hero p{margin:0;opacity:.9}
+.hero .blob{position:absolute;border-radius:50%;filter:blur(2px);opacity:.35;animation:float 9s ease-in-out infinite}
+.hero .b1{width:220px;height:220px;right:-40px;top:-70px;background:radial-gradient(circle at 30% 30%,#7dd3fc,#2563eb)}
+.hero .b2{width:140px;height:140px;right:180px;bottom:-60px;background:radial-gradient(circle at 30% 30%,#a5b4fc,#1e3a8a);animation-delay:-3s}
+.hero .b3{width:90px;height:90px;left:45%;top:-30px;background:radial-gradient(circle at 30% 30%,#fff,#38bdf8);animation-delay:-6s}
+@keyframes float{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-18px,14px) scale(1.08)}}
+.hero .hrow{position:relative;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+.hero select{background:#ffffffe6;border:0;max-width:340px}
+.hero .wave{position:absolute;left:0;right:0;bottom:-2px;height:40px;opacity:.25}
+.kpi{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-bottom:16px}
+.hcard{position:relative;background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh);padding:16px;opacity:0;animation:up .5s ease forwards}
+.hcard:hover{transform:translateY(-3px);box-shadow:0 10px 24px #1e3a8a1f;border-color:#c7d2fe}
+.hcard .ic{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-size:20px;margin-bottom:8px;background:#eef2ff}
+.hcard .n{font-size:28px;font-weight:600;color:var(--ink)}
+.hcard .l{color:var(--sub);font-size:14px}
+.hcard.warn .ic{background:#fee2e2}.hcard.warn .n{color:#dc2626}
+@keyframes up{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.dgrid{display:grid;grid-template-columns:1.1fr 1.4fr 1fr;gap:16px}
+@media(max-width:1100px){.dgrid{grid-template-columns:1fr 1fr}}
+@media(max-width:720px){.dgrid{grid-template-columns:1fr}}
+.donut circle{transition:stroke-dasharray 1.1s cubic-bezier(.2,.8,.2,1)}
+.legend{display:grid;gap:6px;font-size:14px}.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px}
+.vbars{display:flex;align-items:flex-end;gap:10px;height:170px;padding:8px 4px 0;border-bottom:1px solid var(--line)}
+.vbars .c{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:4px}
+.vbars .c b{font-size:12px;color:#334155;font-weight:600}
+.vbars .c i{display:block;width:100%;max-width:38px;border-radius:8px 8px 3px 3px;background:var(--grad);height:0;transition:height 1s cubic-bezier(.2,.8,.2,1)}
+.vlab{display:flex;gap:10px;padding:4px}.vlab span{flex:1;text-align:center;font-size:12px;color:var(--sub)}
+.person{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px dashed #e2e8f0}
+.av{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:600;font-size:14px;flex:none}
+.hnav{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+.hnav .hcard{display:flex;gap:12px;align-items:flex-start;padding:14px}
+.hnav .hcard .ic{margin:0}
+.hnav .hcard b{display:block;font-size:15px;margin-bottom:2px;font-family:Prompt,Sarabun,sans-serif;font-weight:500}
+.alert{border-radius:12px;background:#fffbeb;border-color:#fde68a;transition:.15s}
+.alert:hover:not(.ok){border-color:#f59e0b;transform:translateX(2px)}
+.alert.ok{background:#ecfdf5;border-color:#a7f3d0}
+.sec-title{font-family:Prompt,Sarabun,sans-serif;font-weight:600;font-size:17px;margin:20px 2px 10px;color:var(--ink)}
+/* ===== หน้าอัปโหลด ===== */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+.steps>div{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;box-shadow:var(--sh);display:flex;gap:12px;align-items:center}
+.steps .no{width:36px;height:36px;border-radius:50%;background:var(--grad);color:#fff;display:grid;place-items:center;font-weight:700;font-family:Prompt,sans-serif;flex:none}
+@media(max-width:720px){.steps{grid-template-columns:1fr}}
+.upgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:16px}
+.upcard .bd{display:flex;flex-direction:column;gap:12px}
+.upcard .stp{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 12px;border:1px dashed #c7d2fe;border-radius:12px;background:#f8faff}
+.upcard .stp .no{width:26px;height:26px;border-radius:50%;background:#e0e7ff;color:var(--navy);display:grid;place-items:center;font-weight:700;font-size:13px;flex:none}
+.upcard .stp .btn{margin-left:auto}
+.grpF{max-width:320px}
+.upgrid{grid-template-columns:repeat(2,1fr)}
+@media(max-width:900px){.upgrid{grid-template-columns:1fr}}
+html[data-device=mobile] .kpi{grid-template-columns:1fr 1fr;gap:8px}
+html[data-device=mobile] .hcard{padding:12px}
+html[data-device=mobile] .hcard .n{font-size:22px}
+html[data-device=mobile] .hcard .ic{width:32px;height:32px;font-size:16px}
+html[data-device=mobile] .hero{padding:16px;border-radius:16px}
+html[data-device=mobile] .hero h2{font-size:19px}
+html[data-device=mobile] .hnav{grid-template-columns:1fr 1fr;gap:8px}
+html[data-device=mobile] .hnav .hcard{flex-direction:column;gap:6px}
+html[data-device=mobile] .hnav .hcard .l{display:none}
+html[data-device=mobile] .steps{grid-template-columns:1fr}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.hcard{opacity:1}}
 /* ---- ปรับตามอุปกรณ์ ---- */
 html[data-device=desktop] nav{flex-wrap:wrap;row-gap:4px}
 html[data-device=tablet] input,html[data-device=tablet] select{min-height:38px}
@@ -135,7 +253,7 @@ input.dup{border-color:var(--red)!important;background:#fdecea}
 .seg button:not(.on):hover{background:#fff2}
 body.staff nav{display:none}
 body.staff main{padding-top:12px}body.staff section{border-radius:8px}
-body.admin header{background:#173d5f}
+body.admin header{background:linear-gradient(135deg,#0f2a5f 0%,#1e40af 60%,#0369a1 100%)}
 #adminBar{display:none;background:#fff4d6;color:#7a5200;padding:6px 14px;font-size:14px}
 body.admin #adminBar,body.head #adminBar{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
 .lf{width:794px;min-height:1123px;padding:52px 60px 40px 76px;background:#fff;color:#000;font-family:Sarabun,Tahoma,sans-serif;line-height:1.7;box-sizing:border-box}
@@ -211,35 +329,40 @@ body.head .adminonly{display:none!important}
 
 <!-- หน้าหลัก -->
 <section id="home">
- <div class="filters stick"><select class="grpF adminonly" title="กรองตามกลุ่มงาน" style="min-width:220px;font-weight:600"></select><span class="muted" id="hmSub"></span></div>
- <div class="hgrid" id="hmKpi"></div>
- <div class="grid2" style="margin-top:12px">
-  <div class="panel"><h3><span>🗓️ ลาวันนี้ และ 7 วันข้างหน้า</span></h3><div class="bd" id="hmToday"></div></div>
-  <div class="panel"><h3><span>✅ สิ่งที่ควรทำ / ตรวจความครบของข้อมูล</span></h3><div class="bd" id="hmTodo"></div></div>
+ <div class="hero"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+  <svg class="wave" viewBox="0 0 1200 40" preserveAspectRatio="none"><path fill="#fff" d="M0 20 Q150 0 300 20 T600 20 T900 20 T1200 20 V40 H0Z"><animate attributeName="d" dur="8s" repeatCount="indefinite" values="M0 20 Q150 0 300 20 T600 20 T900 20 T1200 20 V40 H0Z;M0 20 Q150 40 300 20 T600 20 T900 20 T1200 20 V40 H0Z;M0 20 Q150 0 300 20 T600 20 T900 20 T1200 20 V40 H0Z"/></path></svg>
+  <div class="hrow"><div><h2 id="hmHello">สวัสดีครับ</h2><p id="hmSub"></p></div><select class="grpF adminonly" title="กรองตามกลุ่มงาน" style="min-width:240px;font-weight:600"></select></div></div>
+ <div class="kpi" id="hmKpi"></div>
+ <div class="dgrid">
+  <div class="panel"><h3><span>🍩 วันลาแยกประเภท</span></h3><div class="bd" id="hmDonut"></div></div>
+  <div class="panel"><h3><span>📊 วันลารายเดือน (รอบนี้)</span></h3><div class="bd" id="hmBars"></div></div>
+  <div class="panel"><h3><span>🗓️ ใครลาบ้าง</span></h3><div class="bd" id="hmToday" style="max-height:290px;overflow:auto"></div></div>
  </div>
- <h3 style="margin:14px 0 8px;color:var(--navy)">ไปที่เมนู</h3>
+ <div class="panel"><h3><span>✅ สิ่งที่ควรทำ</span></h3><div class="bd" id="hmTodo"></div></div>
+ <div class="sec-title">ไปที่เมนู</div>
  <div class="hnav" id="hmNav"></div>
 </section>
 <!-- เพิ่ม/อัปโหลดข้อมูล -->
 <section id="add">
- <p style="margin-top:0"><b>เลือกสิ่งที่ต้องการทำ</b> · <span class="muted" id="addSum"></span></p>
- <div class="grid2">
-  <div>
-   <h3 style="margin:0 0 8px;color:var(--pri,#1f4e79)">✏️ กรอกในหน้าจอ (ทีละรายการ)</h3>
-   <div class="panel"><h3>📝 เพิ่มใบลา (ย้อนหลังได้)</h3><div class="bd"><p class="muted" style="margin-top:0">บันทึกการลาที่เกิดขึ้นก่อนใช้ระบบ เลือกชื่อ ประเภท และวันที่ เพิ่มหลายแถวแล้วกดบันทึกครั้งเดียวได้</p><div class="btns" style="margin:0"><button class="btn" data-go="back">ไปที่หน้าเพิ่มใบลา</button></div></div></div>
-   <div class="panel"><h3>👤 เพิ่มเจ้าหน้าที่ ทีละคน</h3><div class="bd"><p class="muted" style="margin-top:0">เพิ่มแถวใหม่ในตารางเจ้าหน้าที่ แล้วกรอกเลข ID ชื่อ ตำแหน่ง กลุ่มงาน ประเภท เลขบัตร และโควต้าวันลา (บันทึกอัตโนมัติ)</p><div class="btns" style="margin:0"><button class="btn" data-go="staff1">เพิ่มเจ้าหน้าที่ 1 คน</button></div></div></div>
-   <div class="panel"><h3>🏢 เพิ่มกลุ่มงาน</h3><div class="bd"><p class="muted" style="margin-top:0">เพิ่มกลุ่มงานใหม่ พร้อมผู้บังคับบัญชาชั้นต้น (ผอ.กลุ่ม) และรหัสเข้าระบบของหัวหน้ากลุ่ม</p><div class="btns" style="margin:0"><button class="btn sec" data-go="dept1">เพิ่มกลุ่มงาน</button></div></div></div>
-   <div class="panel"><h3>📅 เพิ่มวันหยุดราชการ ทีละวัน</h3><div class="bd"><p class="muted" style="margin-top:0">วันหยุดใช้คำนวณวันทำการในใบลา ไม่ต้องใส่เสาร์–อาทิตย์</p><div class="btns" style="margin:0"><button class="btn sec" data-go="hol1">ไปที่หน้าวันหยุด</button></div></div></div>
-   <div class="panel"><h3>🎯 ตั้งโควต้าวันลา</h3><div class="bd"><p class="muted" style="margin-top:0">ตั้งค่าเริ่มต้นตามประเภทเจ้าหน้าที่ แล้วแก้รายคนได้ในตารางเจ้าหน้าที่</p><div class="btns" style="margin:0"><button class="btn sec" data-go="quota">ไปที่ตั้งโควต้าวันลา</button></div></div></div>
-  </div>
-  <div>
-   <h3 style="margin:0 0 8px;color:var(--pri,#1f4e79)">📤 อัปโหลดไฟล์ Excel (ทีละมาก ๆ)</h3>
-   <p class="muted" style="margin-top:0">ทุกแบบทำ 2 ขั้น: <b>1)</b> ดาวน์โหลดตาราง แล้วกรอกใน Excel <b>2)</b> อัปโหลดไฟล์กลับ ระบบจะสรุปให้ตรวจก่อนบันทึก (ไม่ลบข้อมูลเดิม)</p>
-   <div class="panel"><h3>📚 อัปโหลดประวัติการลา หลายคน หลายครั้ง</h3><div class="bd"><p class="muted" style="margin-top:0">1 แถว = ใบลา 1 ครั้ง ใส่เลข ID ประเภทการลา วันเริ่ม วันสิ้นสุด ย้อนหลังได้หลายปี · ใบลาที่ซ้ำจะข้ามให้</p><div class="btns" style="margin:0"><button class="btn sec" data-tpl="leave">⬇ 1. ดาวน์โหลดตารางประวัติการลา</button><label class="btn" style="display:inline-block">⬆ 2. อัปโหลดตารางที่กรอกแล้ว<input type="file" data-up="leave" accept=".xlsx,.csv" hidden></label></div></div></div>
-   <div class="panel"><h3>👥 อัปโหลดรายชื่อเจ้าหน้าที่ หลายคน</h3><div class="bd"><p class="muted" style="margin-top:0">ตารางมีรายชื่อปัจจุบันใส่ไว้ให้ แก้ไขหรือเพิ่มแถวได้ · เลข ID เดิม = แก้ไขข้อมูล · เลข ID ใหม่ = เพิ่มคน · ใช้กรอกเลขบัตรประชาชน วันพักผ่อนสะสม และโควต้าทีละหลายคน</p><div class="btns" style="margin:0"><button class="btn sec" data-tpl="staff">⬇ 1. ดาวน์โหลดตารางรายชื่อเจ้าหน้าที่</button><label class="btn" style="display:inline-block">⬆ 2. อัปโหลดตารางที่กรอกแล้ว<input type="file" data-up="staff" accept=".xlsx,.csv" hidden></label></div></div></div>
-   <div class="panel"><h3>🗓️ อัปโหลดวันหยุด หลายวัน</h3><div class="bd"><p class="muted" style="margin-top:0">ตารางมีวันหยุดปัจจุบันใส่ไว้ให้ เพิ่มแถวได้ · วันที่ซ้ำจะข้าม</p><div class="btns" style="margin:0"><button class="btn sec" data-tpl="hol">⬇ 1. ดาวน์โหลดตารางวันหยุด</button><label class="btn" style="display:inline-block">⬆ 2. อัปโหลดตารางที่กรอกแล้ว<input type="file" data-up="hol" accept=".xlsx,.csv" hidden></label></div></div></div>
-   <div class="panel"><h3>📦 อัปโหลดทุกอย่างในไฟล์เดียว</h3><div class="bd"><p class="muted" style="margin-top:0">ตารางรวม 3 ชีต (เจ้าหน้าที่ · ประวัติการลา · วันหยุด) สำหรับตั้งระบบครั้งแรก</p><div class="btns" style="margin:0"><button class="btn sec" data-tpl="">⬇ 1. ดาวน์โหลดตารางรวมทุกชีต</button><label class="btn" style="display:inline-block">⬆ 2. อัปโหลดตารางที่กรอกแล้ว<input type="file" data-up="" accept=".xlsx,.csv" hidden></label></div></div></div>
-  </div>
+ <div class="steps"><div><span class="no">1</span><div><b>ดาวน์โหลดไฟล์ต้นแบบ</b><div class="muted">เลือกเรื่องที่ต้องการด้านล่าง</div></div></div><div><span class="no">2</span><div><b>กรอกใน Excel</b><div class="muted">ห้ามแก้แถวหัวตารางและชื่อชีต</div></div></div><div><span class="no">3</span><div><b>อัปโหลดกลับ</b><div class="muted">ระบบสรุปให้ตรวจก่อนบันทึก ไม่ลบข้อมูลเดิม</div></div></div></div>
+ <p class="muted" id="addSum" style="margin:0 2px 10px"></p>
+ <div class="upgrid">
+ <div class="panel upcard"><h3><span>📚 ประวัติการลา (หลายคน หลายใบ)</span></h3><div class="bd"><div class="muted">1 แถว = ใบลา 1 ใบ ใส่เลข ID ประเภท วันเริ่ม วันสิ้นสุด ย้อนหลังได้หลายปี ใบลาที่ซ้ำจะข้ามให้</div>
+   <div class="stp"><span class="no">1</span><span>ดาวน์โหลดไฟล์ต้นแบบ <span class="muted">(ตารางประวัติการลา.xlsx)</span></span><button class="btn sec" data-tpl="leave">⬇ ดาวน์โหลดไฟล์ต้นแบบ</button></div>
+   <div class="stp"><span class="no">2</span><span>กรอกข้อมูลใน Excel แล้วบันทึกไฟล์</span></div>
+   <div class="stp"><span class="no">3</span><span>อัปโหลดไฟล์ที่กรอกแล้ว</span><label class="btn" style="display:inline-block">⬆ อัปโหลดไฟล์<input type="file" data-up="leave" accept=".xlsx,.csv" hidden></label></div></div></div>
+ <div class="panel upcard"><h3><span>👥 รายชื่อเจ้าหน้าที่ (หลายคน)</span></h3><div class="bd"><div class="muted">ไฟล์ต้นแบบมีรายชื่อปัจจุบันใส่ไว้แล้ว แก้หรือเพิ่มแถวได้ ใช้กรอกเลขบัตรประชาชน วันพักผ่อนสะสม และโควต้าทีละหลายคน</div>
+   <div class="stp"><span class="no">1</span><span>ดาวน์โหลดไฟล์ต้นแบบ <span class="muted">(ตารางรายชื่อเจ้าหน้าที่.xlsx)</span></span><button class="btn sec" data-tpl="staff">⬇ ดาวน์โหลดไฟล์ต้นแบบ</button></div>
+   <div class="stp"><span class="no">2</span><span>กรอกข้อมูลใน Excel แล้วบันทึกไฟล์</span></div>
+   <div class="stp"><span class="no">3</span><span>อัปโหลดไฟล์ที่กรอกแล้ว</span><label class="btn" style="display:inline-block">⬆ อัปโหลดไฟล์<input type="file" data-up="staff" accept=".xlsx,.csv" hidden></label></div></div></div>
+ <div class="panel upcard"><h3><span>🗓️ วันหยุดราชการ (หลายวัน)</span></h3><div class="bd"><div class="muted">ไฟล์ต้นแบบมีวันหยุดปัจจุบันใส่ไว้แล้ว เพิ่มแถวได้ วันที่ซ้ำจะข้าม</div>
+   <div class="stp"><span class="no">1</span><span>ดาวน์โหลดไฟล์ต้นแบบ <span class="muted">(ตารางวันหยุด.xlsx)</span></span><button class="btn sec" data-tpl="hol">⬇ ดาวน์โหลดไฟล์ต้นแบบ</button></div>
+   <div class="stp"><span class="no">2</span><span>กรอกข้อมูลใน Excel แล้วบันทึกไฟล์</span></div>
+   <div class="stp"><span class="no">3</span><span>อัปโหลดไฟล์ที่กรอกแล้ว</span><label class="btn" style="display:inline-block">⬆ อัปโหลดไฟล์<input type="file" data-up="hol" accept=".xlsx,.csv" hidden></label></div></div></div>
+ <div class="panel upcard"><h3><span>📦 ทุกอย่างในไฟล์เดียว</span></h3><div class="bd"><div class="muted">รวม 3 ชีต (เจ้าหน้าที่ · ประวัติการลา · วันหยุด) เหมาะกับการตั้งระบบครั้งแรก</div>
+   <div class="stp"><span class="no">1</span><span>ดาวน์โหลดไฟล์ต้นแบบ <span class="muted">(ตารางกรอกข้อมูล.xlsx)</span></span><button class="btn sec" data-tpl="">⬇ ดาวน์โหลดไฟล์ต้นแบบ</button></div>
+   <div class="stp"><span class="no">2</span><span>กรอกข้อมูลใน Excel แล้วบันทึกไฟล์</span></div>
+   <div class="stp"><span class="no">3</span><span>อัปโหลดไฟล์ที่กรอกแล้ว</span><label class="btn" style="display:inline-block">⬆ อัปโหลดไฟล์<input type="file" data-up="" accept=".xlsx,.csv" hidden></label></div></div></div>
  </div>
 </section>
 <!-- กรอกประวัติลาย้อนหลัง -->
@@ -1604,22 +1727,37 @@ $('#add').addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(
   quota:()=>gotoPanel('staff','#qDefPanel',()=>{$('#qDefPanel').open=true})})[b.dataset.go]();return}
   const t=e.target.closest('[data-tpl]');if(t)importTemplate(t.dataset.tpl)});
 $('#add').addEventListener('change',e=>{const i=e.target;if(i.dataset.up===undefined)return;const f=i.files[0];i.value='';if(f)importFile(f,i.dataset.up||'')});
-function renderAdd(){$('#addSum').textContent=`ตอนนี้มีเจ้าหน้าที่ ${S.staff.length} คน · ${S.depts.length} กลุ่มงาน · วันหยุด ${S.holidays.length} วัน`}
+function renderAdd(){$('#addSum').textContent='ตอนนี้ในระบบ: '+`เจ้าหน้าที่ ${S.staff.length} คน · ${S.depts.length} กลุ่มงาน · วันหยุด ${S.holidays.length} วัน`}
 
 /* ---------- หน้าหลัก (dashboard) ---------- */
 const todayISO=()=>iso(new Date(Date.now()+7*36e5));
+const AVC=['#2563eb','#0ea5e9','#7c3aed','#db2777','#ea580c','#16a34a','#0891b2','#4f46e5'];
+const avOf=n=>{const t=String(n||'?').replace(/^(นาย|นางสาว|นาง|ว่าที่ร้อยตรี|ดร\.)\s*/,'');let h=0;for(const c of t)h=(h*31+c.charCodeAt(0))>>>0;return`<span class="av" style="background:${AVC[h%AVC.length]}">${esc(t.slice(0,1))}</span>`};
+function countUp(root){root.querySelectorAll('[data-count]').forEach(el=>{const to=+el.dataset.count,suf=el.dataset.suf||'',t0=performance.now(),d=900;
+  const f=now=>{const p=Math.min(1,(now-t0)/d),e=1-Math.pow(1-p,3);el.textContent=fmt(Math.round(to*e*10)/10)+suf;if(p<1)requestAnimationFrame(f)};requestAnimationFrame(f)})}
 function renderHome(){
   const g=gDept(),VS=visStaff(),RL=roundLeaves().filter(inScope),FL=fyLeaves().filter(inScope),td=todayISO(),wk=iso(new Date(pd(td).getTime()+7*864e5));
-  $('#hmSub').textContent=`${g?g.name:(role==='head'&&myDept()?myDept().name:'ทุกกลุ่มงาน')} · ${$('#hSub').textContent.split(' · ').slice(1).join(' · ')}`;
+  const hr=new Date(Date.now()+7*36e5).getUTCHours();$('#hmHello').textContent=`${hr<12?'สวัสดีตอนเช้า':hr<17?'สวัสดีตอนบ่าย':'สวัสดีตอนเย็น'} ${role==='admin'?'ผู้ดูแลระบบ':'หัวหน้ากลุ่มงาน'} 👋`;
+  $('#hmSub').textContent=`${g?g.name:(role==='head'&&myDept()?myDept().name:'ทุกกลุ่มงาน')} · วันนี้ ${thDL(td)} · ${$('#hSub').textContent.split(' · ').slice(1).join(' · ')}`;
   const leaves=RL.filter(isLeave),days=leaves.reduce((a,l)=>a+(+l.days||0),0),late=RL.filter(l=>T[l.type]?.late).length;
   const over=sumRows().filter(x=>x.r.over.length).length;
   const qOver=VS.filter(s=>{const q=quotaOf(s);return Object.entries(QT).some(([t,k])=>usedOf(s.id,t)>q[k])}).length;
-  const K=[[VS.length+' คน','เจ้าหน้าที่','staff'],[leaves.length+' ครั้ง','ลาในรอบครึ่งปีนี้','all'],[fmt(days)+' วัน','รวมวันลาในรอบนี้','sum'],[late+' ครั้ง','มาสายในรอบนี้','all'],[over+' คน','ลาป่วย/กิจ/มาสาย เกินเกณฑ์','sum'],[qOver+' คน','ใช้วันลาเกินสิทธิ์','rep']];
-  $('#hmKpi').innerHTML=K.map(([n,l,t],i)=>`<button class="hcard" data-go2="${t}"><div class="n" style="${(i>=4&&parseInt(n))?'color:var(--red)':''}">${n}</div><div class="l">${l} →</div></button>`).join('');
-  const on=FL.filter(l=>isLeave(l)&&l.start<=wk&&(l.end||l.start)>=td).sort((a,b)=>a.start<b.start?-1:1);
-  const now=on.filter(l=>l.start<=td),soon=on.filter(l=>l.start>td);
-  const li=l=>`<div style="display:flex;justify-content:space-between;gap:8px;padding:4px 0;border-bottom:1px dashed #e3e9ef"><span><b>${esc(staffName(l))}</b> <span class="muted">${esc(l.type)}${l.half?' ('+esc(l.half)+')':''}</span></span><span class="muted" style="white-space:nowrap">${thD(l.start)}${(l.end||l.start)!==l.start?' – '+thD(l.end):''}</span></div>`;
-  $('#hmToday').innerHTML=`<div style="font-weight:600">วันนี้ (${thD(td)}) ลา ${now.length} คน</div>${now.map(li).join('')||'<div class="muted">ไม่มีผู้ลาวันนี้</div>'}<div style="font-weight:600;margin-top:10px">7 วันข้างหน้า ${soon.length} รายการ</div>${soon.map(li).join('')||'<div class="muted">ไม่มี</div>'}`;
+  const K=[['👥',VS.length,' คน','เจ้าหน้าที่','staff'],['📝',leaves.length,' ครั้ง','ลาในรอบครึ่งปีนี้','all'],['📅',days,' วัน','รวมวันลาในรอบนี้','sum'],['⏰',late,' ครั้ง','มาสายในรอบนี้','all'],['⚠️',over,' คน','ลาป่วย/กิจ/มาสาย เกินเกณฑ์','sum',1],['🎯',qOver,' คน','ใช้วันลาเกินสิทธิ์','rep',1]];
+  $('#hmKpi').innerHTML=K.map(([ic,n,suf,l,t,w],i)=>`<button class="hcard${w&&n?' warn':''}" data-go2="${t}" style="animation-delay:${i*60}ms"><div class="ic">${ic}</div><div class="n" data-count="${n}" data-suf="${suf}">0${suf}</div><div class="l">${l} →</div></button>`).join('');
+  countUp($('#hmKpi'));
+  // donut
+  const TD=LEAVE_T.map(t=>({t,v:leaves.filter(l=>l.type===t.n).reduce((a,l)=>a+(+l.days||0),0)})).filter(x=>x.v>0),tot=TD.reduce((a,x)=>a+x.v,0),C=2*Math.PI*52;
+  let off=0;$('#hmDonut').innerHTML=tot?`<div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;justify-content:center"><svg class="donut" viewBox="0 0 140 140" width="150" height="150"><circle cx="70" cy="70" r="52" fill="none" stroke="#eef2f7" stroke-width="18"/>${TD.map(x=>{const len=x.v/tot*C,el=`<circle cx="70" cy="70" r="52" fill="none" stroke="${x.t.c}" stroke-width="18" stroke-dasharray="0 ${C}" data-da="${len} ${C-len}" stroke-dashoffset="${-off}" transform="rotate(-90 70 70)" stroke-linecap="butt"/>`;off+=len;return el}).join('')}<text x="70" y="66" text-anchor="middle" font-size="22" font-weight="700" fill="#0f172a" font-family="Prompt">${fmt(tot)}</text><text x="70" y="86" text-anchor="middle" font-size="11" fill="#64748b">วันลา</text></svg>
+    <div class="legend">${TD.map(x=>`<div><i style="background:${x.t.c}"></i>${x.t.s} <b>${fmt(x.v)}</b> วัน</div>`).join('')}</div></div>`:'<div class="empty">ยังไม่มีการลาในรอบนี้</div>';
+  requestAnimationFrame(()=>setTimeout(()=>document.querySelectorAll('#hmDonut circle[data-da]').forEach(c=>c.setAttribute('stroke-dasharray',c.dataset.da)),60));
+  // monthly bars
+  const M=roundMonths(),MV=M.map(m=>LEAVE_T.reduce((a,t)=>a+mVal(leaves,m.k,t),0)),mx=Math.max(1,...MV);
+  $('#hmBars').innerHTML=`<div class="vbars">${MV.map(v=>`<div class="c"><b>${v?fmt(v):''}</b><i data-h="${v/mx*100}"></i></div>`).join('')}</div><div class="vlab">${M.map(m=>`<span>${m.t.split(' ')[0].slice(0,3)}</span>`).join('')}</div>`;
+  requestAnimationFrame(()=>setTimeout(()=>document.querySelectorAll('#hmBars i[data-h]').forEach(i=>i.style.height=Math.max(2,+i.dataset.h)+'%'),60));
+  // who is on leave
+  const on=FL.filter(l=>isLeave(l)&&l.start<=wk&&(l.end||l.start)>=td).sort((a,b)=>a.start<b.start?-1:1),now=on.filter(l=>l.start<=td),soon=on.filter(l=>l.start>td);
+  const li=l=>`<div class="person">${avOf(staffName(l))}<div style="flex:1;min-width:0"><b>${esc(staffName(l))}</b><div class="muted">${esc(l.type)}${l.half?' ('+esc(l.half)+')':''} · ${thD(l.start)}${(l.end||l.start)!==l.start?' – '+thD(l.end):''}</div></div></div>`;
+  $('#hmToday').innerHTML=`<div style="font-weight:600">วันนี้ <span class="chip">${now.length} คน</span></div>${now.map(li).join('')||'<div class="muted" style="padding:6px 0">ไม่มีผู้ลาวันนี้ 🎉</div>'}<div style="font-weight:600;margin-top:12px">7 วันข้างหน้า <span class="chip">${soon.length}</span></div>${soon.map(li).join('')||'<div class="muted" style="padding:6px 0">ไม่มี</div>'}`;
   const T2=[];
   if(role==='admin'){const all=g?S.staff.filter(inGF):S.staff,D=g?[g]:S.depts;
     const noCid=all.filter(s=>!s.cid).length,badCid=all.filter(s=>s.cid&&!cidValid(s.cid)).length,noEt=all.filter(s=>!s.etype).length,noTel=all.filter(s=>!s.tel).length,noSup=D.filter(d=>!d.supName).length,noGrp=S.staff.filter(s=>!deptOf(s)).length;
@@ -1630,19 +1768,19 @@ function renderHome(){
     if(noGrp)T2.push([`เจ้าหน้าที่ ${noGrp} คน ยังไม่ได้เลือกกลุ่มงาน`,'staff','แก้ไข']);
     if(noSup)T2.push([`กลุ่มงาน ${noSup} กลุ่ม ยังไม่มีผู้บังคับบัญชาชั้นต้น`,'staff','ตั้งค่า']);
     if(noEt)T2.push([`เจ้าหน้าที่ ${noEt} คน ยังไม่ระบุประเภท (ข้าราชการ/พนักงานราชการ/ลูกจ้าง)`,'staff','แก้ไข']);
-    if(noCid)T2.push([`เจ้าหน้าที่ ${noCid} คน ยังไม่มีเลขบัตรประชาชน`,'add','อัปโหลดทีละหลายคน']);
+    if(noCid)T2.push([`เจ้าหน้าที่ ${noCid} คน ยังไม่มีเลขบัตรประชาชน`,'add','อัปโหลดไฟล์']);
     if(badCid)T2.push([`เลขบัตรประชาชนไม่ถูกต้อง ${badCid} คน`,'staff','ตรวจ']);
     if(noTel)T2.push([`เจ้าหน้าที่ ${noTel} คน ยังไม่มีเบอร์โทร`,'staff','แก้ไข']);
     if(!fyHol)T2.push([`ยังไม่มีวันหยุดราชการของปีงบ ${curFY()}`,'hol','เพิ่มวันหยุด']);
-    if(!all.some(s=>+s.qCarry))T2.push(['ยังไม่ได้กรอกวันลาพักผ่อนสะสมของใครเลย','add','อัปโหลดรายชื่อ']);
+    if(!all.some(s=>+s.qCarry))T2.push(['ยังไม่ได้กรอกวันลาพักผ่อนสะสมของใครเลย','add','อัปโหลดไฟล์']);
   }
-  if(over)T2.push([`มีเจ้าหน้าที่ ${over} คน ลาเกินเกณฑ์ในรอบนี้`,'sum','ดูแบบสรุป']);
-  $('#hmTodo').innerHTML=T2.length?T2.map(([t,go,b])=>`<div class="alert" data-go2="${go}"><span>⚠️ ${esc(t)}</span><span class="btn sec sm">${b} →</span></div>`).join(''):'<div class="alert ok">✅ ข้อมูลครบ ไม่มีสิ่งที่ต้องทำ</div>';
-  const NAV=[['all','📋','ใบลาทั้งหมด','ค้นหา แก้ไข ลบ พิมพ์ใบลา'],['rec','➕','เพิ่มใบลา 1 ใบ','กรอกใบลาแล้วพิมพ์ใบลา PDF'],['back','➕','เพิ่มใบลาหลายใบ','กรอกหลายใบพร้อมกัน ใช้กับใบลาย้อนหลัง'],
+  if(over)T2.push([`มีเจ้าหน้าที่ ${over} คน ลาเกินเกณฑ์ในรอบนี้`,'sum','ดูตารางสรุป']);
+  $('#hmTodo').innerHTML=T2.length?`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(360px,100%),1fr));gap:8px">${T2.map(([t,go,b])=>`<div class="alert" data-go2="${go}" style="margin:0"><span>⚠️ ${esc(t)}</span><span class="btn sec sm">${b} →</span></div>`).join('')}</div>`:'<div class="alert ok">✅ ข้อมูลครบ ไม่มีสิ่งที่ต้องทำ</div>';
+  const NAV=[['all','📋','ใบลาทั้งหมด','ค้นหา แก้ไข ลบ พิมพ์ใบลา'],['rec','➕','เพิ่มใบลา 1 ใบ','กรอกใบลาแล้วพิมพ์ใบลา PDF'],['back','🧾','เพิ่มใบลาหลายใบ','กรอกหลายใบพร้อมกัน ใช้กับใบลาย้อนหลัง'],
     ['sum','📊','ตารางสรุปรายคน','วันลาของแต่ละคนในรอบครึ่งปี ใครเกินเกณฑ์'],['rep','📈','กราฟ / รายเดือน / รายคน','ดูภาพรวมและพิมพ์รายงานรายคน'],['staff','👥','เจ้าหน้าที่','รายชื่อ เลข ID โควต้าวันลา กลุ่มงาน'],
-    ['add','⬆','อัปโหลดไฟล์ Excel','เพิ่มรายชื่อ ใบลา วันหยุด ทีละมาก ๆ'],['exp','⬇','ดาวน์โหลดรายงาน / สำรองข้อมูล','ไฟล์ Excel รายงานพิมพ์ และไฟล์สำรอง'],
-    ['base','⚙️','ปีงบ / เกณฑ์ / รหัสผ่าน','ตั้งปีงบ รอบครึ่งปี เกณฑ์การลา'],['hol','🗓️','วันหยุดราชการ','ใช้นับวันทำการในใบลา'],['form','🖨','หน้าตาใบลา','ข้อความและผู้ลงนามในใบลาที่พิมพ์']].filter(x=>canTab(x[0]));
-  $('#hmNav').innerHTML=NAV.map(([t,i,n,d])=>`<button class="hcard" data-go2="${t}"><b>${i} ${n}</b><span class="l">${d}</span></button>`).join('');
+    ['add','⬆️','อัปโหลดไฟล์ Excel','ดาวน์โหลดไฟล์ต้นแบบ กรอก แล้วอัปโหลดกลับ'],['exp','⬇️','ดาวน์โหลดรายงาน / สำรองข้อมูล','ไฟล์ Excel รายงานพิมพ์ และไฟล์สำรอง'],
+    ['base','⚙️','ปีงบ / เกณฑ์ / รหัสผ่าน','ตั้งปีงบ รอบครึ่งปี เกณฑ์การลา'],['hol','🗓️','วันหยุดราชการ','ใช้นับวันทำการในใบลา'],['form','🖨️','หน้าตาใบลา','ข้อความและผู้ลงนามในใบลาที่พิมพ์']].filter(x=>canTab(x[0]));
+  $('#hmNav').innerHTML=NAV.map(([t,i,n,d],k)=>`<button class="hcard" data-go2="${t}" style="animation-delay:${200+k*40}ms"><span class="ic">${i}</span><span><b>${n}</b><span class="l">${d}</span></span></button>`).join('');
 }
 $('#home').addEventListener('click',e=>{const b=e.target.closest('[data-go2]');if(b)showTab(b.dataset.go2)});
 
