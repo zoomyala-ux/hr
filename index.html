@@ -685,6 +685,54 @@ html[data-device=mobile] #home .hmain .panel,html[data-device=tablet] #home .hma
 html[data-device=mobile] #home #hmDonut>div,html[data-device=tablet] #home #hmDonut>div{height:auto!important}
 #home #hmTodo>div{grid-template-columns:minmax(0,1fr)!important}#home #hmTodo .alert{min-width:0}
 @media(max-width:1500px){#home #hmLs button{padding:1px 8px!important}#home #hmLs b{font-size:14px!important}#home #hmLs span{font-size:11.5px!important}}
+
+/* ===== หน้าหลัก v4: รูปแบบเดิม จัด layout แน่นขึ้น ===== */
+.hmain.v4{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr) minmax(0,1fr)!important;grid-template-rows:auto minmax(0,1fr)!important;grid-template-areas:"att who lv" "grp who todo"!important}
+.hmain.v4 .p-att{grid-area:att}
+html[data-device=tablet] .hmain.v4,html[data-device=mobile] .hmain.v4{grid-template-columns:minmax(0,1fr)!important;grid-template-rows:none!important;grid-template-areas:"att" "grp" "who" "lv" "todo"!important}
+#home #adKpi{grid-template-columns:repeat(7,minmax(0,1fr));gap:8px;margin-bottom:10px}
+#home #adKpi .hcard{padding:7px 10px!important;grid-template-columns:auto 1fr;column-gap:8px}
+#home #adKpi .hcard .ic{width:32px!important;height:32px!important;font-size:16px!important}
+#home #adKpi .hcard .n{font-size:21px!important;color:var(--c)}#home #adKpi .hcard .l{font-size:13px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+html[data-device=mobile] #home #adKpi{grid-template-columns:repeat(2,minmax(0,1fr))}
+html[data-device=tablet] #home #adKpi{grid-template-columns:repeat(4,minmax(0,1fr))}
+/* วงกลม: เล็กและชิด */
+#adDonut>div,#hmDonut>div:first-child{display:flex!important;gap:14px!important;align-items:center!important;justify-content:center!important;flex-wrap:nowrap!important;height:auto!important}
+#adDonut svg,#home #hmDonut svg{width:104px!important;height:104px!important;flex:none}
+#adDonut .legend,#home #hmDonut .legend{font-size:13.5px!important;gap:3px!important;display:grid!important}
+#adDonut .legend>div,#home #hmDonut .legend>div{white-space:nowrap}
+#home #hmLs{grid-template-columns:repeat(4,minmax(0,1fr))!important;width:auto!important;margin-top:8px!important;gap:5px!important}
+#home #hmLs button{display:block!important;padding:3px 6px!important;text-align:center}#home #hmLs b{display:block!important;font-size:16px!important}#home #hmLs span{font-size:11.5px!important;white-space:normal!important;line-height:1.15}
+.hmain.v4 .p-att>.bd,.hmain.v4 .p-lv>.bd{flex:none;overflow:visible;padding:8px 12px}
+/* แถบกลุ่มงาน: บรรทัดเดียว */
+.gl1{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr) auto;gap:8px;align-items:center;padding:3px 0;border-bottom:1px dashed #eef2f7;font-size:13.5px;cursor:pointer}
+.gl1:hover{background:#f8fafc}.gl1 .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.gl1 .pc{color:#64748b;font-size:12.5px;white-space:nowrap;min-width:78px;text-align:right}
+.gl1 .sb{height:14px;border-radius:5px}.gl1 .sb i{line-height:14px;font-size:10.5px}
+#adGrp .gsub{margin:6px 0 2px;font-size:12px}#adGrp .gsub:first-child{margin-top:0}
+/* รายชื่อ: แถวละบรรทัด */
+#adWho .person{padding:3px 0!important;gap:8px;border-bottom:1px dashed #eef2f7}
+#adWho .av{width:24px!important;height:24px!important;font-size:11px!important}
+#adWho .person b{font-size:14px!important;font-weight:600}#adWho .person .muted{font-size:12px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#adWho .person .tg{font-size:11.5px;padding:1px 7px}
+#adWho .gsub{margin:6px 0 2px!important;padding-top:4px!important}
+#adWho .alert{padding:4px 10px!important;margin:6px 0!important;font-size:13.5px!important}
+/* รายการที่ควรดำเนินการ */
+#home #hmTodo .alert{padding:4px 10px!important;margin-bottom:4px!important;font-size:13.5px!important;border-radius:8px}
+#home #hmTodo .alert .btn{padding:1px 8px!important;font-size:12px!important}
+#home #hmTodo>div{gap:0!important}
+@media(min-height:950px){html[data-device=desktop] #adWho .person{padding:6px 0!important}html[data-device=desktop] .gl1{padding:6px 0}}
+html[data-device=desktop] .hmain.v4{grid-template-rows:150px minmax(0,1fr)!important}
+html[data-device=desktop] #home .hmain.v4 .p-att>.bd,html[data-device=desktop] #home .hmain.v4 .p-lv>.bd{flex:1!important;display:flex!important;align-items:center;justify-content:center;gap:10px;overflow:hidden!important;padding:4px 12px!important}
+html[data-device=desktop] #home .hmain.v4 #adDonut svg,html[data-device=desktop] #home .hmain.v4 #hmDonut svg{width:96px!important;height:96px!important}
+html[data-device=desktop] #home .hmain.v4 #hmDonut>div:first-child{flex:none!important}
+html[data-device=desktop] #home .hmain.v4 #hmLs{grid-template-columns:repeat(2,minmax(0,1fr))!important;margin:0!important;flex:1;max-width:190px}
+html[data-device=desktop] #home .hmain.v4 #hmLs button{display:block!important;padding:2px 6px!important}
+html[data-device=desktop] #home .hmain.v4 #hmLs b{display:block!important;font-size:15px!important}
+html[data-device=desktop] #home .hmain.v4 #hmLs span{font-size:11px!important}
+#adDonut .legend{grid-template-columns:auto auto;column-gap:14px}
+#adWho .person>div{display:flex;align-items:baseline;gap:6px;min-width:0}
+#adWho .person>div>b{flex:none;max-width:60%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#adWho .person>div>.muted{flex:1;min-width:0}
 </style>
 </head>
 <body class="staff">
@@ -764,12 +812,12 @@ html[data-device=mobile] #home #hmDonut>div,html[data-device=tablet] #home #hmDo
  <div class="hero att slim"><div class="blob b1"></div><div class="blob b2"></div>
   <div class="hrow"><div><h2 id="hmHello">ภาพรวมการปฏิบัติราชการ</h2><p id="adSub"></p></div><div class="dnav"><button id="adPrev" title="วันก่อนหน้า">◀</button><input type="date" id="adDate"><button id="adNext" title="วันถัดไป">▶</button><button id="adToday">วันนี้</button></div></div>
   <div class="hfil"><select class="grpF adminonly" title="กรองตามกลุ่มงาน"></select><div class="etF"></div></div></div>
- <div class="kstrip" id="adKpi"></div>
- <div class="hmain">
-  <div class="panel p-grp"><h3><span>🏢 สถานะการปฏิบัติงาน จำแนกตามประเภทและกลุ่มงาน</span><span class="muted" id="adDonutT"></span></h3><div class="bd" id="adGrp"></div></div>
+ <div class="kpi" id="adKpi"></div>
+ <div class="hmain v4">
+  <div class="panel p-att"><h3><span>🍩 การมาปฏิบัติงาน</span><span class="muted" id="adDonutT"></span></h3><div class="bd" id="adDonut"></div></div>
+  <div class="panel p-grp"><h3><span>🏢 แยกตามประเภท / กลุ่มงาน</span></h3><div class="bd" id="adGrp"></div></div>
   <div class="panel p-who"><h3><span>🙋 ผู้ไม่ได้ปฏิบัติงานวันนี้ / กำหนดการลา</span><span class="muted" id="adWhoN"></span></h3><div class="bd" id="adWho"></div></div>
   <div class="panel p-lv"><h3><span>📝 การลา รอบครึ่งปีนี้</span></h3><div class="bd" id="hmDonut"></div></div>
-  <div class="panel p-trend"><h3><span>📈 20 วันทำการล่าสุด</span><span class="muted">% ปฏิบัติงาน</span></h3><div class="bd" id="adTrend"></div></div>
   <div class="panel p-todo"><h3><span>✅ รายการที่ควรดำเนินการ</span><span class="muted" id="hmTodoN"></span></h3><div class="bd" id="hmTodo"></div></div>
  </div>
 </section>
@@ -2296,7 +2344,7 @@ function renderHome(){if(!attReady(renderHome))return;setTimeout(fitHome,0);
   let off=0;$('#hmDonut').innerHTML=tot?`<div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;justify-content:center"><svg class="donut" viewBox="0 0 140 140" width="150" height="150"><circle cx="70" cy="70" r="52" fill="none" stroke="#eef2f7" stroke-width="18"/>${TD.map(x=>{const len=x.v/tot*C,el=`<circle cx="70" cy="70" r="52" fill="none" stroke="${x.t.c}" stroke-width="18" stroke-dasharray="0 ${C}" data-da="${len} ${C-len}" stroke-dashoffset="${-off}" transform="rotate(-90 70 70)" stroke-linecap="butt"/>`;off+=len;return el}).join('')}<text x="70" y="68" text-anchor="middle" font-size="26" font-weight="700" fill="#0f172a" font-family="inherit">${fmt(tot)}</text><text x="70" y="90" text-anchor="middle" font-size="13" fill="#64748b">วันลา</text></svg>
     <div class="legend">${TD.map(x=>`<div><i style="background:${x.t.c}"></i>${x.t.s} <b>${fmt(x.v)}</b> วัน</div>`).join('')}</div></div>`:'<div class="empty">ยังไม่มีการลาในรอบนี้</div>';
   requestAnimationFrame(()=>setTimeout(()=>document.querySelectorAll('#hmDonut circle[data-da]').forEach(c=>c.setAttribute('stroke-dasharray',c.dataset.da)),60));
-  $('#hmDonut').insertAdjacentHTML('beforeend',`<div id="hmLs"><button data-go2="all"><b>${leaves.length}</b><span>จำนวนครั้งที่ลา · ${fmt(days)} วัน</span></button><button data-go2="sum"><b>${late}</b><span>จำนวนครั้งที่มาสาย</span></button><button data-go2="sum" class="${over?'warn':''}"><b>${over}</b><span>รายที่ลาเกินเกณฑ์</span></button><button data-go2="person" class="${qOver?'warn':''}"><b>${qOver}</b><span>รายที่ใช้วันลาเกินสิทธิ์</span></button></div>`);
+  $('#hmDonut').insertAdjacentHTML('beforeend',`<div id="hmLs"><button data-go2="all"><b>${leaves.length}</b><span>ครั้งที่ลา (${fmt(days)} วัน)</span></button><button data-go2="sum"><b>${late}</b><span>ครั้งที่มาสาย</span></button><button data-go2="sum" class="${over?'warn':''}"><b>${over}</b><span>รายเกินเกณฑ์</span></button><button data-go2="person" class="${qOver?'warn':''}"><b>${qOver}</b><span>รายเกินสิทธิ์</span></button></div>`);
   const T2=[];
   if(role==='admin'){const all=g?S.staff.filter(inGF):S.staff,D=g?[g]:S.depts;
     const noCid=all.filter(s=>!s.cid).length,badCid=all.filter(s=>s.cid&&!cidValid(s.cid)).length,noEt=all.filter(s=>!s.etype).length,noTel=all.filter(s=>!s.tel).length,noSup=D.filter(d=>!d.supName).length,noGrp=S.staff.filter(s=>!deptOf(s)).length;
@@ -2323,25 +2371,22 @@ function homeAtt(){ATD=ATD||todayISO();$('#adDate').value=ATD;
   const VS=attStaff(),LM=lvOn(ATD),A=VS.map(st=>({st,a:attOf(st,ATD,LM)})),c={'':0};AST.forEach(x=>c[x.k]=0);A.forEach(x=>c[x.a.s]++);
   const g=gDept(),here=c['มา']+c['สาย']+c['ไปราชการ'],done=VS.length-c[''];
   $('#adDonutT').textContent=thD(ATD);$('#adSub').innerHTML=`${esc(g?g.name:role==='head'&&myDept()?myDept().name:'ทุกกลุ่มงาน')}${ETF?' · '+esc(ETN[ETF]):''} · ${WD[pd(ATD).getUTCDay()]} ${thDL(ATD)}${isOff(ATD)?' · <b>วันหยุด: '+esc(offName(ATD))+'</b>':''} · ปฏิบัติงาน <b>${pct(here,VS.length)}%</b> · บันทึกแล้ว ${done}/${VS.length} คน`;
-  const ring=(v,c)=>{const C=2*Math.PI*20;return`<svg viewBox="0 0 48 48" width="50" height="50"><circle cx="24" cy="24" r="20" fill="none" stroke="#eef2f7" stroke-width="7"/><circle cx="24" cy="24" r="20" fill="none" stroke="${c}" stroke-width="7" stroke-dasharray="${v/100*C} ${C}" transform="rotate(-90 24 24)" stroke-linecap="round"/><text x="24" y="28" text-anchor="middle" font-size="12" font-weight="700" fill="#0f172a" font-family="inherit">${v}%</text></svg>`};
-  $('#adKpi').innerHTML=`<button data-af="*" style="--c:#0f766e">${ring(pct(here,VS.length),'#16a34a')}<div style="min-width:0"><div class="n">${here}<small>/ ${VS.length} คน</small></div><div class="l">ปฏิบัติงาน · บันทึก ${done}</div></div></button>`+[...AST,ASC['']].map(x=>`<button data-af="${x.k}" class="${!x.k&&c['']&&!isOff(ATD)?'warn':''}" style="--c:${x.c}"><div class="n">${c[x.k]}<small>คน</small></div><div class="l">${x.i} ${stLbl(x.k)}</div></button>`).join('');
-  // by type / group table
-  const DP=role==='head'?[myDept()].filter(Boolean):g?[g]:S.depts,COLS2=[...AST,ASC['']];
-  const tr=(lbl,L,attr,cls)=>{const cc=attCount(L,ATD,LM),h=cc['มา']+cc['สาย']+cc['ไปราชการ'],p=pct(h,L.length);return`<tr ${attr||''} class="${cls||''}" title="${esc(lbl)}"><td>${esc(lbl)}</td><td>${L.length}</td>${COLS2.map(x=>`<td class="${cc[x.k]?'':'z'}" style="${cc[x.k]&&x.k?'color:'+x.c+';font-weight:600':''}">${cc[x.k]||'·'}</td>`).join('')}<td><div class="pc">${p}%<i><b style="width:${p}%"></b></i></div></td></tr>`};
-  $('#adGrp').innerHTML=`<table class="gtab"><thead><tr><th>ประเภท / กลุ่มงาน</th><th>คน</th>${COLS2.map(x=>`<th title="${stLbl(x.k)}">${x.i}<br>${x.k==='ไปราชการ'?'ราชการ':x.k||'ไม่บันทึก'}</th>`).join('')}<th>ปฏิบัติงาน</th></tr></thead><tbody>
-   ${ETF?'':`<tr class="gs"><td colspan="9">ตามประเภทบุคลากร</td></tr>${byEt(VS).map(x=>tr((x.k==='0'?'':x.k+'. ')+ETN[x.k],x.L,`data-et2="${x.k}"`)).join('')}`}
-   <tr class="gs"><td colspan="9">ตามกลุ่มงาน</td></tr>${DP.map(d=>{const L=VS.filter(st=>norm(st.dept)===norm(d.name));return L.length?tr(d.name,L,`data-gd="${d.id}"`):''}).join('')}
-   ${tr('รวม',VS,'','tot')}</tbody></table>`;
+  const K=[['👥',VS.length,'เจ้าหน้าที่ทั้งหมด','*','#0f766e'],...AST.map(x=>[x.i,c[x.k],x.k==='มา'?'มาปฏิบัติงาน':x.k==='สาย'?'มาสาย':x.k,x.k,x.c]),['❔',c[''],'ยังไม่บันทึก','','#94a3b8']];
+  $('#adKpi').innerHTML=K.map(([ic,n,l,f,col],i)=>`<button class="hcard${f===''&&n&&!isOff(ATD)?' warn':''}" data-af="${f}" style="animation-delay:${i*40}ms;--c:${col}"><div class="ic">${ic}</div><div class="n" data-count="${n}" data-suf=" คน">0</div><div class="l">${l}</div></button>`).join('');countUp($('#adKpi'));
+  const D=[...AST,ASC['']].map(x=>({x,v:c[x.k]})).filter(o=>o.v),C=2*Math.PI*52;let off=0;
+  $('#adDonut').innerHTML=VS.length?`<div><svg class="donut" viewBox="0 0 140 140"><circle cx="70" cy="70" r="52" fill="none" stroke="#eef2f7" stroke-width="18"/>${D.map(o=>{const len=o.v/VS.length*C,el=`<circle cx="70" cy="70" r="52" fill="none" stroke="${o.x.c}" stroke-width="18" stroke-dasharray="0 ${C}" data-da="${len} ${C-len}" stroke-dashoffset="${-off}" transform="rotate(-90 70 70)"/>`;off+=len;return el}).join('')}<text x="70" y="70" text-anchor="middle" font-size="28" font-weight="700" fill="#0f172a" font-family="inherit">${pct(here,VS.length)}%</text><text x="70" y="90" text-anchor="middle" font-size="12" fill="#64748b" font-family="inherit">ปฏิบัติงาน</text></svg>
+    <div class="legend">${D.map(o=>`<div><i style="background:${o.x.c}"></i>${stLbl(o.x.k)} <b>${o.v}</b> คน</div>`).join('')}</div></div>`:'<div class="empty">ไม่มีรายชื่อ</div>';
+  requestAnimationFrame(()=>setTimeout(()=>document.querySelectorAll('#adDonut circle[data-da]').forEach(x=>x.setAttribute('stroke-dasharray',x.dataset.da)),60));
+  // by type / group bars (one line each)
+  const DP=role==='head'?[myDept()].filter(Boolean):g?[g]:S.depts;
+  const gb=(lbl,L,attr)=>{const cc=attCount(L,ATD,LM),n=L.length||1,h=cc['มา']+cc['สาย']+cc['ไปราชการ'];return`<div class="gl1" ${attr} title="${esc(lbl)} · ${[...AST,ASC['']].map(x=>stLbl(x.k)+' '+cc[x.k]).join(' · ')}"><span class="nm">${esc(lbl)}</span><div class="sb">${[...AST,ASC['']].map(x=>cc[x.k]?`<i style="background:${x.c}" data-w="${cc[x.k]/n*100}">${cc[x.k]}</i>`:'').join('')}</div><span class="pc">${h}/${L.length} · ${pct(h,L.length)}%</span></div>`};
+  $('#adGrp').innerHTML=(ETF?'':`<div class="gsub">ตามประเภทบุคลากร</div>${byEt(VS).map(x=>gb((x.k==='0'?'':x.k+'. ')+ETN[x.k],x.L,`data-et2="${x.k}"`)).join('')}<div class="gsub">ตามกลุ่มงาน</div>`)+DP.map(d=>{const L=VS.filter(st=>norm(st.dept)===norm(d.name));return L.length?gb(d.name,L,`data-gd="${d.id}"`):''}).join('');
+  requestAnimationFrame(()=>setTimeout(()=>document.querySelectorAll('#adGrp i[data-w]').forEach(i=>i.style.width=i.dataset.w+'%'),60));
   // who is away
   const away=A.filter(x=>x.a.s&&x.a.s!=='มา').sort((p,q)=>AST.findIndex(y=>y.k===p.a.s)-AST.findIndex(y=>y.k===q.a.s));
   const FL=fyLeaves().filter(l=>inScope(l)&&isLeave(l)),wk=addD(ATD,7),soon=FL.filter(l=>l.start>ATD&&l.start<=wk).sort((a,b)=>a.start<b.start?-1:1);
-  $('#adWhoN').textContent=`${away.length} คน`;$('#adWho').innerHTML=`<div class="gsub">วันนี้ (${away.length})</div>`+(away.map(({st,a})=>`<div class="person" data-pid="${st.id}" style="cursor:pointer">${avOf(st.name)}<div style="flex:1;min-width:0"><b>${esc(st.name)}</b><div class="muted">${esc(st.dept||'')}${a.n?' · '+esc(a.n):''}${a.t?' · '+esc(a.t)+' น.':''}</div></div><span class="tg" style="background:${ASC[a.s].c}1a;color:${ASC[a.s].c};border-color:${ASC[a.s].c}55">${ASC[a.s].i} ${a.s}</span></div>`).join('')||'<div class="muted" style="padding:6px 0">ปฏิบัติงานตามปกติครบทุกคน</div>')
+  $('#adWhoN').textContent=`${away.length} คน`;$('#adWho').innerHTML=`<div class="gsub">วันนี้ (${away.length})</div>`+(away.map(({st,a})=>`<div class="person" data-pid="${st.id}" style="cursor:pointer">${avOf(st.name)}<div style="flex:1;min-width:0"><b>${esc(st.name)}</b><div class="muted">${a.n?esc(a.n)+' · ':''}${a.t?esc(a.t)+' น. · ':''}${esc(st.dept||'')}</div></div><span class="tg" style="background:${ASC[a.s].c}1a;color:${ASC[a.s].c};border-color:${ASC[a.s].c}55">${ASC[a.s].i} ${a.s}</span></div>`).join('')||'<div class="muted" style="padding:6px 0">ปฏิบัติงานตามปกติครบทุกคน</div>')
     +(c['']&&!isOff(ATD)?`<div class="alert" data-go2="att" style="margin-top:10px"><span>❔ ยังไม่บันทึก ${c['']} คน</span><span class="btn sec sm">บันทึกข้อมูล →</span></div>`:'')+`<div class="gsub" style="margin-top:10px">กำหนดลาภายใน 7 วัน (${soon.length})</div>`+(soon.map(l=>`<div class="person">${avOf(staffName(l))}<div style="flex:1;min-width:0"><b>${esc(staffName(l))}</b><div class="muted">${esc(l.type)}${l.half?' ('+esc(l.half)+')':''} · ${thD(l.start)}${(l.end||l.start)!==l.start?' – '+thD(l.end):''}</div></div></div>`).join('')||'<div class="muted" style="padding:4px 0">ไม่มี</div>');
-  // trend
-  const W=prevWork(ATD,20),TR=W.map(d=>({d,c:attCount(VS,d)}));
-  $('#adTrend').innerHTML=`<div class="sbars">${TR.map(o=>`<div class="c" title="${thD(o.d)} · ${AST.map(x=>x.k+' '+o.c[x.k]).join(' · ')} · ยังไม่บันทึก ${o.c['']}"><b>${o.c['']>VS.length/2?'':pct(o.c['มา']+o.c['สาย']+o.c['ไปราชการ'],VS.length)+'%'}</b><div class="stk">${[ASC[''],...[...AST].reverse()].map(x=>o.c[x.k]?`<i style="background:${x.c}" data-h="${o.c[x.k]/(VS.length||1)*100}"></i>`:'').join('')}</div></div>`).join('')}</div><div class="vlab">${W.map(d=>`<span${d===ATD?' style="font-weight:700;color:#0f172a"':''}>${+d.slice(8)}</span>`).join('')}</div>
-   <div class="legend" style="display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:8px">${[...AST,ASC['']].map(x=>`<div><i style="background:${x.c}"></i>${stLbl(x.k)}</div>`).join('')}</div>`;
-  requestAnimationFrame(()=>setTimeout(()=>document.querySelectorAll('#adTrend i[data-h]').forEach(i=>i.style.height=i.dataset.h+'%'),60));
 }
 $('#adDate').onchange=e=>{if(e.target.value){ATD=e.target.value;renderHome()}};
 $('#adToday').onclick=()=>{ATD=todayISO();renderHome()};$('#adPrev').onclick=()=>{ATD=addD(ATD,-1);renderHome()};$('#adNext').onclick=()=>{ATD=addD(ATD,1);renderHome()};
