@@ -405,8 +405,6 @@ html[data-device=mobile] header{padding:10px 12px}
 html[data-device=mobile] header h1{font-size:18px}
 html[data-device=mobile] header .sub{font-size:12px}
 html[data-device=mobile] header>div:last-child{width:100%;justify-content:space-between}
-html[data-device=mobile] .seg{flex:1 1 100%}
-html[data-device=mobile] .seg button{flex:1;padding:9px 6px}
 html[data-device=mobile] nav{padding:6px 6px 0}
 html[data-device=mobile] nav button{padding:9px 11px;font-size:14px}
 html[data-device=mobile] main{padding:0 6px 40px}
@@ -438,10 +436,6 @@ body.staff .stick{top:0}
 .who{border:1px solid #9cc79f;background:#f1f9f1;border-radius:8px;padding:8px 12px;font-size:14px;line-height:1.7}
 .who b{font-size:16px;color:var(--green)}.who.no{border-color:#e6a1a1;background:#fdecea;color:var(--red)}
 input.dup{border-color:var(--red)!important;background:#fdecea}
-.seg{display:inline-flex;background:#0003;border:1px solid #fff4;border-radius:11px;padding:3px;gap:2px}
-.seg button{border:0;background:transparent;color:#fff;font:inherit;font-weight:600;font-size:15px;padding:7px 14px;border-radius:8px;cursor:pointer;white-space:nowrap}
-.seg button.on{background:#fff;color:var(--navy);box-shadow:0 1px 4px #0003}
-.seg button:not(.on):hover{background:#fff2}
 body.staff nav{display:none}
 body.staff main{padding-top:12px}body.staff section{border-radius:8px}
 body.admin header{background:linear-gradient(135deg,#0f2a5f 0%,#1e40af 60%,#0369a1 100%)}
@@ -496,18 +490,6 @@ html[data-device=mobile] #adKpi{grid-template-columns:1fr 1fr}
 #atSum{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
 .atchip{border:1.5px solid var(--c);color:var(--c);background:#fff;border-radius:999px;padding:6px 14px;font:inherit;font-size:15px;cursor:pointer}
 .atchip b{margin-left:4px}.atchip.on{background:var(--c);color:#fff}
-.atr{display:grid;grid-template-columns:minmax(240px,1.2fr) auto 104px minmax(150px,1fr) 64px;gap:10px;align-items:center;padding:8px 12px;border:1px solid var(--line);border-radius:12px;background:#fff;margin-bottom:6px}
-.atr .nm{display:flex;gap:10px;align-items:center;min-width:0}.atr .nm b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.atr .no{width:22px;text-align:right;color:#94a3b8;font-size:13px;flex:none}
-.atr[data-s="ขาด"]{background:#fef2f2;border-color:#fecaca}.atr[data-s="สาย"]{background:#fffbeb;border-color:#fde68a}.atr[data-s="ลา"]{background:#f5f3ff;border-color:#ddd6fe}.atr[data-s="ไปราชการ"]{background:#eff6ff;border-color:#bfdbfe}.atr[data-s=""]{border-style:dashed}
-.atr input{min-width:0;width:100%}
-.atr .auto{font-size:11.5px;color:#7c3aed;background:#ede9fe;border-radius:999px;padding:2px 8px;text-align:center}
-.seg{display:flex;gap:4px;flex-wrap:wrap}
-.seg button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 11px;font:inherit;font-size:14px;cursor:pointer;color:#334155;transition:.12s}
-.seg button:hover{border-color:var(--c)}.seg button.on{background:var(--c);border-color:var(--c);color:#fff;font-weight:600}
-html[data-device=mobile] .atr,html[data-device=tablet] .atr{grid-template-columns:1fr 1fr}
-html[data-device=mobile] .atr .nm,html[data-device=mobile] .atr .seg,html[data-device=tablet] .atr .nm,html[data-device=tablet] .atr .seg{grid-column:1/-1}
-html[data-device=mobile] .seg button{flex:1;padding:8px 4px}
 #arBody{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:24px 30px;max-width:1100px}
 .arp{font-family:'THSarabunIT9','TH SarabunIT๙',Sarabun,sans-serif;font-size:21px;line-height:1.3;color:#000}
 .arp .ac{text-align:center;margin-bottom:10px}
@@ -518,12 +500,29 @@ html[data-device=mobile] .seg button{flex:1;padding:8px 4px}
 .hero .dnav>*{flex:none!important;width:auto!important}
 #att .filters>button,#att .filters>input[type=date]{flex:none!important;width:auto!important}
 #att .filters>#atSearch{flex:1}
-.atr{grid-template-columns:minmax(240px,1.2fr) auto 124px minmax(150px,1fr) 64px;padding:6px 12px}
-.atr input[type=time]{min-width:118px}
 .arp table,.arp th,.arp td{font-size:inherit!important;font-family:inherit!important;line-height:1.25!important}
 #arep .filters label.chip{flex:none!important;width:auto!important;display:inline-flex;gap:6px;align-items:center;padding:6px 14px;font-size:15px}
 #arep .filters label.chip input{width:auto!important;min-width:0!important;margin:0}
 #arep .filters>button,#arep .filters>select#arMon{flex:none!important;width:auto!important}
+.attb{width:100%;border-collapse:separate;border-spacing:0;background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:15px}
+.attb th{position:sticky;top:0;background:#f1f5f9;font-weight:600;padding:7px 8px;text-align:left;border-bottom:1px solid var(--line);z-index:1}
+.attb td{padding:3px 8px;border-bottom:1px solid #eef2f7;vertical-align:middle}
+.attb tr:last-child td{border-bottom:0}
+.attb td.c,.attb th.tk,.attb td.tk{text-align:center;width:52px}
+.attb .no{color:#94a3b8;width:34px}
+.attb .nm b{font-weight:600;white-space:nowrap}.attb .nm .sm{display:none;font-size:12.5px}
+.attb td.tk button{width:26px;height:26px;border:2px solid #cbd5e1;border-radius:7px;background:#fff;cursor:pointer;color:#fff;font-weight:700;font-size:15px;line-height:1;padding:0;transition:.1s}
+.attb td.tk button:hover{border-color:var(--c)}
+.attb td.tk button.on{background:var(--c);border-color:var(--c)}
+.attb td input{width:100%;min-width:120px;padding:4px 8px;border:1px solid transparent;border-radius:6px;background:transparent;font:inherit;font-size:14px}
+.attb td input:hover,.attb td input:focus{border-color:var(--line);background:#fff}
+.attb .auto{font-size:11px;color:#7c3aed;background:#ede9fe;border-radius:999px;padding:1px 7px;white-space:nowrap}
+.attb .nt{display:flex;gap:4px;align-items:center}.attb td.ntd,.attb th:last-child{width:26%}
+.attb tr[data-s="ขาด"] td{background:#fef2f2}.attb tr[data-s="สาย"] td{background:#fffbeb}.attb tr[data-s="ลา"] td{background:#f5f3ff}
+.attb tbody tr:hover td{background:#f8fafc}
+html[data-device=mobile] .attb .hm{display:none}html[data-device=mobile] .attb .nm .sm{display:block}
+html[data-device=mobile] .attb td.tk,html[data-device=mobile] .attb th.tk{width:38px;padding:3px 2px}
+html[data-device=mobile] .attb td:last-child{display:none}html[data-device=mobile] .attb th:last-child{display:none}
 </style>
 </head>
 <body class="staff">
@@ -2086,7 +2085,7 @@ window.addEventListener('resize',()=>{clearTimeout(window._fh);window._fh=setTim
 $('#home').addEventListener('click',e=>{const b=e.target.closest('[data-go2]');if(b)showTab(b.dataset.go2)});
 
 /* ---------- มา ลา ขาด ---------- */
-const AST=[{k:'มา',i:'✅',c:'#16a34a'},{k:'สาย',i:'⏰',c:'#f59e0b'},{k:'ไปราชการ',i:'🚗',c:'#2563eb'},{k:'ลา',i:'📝',c:'#8b5cf6'},{k:'ขาด',i:'❌',c:'#dc2626'}];
+const AST=[{k:'มา',i:'✅',c:'#16a34a'},{k:'สาย',i:'⏰',c:'#f59e0b'},{k:'ลา',i:'📝',c:'#8b5cf6'},{k:'ขาด',i:'❌',c:'#dc2626'}];
 const ASC=Object.fromEntries(AST.map(x=>[x.k,x]));ASC['']={k:'',i:'❔',c:'#94a3b8'};
 const stLbl=s=>s||'ยังไม่บันทึก';
 let AT={},atLoaded=0,ATD='',ATF=null;const ORGN='สำนักงานจังหวัดยะลา';
@@ -2098,7 +2097,7 @@ function lvOn(d){const m={};LV.forEach(l=>{if(l.status==='rejected')return;if(l.
 const lvTxt=l=>l.type+(l.half?' ('+l.half+')':'');
 function attOf(st,d,LM){const r=((AT[d+'_'+dkOf(st)]||{}).rows||{})[st.id],ls=(LM||lvOn(d))[st.id]||[];
   const lv=ls.find(isLeave),lt=ls.find(l=>T[l.type]&&T[l.type].late),ab=ls.find(l=>l.type==='ขาดราชการ');
-  if(r&&r.s)return{s:r.s,t:r.t||'',n:r.n||(r.s==='ลา'&&lv?lvTxt(lv):''),lv:r.s==='ลา'?lv:null,src:'rec'};
+  if(r&&r.s)return{s:ASC[r.s]?r.s:'มา',t:r.t||'',n:r.n||(r.s==='ลา'&&lv?lvTxt(lv):''),lv:r.s==='ลา'?lv:null,src:'rec'};
   if(lv)return{s:'ลา',t:'',n:lvTxt(lv),lv,src:'lv'};
   if(ab)return{s:'ขาด',t:'',n:'มีบันทึกขาดราชการในระบบใบลา',src:'lv'};
   if(lt)return{s:'สาย',t:'',n:'มีบันทึกมาสายในระบบใบลา',src:'lv'};
@@ -2124,21 +2123,16 @@ function renderAtt(){if(!attReady(renderAtt))return;ATD=ATD||todayISO();$('#atDa
   $('#atInfo').innerHTML=`<div class="atday"><b>${WD[pd(ATD).getUTCDay()]} ${thDL(ATD)}</b>${off?` <span class="tg p">วันหยุด: ${esc(offName(ATD))}</span>`:''} <span class="muted">· ${esc(gDept()?gDept().name:role==='head'&&myDept()?myDept().name:'ทุกกลุ่มงาน')} ${VS.length} คน · บันทึกให้อัตโนมัติทุกครั้งที่กด · คนที่มีใบลาในระบบขึ้นว่า “ลา” ให้เอง</span></div>`;
   $('#atSum').innerHTML=[...AST,ASC['']].map(x=>`<button class="atchip${ATF===x.k?' on':''}" data-af="${x.k}" style="--c:${x.c}">${x.i} ${stLbl(x.k)} <b>${c[x.k]}</b></button>`).join('');
   const L=A.filter(x=>(ATF===null||x.a.s===ATF)&&(!q||x.st.name.toLowerCase().includes(q)));
-  $('#atList').innerHTML=L.length?L.map(({st,a},i)=>`<div class="atr" data-id="${st.id}" data-s="${a.s}">
-    <div class="nm"><span class="no">${i+1}</span>${avOf(st.name)}<div style="min-width:0"><b>${esc(st.name)}</b><div class="muted">${esc(st.pos||'')}${all?' · '+esc(st.dept||''):''}</div></div></div>
-    <div class="seg">${AST.map(x=>`<button data-s="${x.k}" class="${a.s===x.k?'on':''}" style="--c:${x.c}">${x.i} ${x.k}</button>`).join('')}</div>
-    <input type="time" data-f="t" value="${esc(a.t)}" title="เวลามา" ${a.s==='สาย'?'':'style="visibility:hidden"'}>
-    <input data-f="n" value="${esc(a.n)}" placeholder="${a.s==='ไปราชการ'?'ไปราชการที่/เรื่อง':a.s==='ลา'&&!a.lv?'ไม่พบใบลาในระบบ ระบุประเภทลา':'หมายเหตุ'}">
-    ${a.src==='lv'?'<span class="auto" title="ดึงจากใบลาที่บันทึกในระบบ">จากใบลา</span>':''}</div>`).join(''):'<div class="empty">ไม่มีรายชื่อตามเงื่อนไข</div>';
+  $('#atList').innerHTML=L.length?`<table class="attb"><thead><tr><th>ที่</th><th>ชื่อ-สกุล</th><th class="hm">ตำแหน่ง</th><th class="hm">กลุ่มงาน</th>${AST.map(x=>`<th class="tk" style="color:${x.c}">${x.k}</th>`).join('')}<th>หมายเหตุ</th></tr></thead><tbody>${L.map(({st,a},i)=>`<tr class="atr" data-id="${st.id}" data-s="${a.s}"><td class="c no">${i+1}</td><td class="nm"><b>${esc(st.name)}</b><div class="sm muted">${esc(st.pos||'')}</div></td><td class="hm">${esc(st.pos||'')}</td><td class="hm">${esc(st.dept||'')}</td>${AST.map(x=>`<td class="tk"><button data-s="${x.k}" class="${a.s===x.k?'on':''}" style="--c:${x.c}" title="${x.k}">${a.s===x.k?'✔':''}</button></td>`).join('')}<td class="ntd"><div class="nt"><input data-f="n" value="${esc((a.t?a.t+' น. ':'')+a.n)}" placeholder="${a.s==='สาย'?'เวลามา เช่น 08:45':a.s==='ลา'&&!a.lv?'ไม่พบใบลาในระบบ ระบุประเภท':''}">${a.src==='lv'?'<span class="auto" title="ดึงจากใบลาที่บันทึกในระบบ">จากใบลา</span>':''}</div></td></tr>`).join('')}</tbody></table>`:'<div class="empty">ไม่มีรายชื่อตามเงื่อนไข</div>';
 }
 $('#atSum').onclick=e=>{const b=e.target.closest('[data-af]');if(!b)return;const k=b.dataset.af;ATF=ATF===k?null:k;renderAtt()};
 const atGo=d=>{ATD=d;renderAtt()};
 $('#atDate').onchange=e=>{if(e.target.value)atGo(e.target.value)};
 $('#atPrev').onclick=()=>atGo(addD(ATD,-1));$('#atNext').onclick=()=>atGo(addD(ATD,1));$('#atToday').onclick=()=>atGo(todayISO());
 $('#atSearch').oninput=renderAtt;
-$('#atList').addEventListener('click',e=>{const b=e.target.closest('.seg button');if(!b)return;const st=staffById(b.closest('.atr').dataset.id);if(!st)return;
-  const a=attOf(st,ATD),s=b.dataset.s;setAtt(st,{s:a.s===s&&a.src==='rec'?'':s,t:s==='สาย'?a.t:'',n:a.s===s?a.n:(s==='ลา'&&a.lv?lvTxt(a.lv):'')});renderAtt()});
-$('#atList').addEventListener('input',e=>{const f=e.target.dataset.f;if(!f)return;const st=staffById(e.target.closest('.atr').dataset.id);if(!st)return;const a=attOf(st,ATD);setAtt(st,{s:a.s||(f==='t'?'สาย':'มา'),[f]:e.target.value},true)});
+$('#atList').addEventListener('click',e=>{const b=e.target.closest('td.tk button');if(!b)return;const st=staffById(b.closest('.atr').dataset.id);if(!st)return;
+  const a=attOf(st,ATD),s=b.dataset.s;setAtt(st,{s:a.s===s&&a.src==='rec'?'':s,t:'',n:a.s===s?a.n:(s==='ลา'&&a.lv?lvTxt(a.lv):'')});renderAtt()});
+$('#atList').addEventListener('input',e=>{const f=e.target.dataset.f;if(!f)return;const st=staffById(e.target.closest('.atr').dataset.id);if(!st)return;const a=attOf(st,ATD);setAtt(st,{s:a.s||'มา',t:'',n:e.target.value},true)});
 $('#atAllIn').onclick=async()=>{const LM=lvOn(ATD),L=visStaff().filter(st=>!attOf(st,ATD,LM).s);if(!L.length)return toast('ทุกคนบันทึกแล้ว');
   if(isOff(ATD)&&!await ask(`${thDL(ATD)} เป็นวันหยุด (${offName(ATD)}) ยังต้องการบันทึกไหม?`))return;
   L.forEach(st=>setAtt(st,{s:'มา'}));toast(`บันทึก “มา” ${L.length} คน`);renderAtt()};
@@ -2148,7 +2142,7 @@ $('#atClear').onclick=async()=>{const VS=visStaff(),n=VS.filter(st=>((AT[ATD+'_'
 /* ----- Dashboard ----- */
 function renderAttD(){if(!attReady(renderAttD))return;ATD=ATD||todayISO();$('#adDate').value=ATD;
   const VS=visStaff(),LM=lvOn(ATD),A=VS.map(st=>({st,a:attOf(st,ATD,LM)})),c={'':0};AST.forEach(x=>c[x.k]=0);A.forEach(x=>c[x.a.s]++);
-  const g=gDept(),here=c['มา']+c['สาย']+c['ไปราชการ'],done=VS.length-c[''];
+  const g=gDept(),here=c['มา']+c['สาย'],done=VS.length-c[''];
   $('#adSub').innerHTML=`${esc(g?g.name:role==='head'&&myDept()?myDept().name:'ทุกกลุ่มงาน')} · ${WD[pd(ATD).getUTCDay()]} ${thDL(ATD)}${isOff(ATD)?' · <b>วันหยุด: '+esc(offName(ATD))+'</b>':''} · ปฏิบัติงาน <b>${pct(here,VS.length)}%</b> · บันทึกแล้ว ${done}/${VS.length} คน`;
   const K=[['👥',VS.length,'เจ้าหน้าที่ทั้งหมด','*','#0f766e'],...AST.map(x=>[x.i,c[x.k],x.k==='มา'?'มาปฏิบัติงาน':x.k==='สาย'?'มาสาย':x.k,x.k,x.c]),['❔',c[''],'ยังไม่บันทึก','','#94a3b8']];
   $('#adKpi').innerHTML=K.map(([ic,n,l,f,col],i)=>`<button class="hcard${f===''&&n&&!isOff(ATD)?' warn':''}" data-af="${f}" style="animation-delay:${i*50}ms;--c:${col}"><div class="ic">${ic}</div><div class="n" data-count="${n}" data-suf=" คน">0</div><div class="l">${l} →</div></button>`).join('');countUp($('#adKpi'));
@@ -2160,7 +2154,7 @@ function renderAttD(){if(!attReady(renderAttD))return;ATD=ATD||todayISO();$('#ad
   // by group
   const DP=role==='head'?[myDept()].filter(Boolean):g?[g]:S.depts;
   $('#adGrp').innerHTML=DP.map(d=>{const L=S.staff.filter(st=>norm(st.dept)===norm(d.name)),cc=attCount(L,ATD,LM),n=L.length||1;
-    return`<div class="gbar" data-gd="${d.id}"><div class="gl"><b>${esc(d.name)}</b><span class="muted">${cc['มา']+cc['สาย']+cc['ไปราชการ']}/${L.length} · ${pct(cc['มา']+cc['สาย']+cc['ไปราชการ'],L.length)}%</span></div><div class="sb">${[...AST,ASC['']].map(x=>cc[x.k]?`<i style="background:${x.c}" data-w="${cc[x.k]/n*100}" title="${stLbl(x.k)} ${cc[x.k]} คน">${cc[x.k]}</i>`:'').join('')}</div></div>`}).join('')||'<div class="empty">ไม่มีกลุ่มงาน</div>';
+    return`<div class="gbar" data-gd="${d.id}"><div class="gl"><b>${esc(d.name)}</b><span class="muted">${cc['มา']+cc['สาย']}/${L.length} · ${pct(cc['มา']+cc['สาย'],L.length)}%</span></div><div class="sb">${[...AST,ASC['']].map(x=>cc[x.k]?`<i style="background:${x.c}" data-w="${cc[x.k]/n*100}" title="${stLbl(x.k)} ${cc[x.k]} คน">${cc[x.k]}</i>`:'').join('')}</div></div>`}).join('')||'<div class="empty">ไม่มีกลุ่มงาน</div>';
   requestAnimationFrame(()=>setTimeout(()=>document.querySelectorAll('#adGrp i[data-w]').forEach(i=>i.style.width=i.dataset.w+'%'),60));
   // who is away
   const away=A.filter(x=>x.a.s&&x.a.s!=='มา').sort((p,q)=>AST.findIndex(y=>y.k===p.a.s)-AST.findIndex(y=>y.k===q.a.s));
@@ -2168,7 +2162,7 @@ function renderAttD(){if(!attReady(renderAttD))return;ATD=ATD||todayISO();$('#ad
     +(c['']&&!isOff(ATD)?`<div class="alert" data-go2="att" style="margin-top:10px"><span>❔ ยังไม่บันทึก ${c['']} คน</span><span class="btn sec sm">ไปบันทึก →</span></div>`:'');
   // trend
   const W=prevWork(ATD,20),TR=W.map(d=>({d,c:attCount(VS,d)}));
-  $('#adTrend').innerHTML=`<div class="sbars">${TR.map(o=>`<div class="c" title="${thD(o.d)} · ${AST.map(x=>x.k+' '+o.c[x.k]).join(' · ')} · ยังไม่บันทึก ${o.c['']}"><b>${o.c['']>VS.length/2?'':pct(o.c['มา']+o.c['สาย']+o.c['ไปราชการ'],VS.length)+'%'}</b><div class="stk">${[ASC[''],...[...AST].reverse()].map(x=>o.c[x.k]?`<i style="background:${x.c}" data-h="${o.c[x.k]/(VS.length||1)*100}"></i>`:'').join('')}</div></div>`).join('')}</div><div class="vlab">${W.map(d=>`<span${d===ATD?' style="font-weight:700;color:#0f172a"':''}>${+d.slice(8)}</span>`).join('')}</div>
+  $('#adTrend').innerHTML=`<div class="sbars">${TR.map(o=>`<div class="c" title="${thD(o.d)} · ${AST.map(x=>x.k+' '+o.c[x.k]).join(' · ')} · ยังไม่บันทึก ${o.c['']}"><b>${o.c['']>VS.length/2?'':pct(o.c['มา']+o.c['สาย'],VS.length)+'%'}</b><div class="stk">${[ASC[''],...[...AST].reverse()].map(x=>o.c[x.k]?`<i style="background:${x.c}" data-h="${o.c[x.k]/(VS.length||1)*100}"></i>`:'').join('')}</div></div>`).join('')}</div><div class="vlab">${W.map(d=>`<span${d===ATD?' style="font-weight:700;color:#0f172a"':''}>${+d.slice(8)}</span>`).join('')}</div>
    <div class="legend" style="display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:8px">${[...AST,ASC['']].map(x=>`<div><i style="background:${x.c}"></i>${stLbl(x.k)}</div>`).join('')}</div>`;
   requestAnimationFrame(()=>setTimeout(()=>document.querySelectorAll('#adTrend i[data-h]').forEach(i=>i.style.height=i.dataset.h+'%'),60));
   // top late/absent this month
@@ -2194,7 +2188,7 @@ function arData(){const VS=visStaff(),g=gDept(),scope=g?g.name:role==='head'&&my
   const mo=$('#arMon').value||todayISO().slice(0,7),t=todayISO(),MD=monthDays(mo).filter(d=>d<=t&&!isOff(d)),LMs=MD.map(lvOn);
   const R=VS.map(st=>{const o={st,'':0};AST.forEach(x=>o[x.k]=0);MD.forEach((d,i)=>o[attOf(st,d,LMs[i]).s]++);return o});
   return{m:'m',scope,title:'รายงานสรุปการมาปฏิบัติราชการประจำเดือน',when:`เดือน${ML[+mo.slice(5)-1]} พ.ศ. ${+mo.slice(0,4)+543} (วันทำการ ${MD.length} วัน${mo===t.slice(0,7)?' ถึงวันที่ '+thD(t):''})`,R,MD}}
-const COLS=['มา','สาย','ลา','ไปราชการ','ขาด',''];
+const COLS=['มา','สาย','ลา','ขาด',''];
 function arHTML(D){const st=S.settings,h=`<div class="arp"><div class="ac"><b style="font-size:1.15em">${D.title}</b><br>${ORGN}${D.scope!=='ทุกกลุ่มงาน'?' · '+esc(D.scope):''}<br>${D.when}</div>`;
   const th=`${COLS.map(k=>`<th>${stLbl(k)}</th>`).join('')}`;let b='';
   if(D.m==='d'){b=`<table><thead><tr><th>ที่</th><th>กลุ่มงาน</th><th>ทั้งหมด</th>${th}</tr></thead><tbody>${D.G.map((x,i)=>`<tr><td class="c">${i+1}</td><td>${esc(x.name)}</td><td class="c">${x.n}</td>${COLS.map(k=>`<td class="c">${x.c[k]||'-'}</td>`).join('')}</tr>`).join('')}<tr class="tot"><td></td><td>รวม</td><td class="c">${D.tot.n}</td>${COLS.map(k=>`<td class="c">${D.tot.c[k]||'-'}</td>`).join('')}</tr></tbody></table>
