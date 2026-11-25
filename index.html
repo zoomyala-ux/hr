@@ -15,6 +15,21 @@ header h1{margin:0;font-size:20px}
 header .sub{font-size:14px;opacity:.9}
 .badge{font-size:12px;padding:3px 9px;border-radius:12px;background:#fff2;border:1px solid #fff5;white-space:nowrap}
 nav{display:flex;gap:4px;padding:8px 12px 0;overflow-x:auto;background:var(--bg);position:sticky;top:0;z-index:5}
+#subnav{display:none;gap:6px;flex-wrap:wrap;padding:8px 12px 0;background:#fff;margin:0 12px;border-radius:0 8px 0 0}
+#subnav.show{display:flex}
+#subnav button{border:1px solid #c9d8e6;background:#f3f7fb;color:var(--navy);padding:5px 12px;border-radius:16px;font:inherit;font-size:14px;cursor:pointer}
+#subnav button.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+body.staff #subnav{display:none!important}
+.hcard{background:#fff;border:1px solid #d9e3ee;border-radius:10px;padding:12px 14px;cursor:pointer;transition:.15s;text-align:left;font:inherit;color:inherit;width:100%}
+.hcard:hover{border-color:var(--navy);box-shadow:0 2px 8px #0002;transform:translateY(-1px)}
+.hcard .n{font-size:26px;font-weight:700;color:var(--navy);line-height:1.2}
+.hcard .l{color:#4a5b6d;font-size:14px}
+.hgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px}
+.hnav{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+.hnav .hcard b{display:block;font-size:16px;margin-bottom:2px}
+.alert{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:8px 12px;border-radius:8px;background:#fff7e6;border:1px solid #f3d9a4;margin-bottom:6px;cursor:pointer}
+.alert.ok{background:#eef8ee;border-color:#bfe0bf;cursor:default}
+.alert:hover:not(.ok){border-color:#d08a00}
 nav button{border:0;background:#b9cfe4;color:var(--navy);padding:9px 14px;border-radius:8px 8px 0 0;font:inherit;font-weight:600;cursor:pointer;white-space:nowrap}
 nav button.on{background:#fff;color:var(--navy)}
 main{padding:0 12px 40px}
@@ -155,19 +170,16 @@ body.head .adminonly{display:none!important}
 </header>
 <div id="adminBar"><span id="abText"></span><span><button class="btn sec sm" id="chgPw">🔑 เปลี่ยนรหัสผ่าน</button> <button class="btn sec sm" id="exitAdmin">ออกจากระบบ</button></span></div>
 <nav id="tabs">
-  <button data-t="add" class="adm adminonly">➕ เพิ่ม / อัปโหลดข้อมูล</button>
-  <button data-t="pend" class="adm" style="display:none">รอตรวจสอบ <span id="pendN"></span></button>
-  <button data-t="rec" class="on">บันทึกการลา</button>
-  <button data-t="all" class="adm">ข้อมูลการลาทั้งหมด</button>
-  <button data-t="back" class="adm adminonly">เพิ่มใบลาย้อนหลัง</button>
-  <button data-t="sum" class="adm">แบบสรุปวันลา</button>
-  <button data-t="rep" class="adm">รายงาน</button>
-  <button data-t="staff" class="adm">เจ้าหน้าที่ / กลุ่มงาน</button>
-  <button data-t="base" class="adm adminonly">ข้อมูลพื้นฐาน</button>
-  <button data-t="hol" class="adm adminonly">กำหนดวันหยุด</button>
-  <button data-t="form" class="adm adminonly">แบบฟอร์มใบลา</button>
-  <button data-t="exp" class="adm">ดาวน์โหลดรายงาน / สำรองข้อมูล</button>
+  <button data-t="home" class="adm">🏠 หน้าหลัก</button>
+  <button data-t="rec" class="on">📝 บันทึกการลา</button>
+  <button data-g="leave" class="adm">📋 ข้อมูลการลา</button>
+  <button data-g="report" class="adm">📊 สรุป / รายงาน</button>
+  <button data-t="staff" class="adm">👥 เจ้าหน้าที่ / กลุ่มงาน</button>
+  <button data-g="data" class="adm">📥 นำเข้า / ส่งออก</button>
+  <button data-g="set" class="adm adminonly">⚙️ ตั้งค่า</button>
+  <span id="pendN" hidden></span>
 </nav>
+<div id="subnav"></div>
 <main>
 <!-- รอตรวจสอบ -->
 <section id="pend"><div class="filters stick"><input id="pSearch" placeholder="🔍 พิมพ์ชื่อค้นหา" style="min-width:220px"></div><p class="muted" style="margin-top:0">ใบลาที่ผู้กรอกส่งเข้ามา ตรวจสอบแล้วกดอนุมัติ จึงจะนับในแบบสรุปและรายงาน</p><div class="tw" id="pTable" data-cardify></div></section>
@@ -198,6 +210,17 @@ body.head .adminonly{display:none!important}
  </div>
 </section>
 
+<!-- หน้าหลัก -->
+<section id="home">
+ <div class="filters stick"><select class="grpF adminonly" title="กรองตามกลุ่มงาน" style="min-width:220px;font-weight:600"></select><span class="muted" id="hmSub"></span></div>
+ <div class="hgrid" id="hmKpi"></div>
+ <div class="grid2" style="margin-top:12px">
+  <div class="panel"><h3><span>🗓️ ลาวันนี้ และ 7 วันข้างหน้า</span></h3><div class="bd" id="hmToday"></div></div>
+  <div class="panel"><h3><span>✅ สิ่งที่ควรทำ / ตรวจความครบของข้อมูล</span></h3><div class="bd" id="hmTodo"></div></div>
+ </div>
+ <h3 style="margin:14px 0 8px;color:var(--navy)">ไปที่เมนู</h3>
+ <div class="hnav" id="hmNav"></div>
+</section>
 <!-- เพิ่ม/อัปโหลดข้อมูล -->
 <section id="add">
  <p style="margin-top:0"><b>เลือกสิ่งที่ต้องการทำ</b> · <span class="muted" id="addSum"></span></p>
@@ -272,8 +295,8 @@ body.head .adminonly{display:none!important}
  <div class="grid2">
   <div>
    <div class="panel"><h3>ข้อมูลหน่วยงานและรอบรายงาน</h3><div class="bd">
-    <div class="row"><label>ชื่อโรงเรียน/หน่วยงาน</label><input id="bOrg"></div>
-    <div class="row"><label>ชื่อผู้บริหาร</label><input id="bAdmin"></div>
+    <div class="row"><label>ชื่อหน่วยงาน</label><input id="bOrg"></div>
+    <div class="row"><label>ผู้ลงนามในรายงาน</label><input id="bAdmin"></div>
     <div class="row"><label>รอบการรายงาน</label><select id="bRound"><option value="1">ครึ่งปีแรก (1 ต.ค. – 31 มี.ค.)</option><option value="2">ครึ่งปีหลัง (1 เม.ย. – 30 ก.ย.)</option></select></div>
     <div class="row"><label>ปีงบประมาณ</label><input type="number" id="bYear" min="2550" max="2650"></div>
     <div class="row"><label>ระหว่างวันที่</label><input id="bPeriod" readonly></div>
@@ -325,9 +348,9 @@ body.head .adminonly{display:none!important}
     <p class="muted">ชีต: แบบสรุปวันลา · ข้อมูลการลา · รายเดือน · บุคลากร · วันหยุด</p>
     <div class="btns"><button class="btn sec" data-x="xlsx-sum">แบบสรุปวันลา</button><button class="btn sec" data-x="xlsx-leaves">ข้อมูลการลา</button><button class="btn sec" data-x="xlsx-month">รายเดือน</button></div>
    </div></div>
-   <div class="panel"><h3>CSV (เปิดได้ทุกโปรแกรม)</h3><div class="bd"><div class="btns" style="margin:0">
+   <details class="panel"><summary style="padding:10px 12px;cursor:pointer;font-weight:600">CSV (ไฟล์แบบอื่น เปิดได้ทุกโปรแกรม)</summary><div class="bd"><div class="btns" style="margin:0">
     <button class="btn sec" data-x="csv-sum">แบบสรุปวันลา</button><button class="btn sec" data-x="csv-leaves">ข้อมูลการลา</button><button class="btn sec" data-x="csv-month">รายเดือน</button><button class="btn sec" data-x="csv-staff">บุคลากร</button><button class="btn sec" data-x="csv-hol">วันหยุด</button>
-   </div></div></div>
+   </div></div></details>
    <div class="panel"><h3>รายงานสำหรับพิมพ์ / บันทึกเป็น PDF</h3><div class="bd">
     <div class="btns" style="margin:0"><button class="btn sec" data-x="html-sum">แบบสรุปวันลา</button><button class="btn sec" data-x="html-month">รายงานรายเดือน</button><button class="btn sec" data-x="html-ind">รายบุคคล (ทุกคน)</button></div>
     <p class="muted">เปิดไฟล์ที่ได้ในเบราว์เซอร์ แล้วกด Ctrl+P → เลือก “บันทึกเป็น PDF” หรือสั่งพิมพ์</p>
@@ -576,10 +599,10 @@ function setRole(r,quiet){
   const d=myDept();
   document.querySelectorAll('#roleSeg button').forEach(b=>b.classList.toggle('on',(b.dataset.r==='staff')===(r==='staff')));
   $('#segMgr').textContent=sess?(sess.role==='admin'?'🛡 ผู้ดูแลระบบ':'🏢 หัวหน้ากลุ่มงาน'):'🔐 เข้าสู่ระบบ';
-  $('#abText').innerHTML=r==='admin'?'🛡 <b>ผู้ดูแลระบบ</b> — จัดการข้อมูลทั้งหมด บันทึกประวัติการลา และออกรายงาน':r==='head'?`🏢 <b>หัวหน้ากลุ่มงาน</b>: ${esc(d?d.name:'')}${d&&(d.supName||d.headName)?` (${esc(d.supName||d.headName)})`:''} — ดูประวัติการลาและรายงานของกลุ่มงาน`:'';
+  {const d=myDept();$('#abText').innerHTML=r==='admin'?'🛡 <b>ผู้ดูแลระบบ</b>':r==='head'?`🏢 <b>หัวหน้ากลุ่มงาน</b> · ${esc(d?d.name:'')}`:''}
   $('#fType').innerHTML=TYPES.filter(t=>isMgr()||!t.adm).map(t=>opt(t.n,t.n)).join('');
   editId=null;
-  if(!quiet){clearForm(true);showTab(role==='admin'?'add':isMgr()?'all':'rec')}
+  if(!quiet){clearForm(true);showTab(isMgr()?'home':'rec')}
 }
 async function sha(s){try{const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('leaveapp|'+s));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}catch(e){let h=0;for(const c of 'leaveapp|'+s)h=(h*31+c.charCodeAt(0))|0;return 'x'+h}}
 function saveSess(){try{sess?sessionStorage.setItem('leaveapp:sess',JSON.stringify(sess)):sessionStorage.removeItem('leaveapp:sess')}catch(e){}}
@@ -700,11 +723,20 @@ function reportDoc(title,body){
 function printHTML(html){$('#printArea').innerHTML=html.replace(/^[\s\S]*?<body>/,'').replace(/<\/body>[\s\S]*$/,'');try{window.print()}catch(e){}}
 
 /* ---------- tabs ---------- */
-function showTab(t){const b=document.querySelector(`#tabs button[data-t="${t}"]`);if(!isMgr()&&b.classList.contains('adm'))t='rec';if(role==='head'&&b.classList.contains('adminonly'))t='all';if(t==='pend')t=isMgr()?'all':'rec';
-  document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x.dataset.t===t));document.querySelectorAll('main section').forEach(s=>s.classList.toggle('on',s.id===t));renderTab(t)}
-$('#tabs').onclick=e=>{const b=e.target.closest('button');if(b)showTab(b.dataset.t)};
-const curTab=()=>document.querySelector('#tabs button.on').dataset.t;
-function renderTab(t){if(role==='admin')renderGrpF();({add:renderAdd,back:renderBack,pend:renderPend,rec:renderRec,all:renderAllList,sum:renderSum,rep:renderRep,base:renderBase,staff:renderStaff,hol:renderHol,exp:renderExp,form:renderForm})[t]()}
+const ACC={home:'mgr',rec:'all',all:'mgr',back:'admin',pend:'mgr',sum:'mgr',rep:'mgr',staff:'mgr',add:'admin',exp:'mgr',base:'admin',hol:'admin',form:'admin'};
+const GROUPS={leave:[['all','📋 ข้อมูลการลาทั้งหมด'],['back','➕ เพิ่มใบลาย้อนหลัง']],report:[['sum','แบบสรุปวันลา'],['rep','รายงาน / กราฟ / รายบุคคล']],data:[['add','📤 เพิ่ม / อัปโหลดข้อมูล'],['exp','⬇ ดาวน์โหลดรายงาน / สำรองข้อมูล']],set:[['base','ข้อมูลพื้นฐาน / รหัสผ่าน'],['hol','วันหยุดราชการ'],['form','แบบฟอร์มใบลา']]};
+const canTab=t=>{const a=ACC[t]||'mgr';return a==='all'||(a==='mgr'&&isMgr())||(a==='admin'&&role==='admin')};
+const grpOf=t=>Object.keys(GROUPS).find(g=>GROUPS[g].some(x=>x[0]===t));
+let curT='rec';const lastInG={};
+function showTab(t){if(t==='pend')t='all';if(!canTab(t))t=isMgr()?(canTab('home')?'home':'all'):'rec';curT=t;
+  const g=grpOf(t);if(g)lastInG[g]=t;
+  document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x.dataset.t===t||(!!g&&x.dataset.g===g)));
+  const sub=g?GROUPS[g].filter(x=>canTab(x[0])):[];const sn=$('#subnav');sn.className=sub.length>1?'show':'';sn.innerHTML=sub.length>1?sub.map(([k,l])=>`<button data-t="${k}" class="${k===t?'on':''}">${l}</button>`).join(''):'';
+  document.querySelectorAll('main section').forEach(s=>s.classList.toggle('on',s.id===t));renderTab(t);if(typeof setNavH==='function')setNavH()}
+$('#tabs').onclick=e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.g){const L=GROUPS[b.dataset.g].map(x=>x[0]).filter(canTab);showTab(L.includes(lastInG[b.dataset.g])?lastInG[b.dataset.g]:L[0])}else showTab(b.dataset.t)};
+$('#subnav').onclick=e=>{const b=e.target.closest('[data-t]');if(b)showTab(b.dataset.t)};
+const curTab=()=>curT;
+function renderTab(t){if(role==='admin')renderGrpF();({home:renderHome,add:renderAdd,back:renderBack,pend:renderPend,rec:renderRec,all:renderAllList,sum:renderSum,rep:renderRep,base:renderBase,staff:renderStaff,hol:renderHol,exp:renderExp,form:renderForm})[t]()}
 function renderAll(){renderHeader();renderTab(curTab())}
 function renderLive(){renderHeader();const t=curTab();if(t==='base'&&document.activeElement&&document.activeElement.closest('#base'))return;if(t==='rec'){renderPerson();updForm()}else renderTab(t)}
 function renderHeader(){const st=S.settings,[a,b]=curPeriod();$('#hSub').textContent=`${st.org||'-'} · รอบ${+st.round===1?'ครึ่งปีแรก':'ครึ่งปีหลัง'} ปีงบประมาณ ${st.year} (${thD(a)} – ${thD(b)})`;const n=pendCount();$('#pendN').textContent=n||'';$('#demoBadge').style.display=hasDemo()?'':'none'}
@@ -1045,7 +1077,7 @@ async function allLeaves(){
 $('#bBackup').onclick=async()=>{
   let L;try{L=await allLeaves()}catch(e){return toast('อ่านข้อมูลไม่สำเร็จ',true)}
   const data={app:'leave-app',version:2,exported:new Date().toISOString(),settings:S.settings,staff:S.staff,holidays:S.holidays,leaves:L};
-  saveFile(`ฐานข้อมูลการลา_${new Date().toISOString().slice(0,10)}.json`,JSON.stringify(data,null,1),'application/json');
+  saveFile(`ฐานข้อมูลการลา_${new Date().toISOString().slice(0,10)}.json`,JSON.stringify(data,null,1),'application/json');S.settings.lastBackup=Date.now();saveSet();
 };
 $('#bRestore').onchange=async e=>{
   const f=e.target.files[0];e.target.value='';if(!f)return;
@@ -1574,6 +1606,46 @@ $('#add').addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(
   const t=e.target.closest('[data-tpl]');if(t)importTemplate(t.dataset.tpl)});
 $('#add').addEventListener('change',e=>{const i=e.target;if(i.dataset.up===undefined)return;const f=i.files[0];i.value='';if(f)importFile(f,i.dataset.up||'')});
 function renderAdd(){$('#addSum').textContent=`ตอนนี้มีเจ้าหน้าที่ ${S.staff.length} คน · ${S.depts.length} กลุ่มงาน · วันหยุด ${S.holidays.length} วัน`}
+
+/* ---------- หน้าหลัก (dashboard) ---------- */
+const todayISO=()=>iso(new Date(Date.now()+7*36e5));
+function renderHome(){
+  const g=gDept(),VS=visStaff(),RL=roundLeaves().filter(inScope),FL=fyLeaves().filter(inScope),td=todayISO(),wk=iso(new Date(pd(td).getTime()+7*864e5));
+  $('#hmSub').textContent=`${g?g.name:(role==='head'&&myDept()?myDept().name:'ทุกกลุ่มงาน')} · ${$('#hSub').textContent.split(' · ').slice(1).join(' · ')}`;
+  const leaves=RL.filter(isLeave),days=leaves.reduce((a,l)=>a+(+l.days||0),0),late=RL.filter(l=>T[l.type]?.late).length;
+  const over=sumRows().filter(x=>x.r.over.length).length;
+  const qOver=VS.filter(s=>{const q=quotaOf(s);return Object.entries(QT).some(([t,k])=>usedOf(s.id,t)>q[k])}).length;
+  const K=[[VS.length+' คน','เจ้าหน้าที่','staff'],[leaves.length+' ครั้ง','ลาในรอบรายงานนี้','all'],[fmt(days)+' วัน','รวมวันลาในรอบ','sum'],[late+' ครั้ง','มาสายในรอบ','all'],[over+' คน','เกินเกณฑ์ ป่วย+กิจ/มาสาย','sum'],[qOver+' คน','ใช้วันลาเกินโควต้า','rep']];
+  $('#hmKpi').innerHTML=K.map(([n,l,t],i)=>`<button class="hcard" data-go2="${t}"><div class="n" style="${(i>=4&&parseInt(n))?'color:var(--red)':''}">${n}</div><div class="l">${l} →</div></button>`).join('');
+  const on=FL.filter(l=>isLeave(l)&&l.start<=wk&&(l.end||l.start)>=td).sort((a,b)=>a.start<b.start?-1:1);
+  const now=on.filter(l=>l.start<=td),soon=on.filter(l=>l.start>td);
+  const li=l=>`<div style="display:flex;justify-content:space-between;gap:8px;padding:4px 0;border-bottom:1px dashed #e3e9ef"><span><b>${esc(staffName(l))}</b> <span class="muted">${esc(l.type)}${l.half?' ('+esc(l.half)+')':''}</span></span><span class="muted" style="white-space:nowrap">${thD(l.start)}${(l.end||l.start)!==l.start?' – '+thD(l.end):''}</span></div>`;
+  $('#hmToday').innerHTML=`<div style="font-weight:600">วันนี้ (${thD(td)}) ลา ${now.length} คน</div>${now.map(li).join('')||'<div class="muted">ไม่มีผู้ลาวันนี้</div>'}<div style="font-weight:600;margin-top:10px">7 วันข้างหน้า ${soon.length} รายการ</div>${soon.map(li).join('')||'<div class="muted">ไม่มี</div>'}`;
+  const T2=[];
+  if(role==='admin'){const all=g?S.staff.filter(inGF):S.staff,D=g?[g]:S.depts;
+    const noCid=all.filter(s=>!s.cid).length,badCid=all.filter(s=>s.cid&&!cidValid(s.cid)).length,noEt=all.filter(s=>!s.etype).length,noTel=all.filter(s=>!s.tel).length,noSup=D.filter(d=>!d.supName).length,noGrp=S.staff.filter(s=>!deptOf(s)).length;
+    const bk=S.settings.lastBackup,bkDays=bk?Math.floor((Date.now()-bk)/864e5):null,fyHol=S.holidays.filter(h=>fyOf(h.date)===curFY()).length;
+    if(hasDemo())T2.push(['มีข้อมูลตัวอย่างอยู่ในระบบ ควรลบก่อนใช้งานจริง','base','ไปลบ']);
+    if(!S.settings.adminHash)T2.push(['ยังใช้รหัสผ่าน admin เริ่มต้น ควรเปลี่ยน','base','เปลี่ยนรหัส']);
+    if(bkDays===null||bkDays>7)T2.push([bkDays===null?'ยังไม่เคยสำรองข้อมูล':`สำรองข้อมูลครั้งล่าสุด ${bkDays} วันที่แล้ว`,'exp','สำรองเลย']);
+    if(noGrp)T2.push([`เจ้าหน้าที่ ${noGrp} คน ยังไม่ได้เลือกกลุ่มงาน`,'staff','แก้ไข']);
+    if(noSup)T2.push([`กลุ่มงาน ${noSup} กลุ่ม ยังไม่มีผู้บังคับบัญชาชั้นต้น`,'staff','ตั้งค่า']);
+    if(noEt)T2.push([`เจ้าหน้าที่ ${noEt} คน ยังไม่ระบุประเภท (ข้าราชการ/พนักงานราชการ/ลูกจ้าง)`,'staff','แก้ไข']);
+    if(noCid)T2.push([`เจ้าหน้าที่ ${noCid} คน ยังไม่มีเลขบัตรประชาชน`,'add','อัปโหลดทีละหลายคน']);
+    if(badCid)T2.push([`เลขบัตรประชาชนไม่ถูกต้อง ${badCid} คน`,'staff','ตรวจ']);
+    if(noTel)T2.push([`เจ้าหน้าที่ ${noTel} คน ยังไม่มีเบอร์โทร`,'staff','แก้ไข']);
+    if(!fyHol)T2.push([`ยังไม่มีวันหยุดราชการของปีงบ ${curFY()}`,'hol','เพิ่มวันหยุด']);
+    if(!all.some(s=>+s.qCarry))T2.push(['ยังไม่ได้กรอกวันลาพักผ่อนสะสมของใครเลย','add','อัปโหลดรายชื่อ']);
+  }
+  if(over)T2.push([`มีเจ้าหน้าที่ ${over} คน ลาเกินเกณฑ์ในรอบนี้`,'sum','ดูแบบสรุป']);
+  $('#hmTodo').innerHTML=T2.length?T2.map(([t,go,b])=>`<div class="alert" data-go2="${go}"><span>⚠️ ${esc(t)}</span><span class="btn sec sm">${b} →</span></div>`).join(''):'<div class="alert ok">✅ ข้อมูลครบ ไม่มีสิ่งที่ต้องทำ</div>';
+  const NAV=[['rec','📝','บันทึกการลา','บันทึกใบลาครั้งใหม่ แล้วพิมพ์ใบลา PDF'],['all','📋','ข้อมูลการลาทั้งหมด','ค้นหา แก้ไข ลบ พิมพ์ใบลาย้อนหลัง'],['back','➕','เพิ่มใบลาย้อนหลัง','กรอกประวัติการลาก่อนใช้ระบบ ทีละครั้ง'],
+    ['sum','📊','แบบสรุปวันลา','สรุปรายคนในรอบรายงาน ตรวจเกินเกณฑ์'],['rep','📈','รายงาน / กราฟ','รายเดือน แยกประเภท และรายบุคคล'],['staff','👥','เจ้าหน้าที่ / กลุ่มงาน','รายชื่อ เลข ID โควต้าวันลา ผู้บังคับบัญชา'],
+    ['add','📤','เพิ่ม / อัปโหลดข้อมูล','อัปโหลด Excel รายชื่อ ประวัติการลา วันหยุด'],['exp','⬇','ดาวน์โหลดรายงาน / สำรอง','Excel / CSV / พิมพ์ และไฟล์สำรองข้อมูล'],
+    ['base','⚙️','ข้อมูลพื้นฐาน','ปีงบ รอบรายงาน เกณฑ์ รหัสผ่าน'],['hol','🗓️','วันหยุดราชการ','ใช้คำนวณวันทำการ'],['form','🖨','แบบฟอร์มใบลา','ข้อความและผู้ลงนามในใบลา']].filter(x=>canTab(x[0]));
+  $('#hmNav').innerHTML=NAV.map(([t,i,n,d])=>`<button class="hcard" data-go2="${t}"><b>${i} ${n}</b><span class="l">${d}</span></button>`).join('');
+}
+$('#home').addEventListener('click',e=>{const b=e.target.closest('[data-go2]');if(b)showTab(b.dataset.go2)});
 
 /* ---------- ตรวจจับอุปกรณ์ ---------- */
 const DEV_T={mobile:'📱 มือถือ',tablet:'📲 แท็บเล็ต',desktop:'💻 คอมพิวเตอร์'};
