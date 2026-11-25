@@ -294,6 +294,44 @@ html[data-device=desktop] #sTable{max-height:calc(100vh - 400px)}
 html[data-device=desktop] #aTable{max-height:calc(100vh - 340px)}
 .upcard .bd>.muted{font-size:12.5px;line-height:1.45}
 .upcard .stp{font-size:14px}
+/* ===== ตัวหนังสือใหญ่ขึ้น กรอบพอดีเนื้อหา ===== */
+body{font-size:16px}
+table{font-size:15px}
+.muted{font-size:13.5px}
+.panel>h3{font-size:16px}
+nav button{font-size:15px}
+.row{grid-template-columns:118px 1fr}
+.row label{font-size:14.5px}
+input,select,textarea{font-size:15.5px}
+/* แถบตัวกรอง: ไม่ยืดเกินจำเป็น */
+.filters>*,.btns.stick>*{flex:0 1 auto;width:auto;max-width:300px}
+.filters>input,.btns.stick>input{min-width:190px!important;max-width:260px}
+.grpF{min-width:0!important;max-width:260px}
+#dCat{min-width:0!important;max-width:320px}
+.hero select{max-width:260px}
+/* ตารางเจ้าหน้าที่: ช่องพอดีข้อมูล */
+#bStaff input,#bStaff select{min-width:0!important;padding:5px 7px}
+#bStaff [data-f=code]{width:64px!important}
+#bStaff [data-f=name]{width:178px!important}
+#bStaff [data-f=pos]{width:200px!important}
+#bStaff [data-f=etype]{width:122px!important}
+#bStaff [data-f=dept]{width:170px!important}
+#bStaff [data-f=tel]{width:118px!important}
+#bStaff [data-f=addr]{width:150px!important}
+#bStaff [data-f=cid]{width:150px!important}
+#bStaff input[type=number]{width:54px!important;text-align:center}
+#bStaff td{padding:4px 5px}
+/* ตารางอื่น */
+#aTable td,#sTable td,#pHist td{padding:6px 6px}
+#topPanel input{max-width:300px}
+#dTable .grid2 input{max-width:420px}
+.upcard .stp{font-size:14.5px}
+.hcard .l{font-size:13.5px}
+.kpi .hcard .l{font-size:12.5px}
+.chip{font-size:14px}
+.filters>select,.btns.stick>select{max-width:210px}
+.filters>select.grpF,#dCat{max-width:250px}
+#aTable td:nth-child(6),#aTable td:nth-child(7),#aTable td:nth-child(8),#pHist td:nth-child(4),#pHist td:nth-child(5){white-space:nowrap}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.hcard{opacity:1}}
 /* ---- ปรับตามอุปกรณ์ ---- */
 html[data-device=desktop] nav{flex-wrap:wrap;row-gap:4px}
