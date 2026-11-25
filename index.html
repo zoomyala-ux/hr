@@ -824,6 +824,21 @@ table td{border-color:var(--ios-sep)!important}
 #pvModal .pvm{border-radius:16px}
 #pvModal .pvb{background:#F2F2F7!important}
 html[data-device=mobile] #pbar .pt h2{font-size:24px!important}
+
+/* ประวัติการลา + ปุ่มส่ง/พิมพ์ ในหน้ายื่นใบลา */
+#pvPanel:not(.ready) .bd{display:block!important;background:#fff!important}
+.pvact{display:flex;gap:8px;align-items:center;justify-content:flex-end;flex-wrap:wrap;padding:10px 14px;border-bottom:.5px solid var(--line);background:#F9F9F9}
+.pvact .muted{margin-right:auto;font-size:13.5px}
+.pvstats{font-size:14.5px;margin-bottom:12px}
+.pvs-grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:14px}
+.pvstats table{width:100%;border-collapse:collapse;margin:6px 0 10px}
+.pvstats th,.pvstats td{border:1px solid #D1D1D6!important;padding:3px 6px;text-align:center;background:#fff}
+.pvstats th{background:#F2F2F7!important;font-weight:600;font-size:13.5px}
+.pvstats .h,.pvstats>div>div>div:first-child{font-weight:600}
+.pvvac table td{text-align:left}
+html[data-device=mobile] .pvs-grid{grid-template-columns:1fr}
+html[data-device=mobile] .pvact{position:sticky;top:0;z-index:3}html[data-device=mobile] .pvact .btn{flex:1}html[data-device=mobile] .pvact .muted{display:none}
+#pvPanel.ready #pvBox{cursor:zoom-in}
 </style>
 </head>
 <body class="staff">
@@ -868,7 +883,7 @@ html[data-device=mobile] #pbar .pt h2{font-size:24px!important}
    </div></div>
   </div>
   <div>
-   <div class="panel" id="pvPanel"><h3><span>👁 ตัวอย่างใบลาที่จะพิมพ์</span><button class="btn sec sm" id="pvBig" style="display:none">🔍 แสดงเต็มหน้าจอ</button></h3><div class="bd"><div id="pvBox"></div></div></div>
+   <div class="panel" id="pvPanel"><h3><span id="pvTitle">👁 ตัวอย่างใบลาที่จะพิมพ์</span><button class="btn sec sm" id="pvBig" style="display:none">🔍 เต็มหน้าจอ</button></h3><div class="pvact" id="pvAct" style="display:none"><span class="muted">ตรวจสอบใบลาด้านล่าง แล้วเลือก</span><button class="btn sec" id="pvSend">📤 ส่งใบลา</button><button class="btn" id="pvSendPrint">🖨 ส่งและพิมพ์ใบลา</button></div><div class="bd"><div id="pvBox"></div></div></div>
    <div class="panel"><h3><span>สรุปการลาในรอบครึ่งปี</span><span id="pName" style="font-weight:400"></span></h3><div class="bd" id="pCard"></div></div>
    <div class="panel"><h3><span>ประวัติการลา</span><select id="pRange" style="width:auto;max-width:60%;padding:2px 6px"></select></h3><div id="pHistSum" style="padding:8px 12px 0"></div><div class="tw" id="pHist" data-cardify></div></div>
   </div>
@@ -1551,11 +1566,20 @@ function draftRec(r){const v=r.v,t=T[v.type]||TYPES[0],old=editId&&findLeave(edi
     status:'approved',by:role,ts:old&&old.ts||Date.now()}}
 function fitPv(box,html){const pe=box.parentElement,cs=getComputedStyle(pe),W=pe.classList.contains('zoom')?794:Math.min(pe.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight)-2,794),sc=W/794;box.style.width=W+'px';box.innerHTML=`<div style="transform:scale(${sc});transform-origin:0 0;width:794px">${html}</div>`;box.style.height=(box.firstElementChild.firstElementChild.offsetHeight*sc)+'px'}
 let pvOk=false,pvPrint=false,pvRec=null,pvT;
+function pvHist(r){const v=r.v,l=draftRec(r);l.start=v.start||todayISO();l.end=l.end||l.start;l.fy=fyOf(l.start);l.days=v.start?r.days:0;if(!v.start)l.type='__none';
+  let V;try{V=formVars(l)}catch(e){return''}
+  const R=+((l.start>=period(1,l.fy)[0]&&l.start<=period(1,l.fy)[1])?1:2);
+  return`<div class="pvstats"><div class="pvs-grid"><div>${halfStats(l,V,1)}${R===2?halfStats(l,V,2):''}</div><div class="pvvac">${vacStats(l.type==='ลาพักผ่อน'?l:{...l,days:0},V)}</div></div></div>`}
 function renderPv(r){const box=$('#pvBox');if(!box)return;const v=r.v,need=[];
   if(!v.st)need.push(isMgr()?'ชื่อผู้ขอลา':'เลข ID ของท่าน');if(!v.start)need.push('วันที่ลา');if(!v.note)need.push('เหตุผลการลา');if(v.type==='ลาพักผ่อน'&&!(v.sub&&staffByName(v.sub)))need.push('ผู้ปฏิบัติหน้าที่แทน');
-  const ready=r.ok&&!need.length;$('#pvPanel').classList.toggle('ready',ready);$('#pvBig').style.display=ready?'':'none';
-  if(!ready){box.style.height='';box.style.width='';box.innerHTML=`<div class="pvwait"><div style="font-size:34px">📄</div><b>เมื่อกรอกข้อมูลครบถ้วน ตัวอย่างใบลาจะแสดงที่นี่</b>${need.length?`<div class="muted">ข้อมูลที่ยังไม่ครบ: ${need.map(esc).join(' · ')}</div>`:'<div class="muted">กรุณาแก้ไขรายการที่แจ้งเตือนสีแดงในแบบฟอร์ม</div>'}</div>`;return}
+  const ready=r.ok&&!need.length,was=$('#pvPanel').classList.contains('ready');$('#pvPanel').classList.toggle('ready',ready);if(ready&&!was&&document.documentElement.dataset.device!=='desktop')setTimeout(()=>$('#pvPanel').scrollIntoView({behavior:'smooth',block:'start'}),300);$('#pvBig').style.display=ready?'':'none';$('#pvAct').style.display=ready?'':'none';
+  $('#pvTitle').textContent=ready?'📄 ใบลาที่จะยื่น (ตรวจสอบก่อนส่ง)':v.st?'📊 ประวัติการลา (ตามแบบฟอร์มใบลา)':'👁 ตัวอย่างใบลาที่จะพิมพ์';
+  if(!ready){box.style.height='';box.style.width='';const hint=`<div class="pvwait">${v.st?'':'<div style="font-size:34px">📄</div>'}<b>${v.st?'กรอกข้อมูลการลาให้ครบถ้วน แล้วใบลาจะแสดงที่นี่':'กรอกเลข ID เพื่อแสดงประวัติการลาและตัวอย่างใบลา'}</b>${need.length?`<div class="muted">ข้อมูลที่ยังไม่ครบ: ${need.map(esc).join(' · ')}</div>`:'<div class="muted">กรุณาแก้ไขรายการที่แจ้งเตือนสีแดงในแบบฟอร์ม</div>'}</div>`;
+    box.innerHTML=(v.st?pvHist(r):'')+hint;return}
   clearTimeout(pvT);pvT=setTimeout(()=>{if(box.offsetParent)fitPv(box,formHTML(draftRec(r)))},120)}
+$('#pvBox').addEventListener('click',()=>{if($('#pvPanel').classList.contains('ready')){const r=checkForm();if(r.ok)openPv(draftRec(r))}});
+$('#pvSend').onclick=()=>{pvOk=true;pvPrint=false;$('#bSave').click()};
+$('#pvSendPrint').onclick=()=>{pvOk=true;pvPrint=true;$('#bSave').click()};
 function openPv(rec){pvRec=rec;const m=$('#pvModal');$('#pvFull').parentElement.classList.remove('zoom');m.classList.add('on');document.body.style.overflow='hidden';
   $('#pvInfo').innerHTML=`<b>${esc(rec.nm)}</b> · ${esc(rec.type)}${rec.half?' ('+esc(rec.half)+')':''} · ${thD(rec.start)}${rec.end&&rec.end!==rec.start?' – '+thD(rec.end):''} · ${fmt(rec.days)} วัน`;
   requestAnimationFrame(()=>fitPv($('#pvFull'),formHTML(rec)))}
