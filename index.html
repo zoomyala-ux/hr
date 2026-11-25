@@ -177,6 +177,16 @@ section>.tw,section>div>.tw{background:#fff;border:1px solid var(--line);border-
 .alert:hover:not(.ok){border-color:#f59e0b;transform:translateX(2px)}
 .alert.ok{background:#ecfdf5;border-color:#a7f3d0}
 .sec-title{font-family:Prompt,Sarabun,sans-serif;font-weight:600;font-size:17px;margin:20px 2px 10px;color:var(--ink)}
+#fbFab{position:fixed;right:18px;bottom:18px;z-index:30;border:0;border-radius:999px;padding:11px 16px;background:var(--grad);color:#fff;font:inherit;font-weight:600;box-shadow:0 6px 18px #1e3a8a55;cursor:pointer;animation:up .4s ease}
+#fbFab:hover{transform:translateY(-2px)}
+body:not(.staff) #fbFab{display:none}
+html[data-device=mobile] #fbFab{padding:10px 13px;font-size:14px;bottom:12px;right:12px}
+.fbi{border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:8px;background:#fff}
+.fbi .hd{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.fbi .tg{font-size:12px;padding:2px 9px;border-radius:999px;background:#eef2ff;color:var(--navy)}
+.fbi .tg.p{background:#fee2e2;color:#b91c1c}.fbi .tg.s{background:#ecfdf5;color:#047857}
+.fbi.new{border-left:4px solid #2563eb}
+#fbGrid{grid-template-columns:minmax(320px,460px) 1fr}
 /* ===== หน้าอัปโหลด ===== */
 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
 .steps>div{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;box-shadow:var(--sh);display:flex;gap:12px;align-items:center}
@@ -200,6 +210,90 @@ html[data-device=mobile] .hnav{grid-template-columns:1fr 1fr;gap:8px}
 html[data-device=mobile] .hnav .hcard{flex-direction:column;gap:6px}
 html[data-device=mobile] .hnav .hcard .l{display:none}
 html[data-device=mobile] .steps{grid-template-columns:1fr}
+/* ===== กระชับ ให้พอดีจอ ===== */
+header{padding:10px 20px}
+header h1{font-size:19px}
+header .sub{font-size:12.5px}
+nav{padding:8px 12px 6px;align-items:center}
+nav button{padding:7px 13px;font-size:14.5px}
+#adminBar{margin:0 0 0 auto!important;padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important;gap:6px;flex-wrap:nowrap!important}
+#adminBar #abText{font-size:13px;color:var(--sub);white-space:nowrap}
+#subnav{margin-bottom:8px}
+#subnav button{padding:4px 12px;font-size:13.5px}
+.panel{margin-bottom:12px}
+.panel>h3{padding:9px 14px;font-size:15px}
+.panel>h3::before{top:9px;bottom:9px}
+.panel>.bd{padding:12px 14px}
+.row{margin-bottom:6px}
+input,select,textarea{padding:6px 10px}
+th{padding:8px 7px}td{padding:6px 7px}
+.filters.stick,.btns.stick{padding:8px 10px!important;margin-bottom:10px!important}
+.scrollbox{overflow:auto}
+.dgrid2{display:grid;grid-template-columns:1.25fr 1fr;gap:12px}
+@media(max-width:900px){.dgrid2{grid-template-columns:1fr}}
+/* dashboard กระชับ */
+.hero{padding:12px 20px;border-radius:16px;margin-bottom:12px}
+.hero h2{font-size:19px;margin:0}
+.hero p{font-size:13px}
+.hero .wave{height:24px}
+.hero .b1{width:150px;height:150px;top:-60px}.hero .b2{width:90px;height:90px;bottom:-45px}.hero .b3{width:60px;height:60px}
+.kpi{grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:12px}
+@media(max-width:1100px){.kpi{grid-template-columns:repeat(3,1fr)}}
+.kpi .hcard{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;column-gap:10px;align-items:center;padding:10px 12px}
+.kpi .hcard .ic{grid-row:1/3;margin:0;width:38px;height:38px;font-size:18px}
+.kpi .hcard .n{font-size:21px;line-height:1.15}
+.kpi .hcard .l{font-size:12.5px;line-height:1.3}
+.dgrid{gap:12px}
+.dgrid .panel{margin-bottom:12px}
+.dgrid .bd{height:200px}
+#hmToday{overflow:auto}
+.donut{width:130px;height:130px}
+.vbars{height:140px}
+#hmTodo{max-height:196px}
+#hmTodo .alert{padding:6px 10px;font-size:13.5px}
+#hmTodo>div{grid-template-columns:1fr!important}
+.hnav{grid-template-columns:repeat(4,1fr);gap:8px}
+.hnav .hcard{flex-direction:column;align-items:center;text-align:center;gap:4px;padding:10px 6px}
+.hnav .hcard .ic{width:34px;height:34px;font-size:17px}
+.hnav .hcard b{font-size:13px;margin:0}
+.hnav .hcard .l{display:none}
+html[data-device=mobile] .kpi{grid-template-columns:1fr 1fr}
+html[data-device=mobile] .dgrid .bd{height:auto}
+html[data-device=mobile] .hnav{grid-template-columns:repeat(3,1fr)}
+html[data-device=mobile] #adminBar{margin:4px 0 0!important;width:100%;justify-content:flex-end}
+html[data-device=mobile] nav{flex-wrap:wrap;gap:4px}
+html[data-device=mobile] nav button{padding:6px 10px;font-size:13.5px}
+/* พอดีจอ รอบ 2 */
+.hero{padding:10px 18px}.hero p{font-size:12.5px}
+.kpi .hcard{padding:9px 12px}.kpi .hcard .n{font-size:20px}.kpi .hcard .l{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kpi .hcard .ic{width:34px;height:34px;font-size:16px}
+.dgrid .bd{height:168px;padding:10px 14px}
+.donut{width:118px;height:118px}.vbars{height:118px}
+#hmTodo{height:118px;max-height:none;padding:10px 14px}
+.hnav{grid-template-columns:repeat(4,1fr);gap:6px}
+.hnav .hcard{flex-direction:row;justify-content:flex-start;text-align:left;padding:6px 8px;gap:6px}
+.hnav .hcard .ic{width:26px;height:26px;font-size:14px;border-radius:8px}
+.hnav .hcard b{font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dgrid2 .panel>.bd{padding:10px 14px}
+/* ตารางยาว: เลื่อนในกรอบ หัวตารางติดอยู่ ไม่ต้องเลื่อนทั้งหน้า */
+html[data-device=desktop] #aTable,html[data-device=desktop] #sTable,html[data-device=desktop] #bStaff,html[data-device=desktop] #hTable,html[data-device=desktop] #bkList,html[data-device=desktop] #fbList,html[data-device=desktop] #pHist{max-height:calc(100vh - 290px);overflow:auto}
+html[data-device=desktop] #bStaff{max-height:calc(100vh - 250px)}
+html[data-device=desktop] #fbList{max-height:calc(100vh - 420px)}
+#aTable thead th,#sTable thead th,#bStaff thead th,#hTable thead th,#bkList thead th,#pHist thead th{position:sticky;top:0;z-index:2}
+/* หน้าอัปโหลดกระชับ */
+.steps{margin-bottom:10px}.steps>div{padding:9px 12px}.steps .no{width:30px;height:30px}
+.upcard .bd{gap:8px}.upcard .stp{padding:6px 10px}
+/* ตั้งค่า 2x2 */
+#base .grid2>div:first-child{display:grid;grid-template-columns:1fr 1fr;gap:0 12px;grid-column:1/-1}
+html[data-device=mobile] #base .grid2>div:first-child{grid-template-columns:1fr}
+.gchips{display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:8px;padding:10px 14px}
+.gchips .hcard{padding:8px 10px;opacity:1;animation:none}
+.gchips .hcard .n{font-size:15px}.gchips .hcard b{display:block;font-size:13px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+html[data-device=desktop] #bStaff{max-height:max(240px,calc(100vh - 590px))}
+html[data-device=desktop] #sTable{max-height:calc(100vh - 400px)}
+html[data-device=desktop] #aTable{max-height:calc(100vh - 340px)}
+.upcard .bd>.muted{font-size:12.5px;line-height:1.45}
+.upcard .stp{font-size:14px}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.hcard{opacity:1}}
 /* ---- ปรับตามอุปกรณ์ ---- */
 html[data-device=desktop] nav{flex-wrap:wrap;row-gap:4px}
@@ -294,6 +388,7 @@ body.head .adminonly{display:none!important}
   <button data-t="staff" class="adm">👥 เจ้าหน้าที่</button>
   <button data-g="data" class="adm">📁 ไฟล์ Excel / สำรองข้อมูล</button>
   <button data-g="set" class="adm adminonly">⚙️ ตั้งค่า</button>
+  <button data-t="fb" class="adm">💬 แจ้งปัญหา/ข้อเสนอแนะ <span id="fbN" class="chip" style="padding:0 7px;display:none"></span></button>
   <span id="pendN" hidden></span>
 </nav>
 <div id="subnav"></div>
@@ -327,6 +422,29 @@ body.head .adminonly{display:none!important}
  </div>
 </section>
 
+<!-- แจ้งปัญหา / ข้อเสนอแนะ -->
+<section id="fb">
+ <div class="steps" style="grid-template-columns:1fr"><div><span class="no">💬</span><div><b>แจ้งปัญหาการใช้งานและข้อเสนอแนะ</b><div class="muted">เจออะไรใช้ยาก ผิดพลาด หรืออยากให้มีอะไรเพิ่ม บอกได้เลย ทีมพัฒนาจะนำไปปรับปรุงระบบ</div></div></div></div>
+ <div class="grid2" id="fbGrid">
+  <div class="panel"><h3><span>✍️ เขียนเรื่องที่ต้องการแจ้ง</span></h3><div class="bd">
+   <div class="row"><label>ประเภท</label><div class="chips" id="fbType"><label class="chip"><input type="radio" name="fbT" value="ปัญหา" checked style="width:auto"> 🐞 แจ้งปัญหา</label><label class="chip"><input type="radio" name="fbT" value="ข้อเสนอแนะ" style="width:auto"> 💡 ข้อเสนอแนะ</label><label class="chip"><input type="radio" name="fbT" value="สอบถาม" style="width:auto"> ❓ สอบถาม</label></div></div>
+   <div class="row"><label>เกี่ยวกับหน้า</label><select id="fbPage"><option>ยื่นใบลา / เพิ่มใบลา</option><option>หน้าหลัก</option><option>ใบลาทั้งหมด</option><option>สรุปวันลา / รายงาน</option><option>เจ้าหน้าที่ / กลุ่มงาน</option><option>อัปโหลด / ดาวน์โหลดไฟล์</option><option>ใบลา PDF ที่พิมพ์</option><option>ตั้งค่า</option><option>เข้าสู่ระบบ / รหัสผ่าน</option><option>ใช้บนมือถือ</option><option>อื่น ๆ</option></select></div>
+   <div class="row" id="fbPriRow"><label>ความเร่งด่วน</label><select id="fbPri"><option value="ด่วน">🔴 ด่วน ใช้งานต่อไม่ได้</option><option value="ปกติ" selected>🟡 ปกติ ใช้ได้แต่ไม่สะดวก</option><option value="ไม่ด่วน">🟢 ไม่ด่วน</option></select></div>
+   <div class="row"><label>หัวข้อ</label><input id="fbTitle" maxlength="120" placeholder="สรุปสั้น ๆ เช่น กดพิมพ์ใบลาแล้วไม่ขึ้น"></div>
+   <div class="row"><label>รายละเอียด <span style="color:var(--red)">*</span></label><textarea id="fbText" rows="5" maxlength="2000" placeholder="เกิดอะไรขึ้น ทำขั้นตอนไหนอยู่ อยากให้เป็นแบบไหน"></textarea></div>
+   <div class="row"><label>ชื่อหรือเลข ID</label><input id="fbWho" placeholder="ไม่บังคับ (ใส่ไว้เพื่อให้ติดต่อกลับได้)"></div>
+   <div class="row"><label>ติดต่อกลับทาง</label><input id="fbContact" placeholder="ไม่บังคับ เช่น เบอร์โทร หรือ LINE ID"></div>
+   <div class="muted" style="margin:4px 0 8px">ระบบแนบข้อมูลอุปกรณ์และหน้าที่ใช้อยู่ให้เองเพื่อช่วยหาสาเหตุ ไม่เก็บรหัสผ่านหรือเลขบัตรประชาชน</div>
+   <div class="btns"><button class="btn" id="fbSend">📨 ส่งเรื่อง</button><button class="btn sec" id="fbBack" style="display:none">← กลับไปหน้ายื่นใบลา</button></div>
+  </div></div>
+  <div class="panel adminonly" id="fbAdmin"><h3><span>📥 เรื่องที่ได้รับ</span><span><button class="btn sec sm" id="fbXlsx">⬇ ดาวน์โหลด Excel</button></span></h3><div class="bd">
+   <div class="kpi" id="fbKpi" style="grid-template-columns:repeat(4,1fr);margin-bottom:10px"></div>
+   <div class="filters"><select id="fbFS"><option value="">ทุกสถานะ</option><option>ใหม่</option><option>กำลังดำเนินการ</option><option>แก้แล้ว</option><option>ไม่ดำเนินการ</option></select><select id="fbFT"><option value="">ทุกประเภท</option><option>ปัญหา</option><option>ข้อเสนอแนะ</option><option>สอบถาม</option></select></div>
+   <div id="fbList"></div>
+  </div></div>
+  <div class="panel" id="fbMineP" style="display:none"><h3><span>📮 ส่งเรียบร้อย</span></h3><div class="bd" id="fbMine"></div></div>
+ </div>
+</section>
 <!-- หน้าหลัก -->
 <section id="home">
  <div class="hero"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
@@ -338,13 +456,13 @@ body.head .adminonly{display:none!important}
   <div class="panel"><h3><span>📊 วันลารายเดือน (รอบนี้)</span></h3><div class="bd" id="hmBars"></div></div>
   <div class="panel"><h3><span>🗓️ ใครลาบ้าง</span></h3><div class="bd" id="hmToday" style="max-height:290px;overflow:auto"></div></div>
  </div>
- <div class="panel"><h3><span>✅ สิ่งที่ควรทำ</span></h3><div class="bd" id="hmTodo"></div></div>
- <div class="sec-title">ไปที่เมนู</div>
- <div class="hnav" id="hmNav"></div>
+ <div class="dgrid2">
+  <div class="panel"><h3><span>✅ สิ่งที่ควรทำ</span><span class="muted" id="hmTodoN"></span></h3><div class="bd scrollbox" id="hmTodo"></div></div>
+  <div class="panel"><h3><span>🧭 ไปที่เมนู</span></h3><div class="bd"><div class="hnav" id="hmNav"></div></div></div>
+ </div>
 </section>
 <!-- เพิ่ม/อัปโหลดข้อมูล -->
 <section id="add">
- <div class="steps"><div><span class="no">1</span><div><b>ดาวน์โหลดไฟล์ต้นแบบ</b><div class="muted">เลือกเรื่องที่ต้องการด้านล่าง</div></div></div><div><span class="no">2</span><div><b>กรอกใน Excel</b><div class="muted">ห้ามแก้แถวหัวตารางและชื่อชีต</div></div></div><div><span class="no">3</span><div><b>อัปโหลดกลับ</b><div class="muted">ระบบสรุปให้ตรวจก่อนบันทึก ไม่ลบข้อมูลเดิม</div></div></div></div>
  <p class="muted" id="addSum" style="margin:0 2px 10px"></p>
  <div class="upgrid">
  <div class="panel upcard"><h3><span>📚 ประวัติการลา (หลายคน หลายใบ)</span></h3><div class="bd"><div class="muted">1 แถว = ใบลา 1 ใบ ใส่เลข ID ประเภท วันเริ่ม วันสิ้นสุด ย้อนหลังได้หลายปี ใบลาที่ซ้ำจะข้ามให้</div>
@@ -447,11 +565,10 @@ body.head .adminonly{display:none!important}
 <!-- เจ้าหน้าที่ -->
 <section id="staff">
  <div class="filters stick"><select id="dCat" style="min-width:260px" title="เลือกกลุ่มงาน"></select><input id="stSearch" placeholder="🔍 ค้นหาชื่อ เลข ID หรือตำแหน่ง" style="min-width:220px"><button class="btn" id="bAdd">+ เพิ่มเจ้าหน้าที่</button><span class="muted" id="dInfo"></span></div>
- <div class="panel adminonly" id="topPanel"><h3><span>ผู้บังคับบัญชาสูงสุด <span style="font-weight:400">(ผู้อนุญาต · ใช้กับทุกกลุ่มงาน)</span></span></h3><div class="bd" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-  <input id="topName" list="topList" placeholder="ชื่อ-สกุล" style="flex:1 1 220px"><input id="topPos" placeholder="ตำแหน่ง" style="flex:1 1 220px"><datalist id="topList"></datalist><span class="muted" id="topNote"></span></div></div>
+ <div class="panel adminonly" id="topPanel"><div class="bd" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:8px 14px"><b style="white-space:nowrap">👑 ผู้บังคับบัญชาสูงสุด</b><span class="muted" style="white-space:nowrap">(ผู้อนุญาต · ทุกกลุ่ม)</span>
+  <input id="topName" list="topList" placeholder="ชื่อ-สกุล" style="flex:1 1 200px"><input id="topPos" placeholder="ตำแหน่ง" style="flex:1 1 200px"><datalist id="topList"></datalist><span class="muted" id="topNote"></span></div></div>
  <div class="panel adminonly" id="grpPanel"><h3><span id="grpTitle">กลุ่มงาน</span><span id="grpBtns"></span></h3><div id="dTable"></div></div>
- <div class="panel"><h3><span id="stTitle">เจ้าหน้าที่</span></h3><div class="tw" id="bStaff" data-cardify></div>
-  <p class="muted" style="padding:0 12px">แก้ข้อมูลในตารางได้เลย ระบบบันทึกอัตโนมัติ · เลข ID ห้ามซ้ำ · โควต้าวันลา = วันทำการต่อปีงบประมาณ (พักผ่อนสะสม = วันที่ยกมาจากปีก่อน) · เปลี่ยนประเภทแล้วโควต้าจะตั้งตามค่าเริ่มต้นของประเภทนั้น</p></div>
+ <div class="panel"><h3><span id="stTitle">เจ้าหน้าที่</span><span class="muted" style="font-weight:400">แก้ในตารางได้เลย บันทึกอัตโนมัติ</span></h3><div class="tw" id="bStaff" data-cardify></div></div>
  <details class="panel adminonly" id="qDefPanel"><summary style="padding:10px 12px;cursor:pointer;font-weight:600">⚙️ โควต้าวันลาเริ่มต้นตามประเภทเจ้าหน้าที่</summary><div class="tw" id="qDef" data-cardify></div></details>
 </section>
 <!-- วันหยุด -->
@@ -526,6 +643,7 @@ body.head .adminonly{display:none!important}
  </div>
 </section>
 </main>
+<button id="fbFab" title="แจ้งปัญหาการใช้งานหรือข้อเสนอแนะ">💬 แจ้งปัญหา / ข้อเสนอแนะ</button>
 
 <div id="modal"><div class="box"><div id="mText" style="margin-bottom:10px"></div><input id="mInput" style="display:none;margin-bottom:12px"><div class="btns" style="justify-content:flex-end"><button class="btn sec" id="mNo">ยกเลิก</button><button class="btn red" id="mYes">ยืนยัน</button></div></div></div>
 <div id="login"><div class="box">
@@ -716,7 +834,7 @@ const visStaff=()=>role==='head'?S.staff.filter(inDept):S.staff.filter(inGF);
 const inScope=l=>{const st=staffById(l.staffId)||staffByName(l.nm);if(role==='head')return inDept(st);const g=gDept();return !g||(st?inGF(st):norm(l.dept)===norm(g.name))};
 function renderGrpF(){const opts=opt('','🏢 ทุกกลุ่มงาน')+S.depts.map(d=>opt(d.id,`${d.code?d.code+' ':''}${d.name}`,d.id===GF)).join('');document.querySelectorAll('.grpF').forEach(x=>{x.innerHTML=opts;x.value=GF})}
 document.addEventListener('change',e=>{if(!e.target.classList||!e.target.classList.contains('grpF'))return;GF=e.target.value;renderGrpF();renderTab(curTab())});
-function setRole(r,quiet){
+function setRole(r,quiet){if(r==='admin'&&!fbLoaded)setTimeout(()=>loadFb().then(()=>{if(curTab()==='home')renderHome()}),0);
   role=r;document.body.className=r;
   const d=myDept();
   document.querySelectorAll('#roleSeg button').forEach(b=>b.classList.toggle('on',(b.dataset.r==='staff')===(r==='staff')));
@@ -845,7 +963,7 @@ function reportDoc(title,body){
 function printHTML(html){$('#printArea').innerHTML=html.replace(/^[\s\S]*?<body>/,'').replace(/<\/body>[\s\S]*$/,'');try{window.print()}catch(e){}}
 
 /* ---------- tabs ---------- */
-const ACC={home:'mgr',rec:'all',all:'mgr',back:'admin',pend:'mgr',sum:'mgr',rep:'mgr',staff:'mgr',add:'admin',exp:'mgr',base:'admin',hol:'admin',form:'admin'};
+const ACC={fb:'all',home:'mgr',rec:'all',all:'mgr',back:'admin',pend:'mgr',sum:'mgr',rep:'mgr',staff:'mgr',add:'admin',exp:'mgr',base:'admin',hol:'admin',form:'admin'};
 const GROUPS={leave:[['all','📋 ใบลาทั้งหมด (ค้นหา/แก้ไข/พิมพ์)'],['rec','➕ เพิ่มใบลา 1 ใบ'],['back','➕ เพิ่มใบลาหลายใบ']],report:[['sum','ตารางสรุปรายคน'],['rep','กราฟ / รายเดือน / รายคน']],data:[['add','⬆ อัปโหลดไฟล์ Excel'],['exp','⬇ ดาวน์โหลดรายงาน / สำรองข้อมูล']],set:[['base','ปีงบ / เกณฑ์ / รหัสผ่าน'],['hol','วันหยุดราชการ'],['form','หน้าตาใบลา']]};
 const canTab=t=>{const a=ACC[t]||'mgr';return a==='all'||(a==='mgr'&&isMgr())||(a==='admin'&&role==='admin')};
 const grpOf=t=>Object.keys(GROUPS).find(g=>GROUPS[g].some(x=>x[0]===t));
@@ -858,7 +976,7 @@ function showTab(t){if(t==='pend')t='all';if(!canTab(t))t=isMgr()?(canTab('home'
 $('#tabs').onclick=e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.g){const L=GROUPS[b.dataset.g].map(x=>x[0]).filter(canTab);showTab(L.includes(lastInG[b.dataset.g])?lastInG[b.dataset.g]:L[0])}else showTab(b.dataset.t)};
 $('#subnav').onclick=e=>{const b=e.target.closest('[data-t]');if(b)showTab(b.dataset.t)};
 const curTab=()=>curT;
-function renderTab(t){if(role==='admin')renderGrpF();({home:renderHome,add:renderAdd,back:renderBack,pend:renderPend,rec:renderRec,all:renderAllList,sum:renderSum,rep:renderRep,base:renderBase,staff:renderStaff,hol:renderHol,exp:renderExp,form:renderForm})[t]()}
+function renderTab(t){if(role==='admin')renderGrpF();({fb:renderFb,home:renderHome,add:renderAdd,back:renderBack,pend:renderPend,rec:renderRec,all:renderAllList,sum:renderSum,rep:renderRep,base:renderBase,staff:renderStaff,hol:renderHol,exp:renderExp,form:renderForm})[t]()}
 function renderAll(){renderHeader();renderTab(curTab())}
 function renderLive(){renderHeader();const t=curTab();if(t==='base'&&document.activeElement&&document.activeElement.closest('#base'))return;if(t==='rec'){renderPerson();updForm()}else renderTab(t)}
 function renderHeader(){const st=S.settings,[a,b]=curPeriod();$('#hSub').textContent=`${st.org||'-'} · รอบ${+st.round===1?'ครึ่งปีแรก':'ครึ่งปีหลัง'} ปีงบประมาณ ${st.year} (${thD(a)} – ${thD(b)})`;const n=pendCount();$('#pendN').textContent=n||'';$('#demoBadge').style.display=hasDemo()?'':'none'}
@@ -1138,7 +1256,7 @@ function renderStaff(){
      <div class="row"><label>ตำแหน่ง</label>${din('supPos','ตำแหน่ง (เติมให้อัตโนมัติ)',220)}</div></div>
      <datalist id="supList">${grpStaff(D).map(x=>`<option value="${esc(x.name)}">${esc(x.pos||'')}</option>`).join('')}</datalist></div>`}
   else{$('#grpTitle').textContent=`กลุ่มงานทั้งหมด (${S.depts.length})`;$('#grpBtns').innerHTML=`<button class="btn sec sm" id="hImport">อัปเดตจากรายชื่อ สนจ.ยล.</button> <button class="btn sec sm" id="dAdd">+ เพิ่มกลุ่มงาน</button>`;
-    $('#dTable').innerHTML=`<div class="tw" data-cardify><table><thead><tr><th>รหัสเข้าระบบ</th><th>กลุ่มงาน</th><th>ผู้บังคับบัญชาชั้นต้น</th><th>เจ้าหน้าที่</th><th></th></tr></thead><tbody>${S.depts.map(d=>`<tr><td class="c">${esc(d.code||'-')}</td><td>${esc(d.name||'(ยังไม่ตั้งชื่อ)')}</td><td>${d.supName?`${esc(d.supName)}<div class="muted">${esc(d.supPos||'')}</div>`:'<span class="muted">ยังไม่ได้ตั้ง</span>'}</td><td class="c">${grpStaff(d).length} คน</td><td class="c"><button class="btn sec sm" data-dsel="${d.id}">เปิด / แก้ไข</button></td></tr>`).join('')}</tbody></table></div>`}
+    $('#dTable').innerHTML=`<div class="gchips">${S.depts.map(d=>`<button class="hcard" data-dsel="${d.id}" title="${esc(d.name)}"><span class="muted" data-dsel="${d.id}">${esc(d.code||'-')} · ${grpStaff(d).length} คน</span><b data-dsel="${d.id}">${esc((d.name||'(ยังไม่ตั้งชื่อ)').replace(/^กลุ่มงาน/,''))}</b><span class="muted" data-dsel="${d.id}" style="font-size:12px">${d.supName?esc(d.supName):'⚠ ยังไม่มีผู้บังคับบัญชาชั้นต้น'}</span></button>`).join('')}</div>`}
   const q=norm($('#stSearch').value).toLowerCase();
   const VS=visStaff().filter(x=>(!D||norm(x.dept)===norm(D.name))&&(!q||[x.code,x.name,x.pos].some(v=>String(v||'').toLowerCase().includes(q)))).sort((a,b)=>String(a.code).localeCompare(String(b.code)));
   $('#stTitle').textContent=`เจ้าหน้าที่${D?' — '+D.name:' ทุกกลุ่มงาน'} (${VS.length} คน)`;
@@ -1166,7 +1284,7 @@ $('#stSearch').addEventListener('input',()=>renderStaff());$('#dCat').addEventLi
   if(id==='topName'){const m=S.staff.find(x=>norm(x.name)===norm(n));if(m&&m.pos){p=m.pos;$('#topPos').value=p}}
   S.depts.forEach(d=>{d.headName=n;d.headPos=p;delete d.headSrc});clearTimeout(deptTimer);deptTimer=setTimeout(()=>{saveDepts();$('#topNote').textContent='บันทึกแล้ว'},600)}));
 async function hImportClick(){if(!await ask(`อัปเดตกลุ่มงานและผู้บังคับบัญชาจาก${DIR_SRC}?<br><span class="muted">ชื่อหัวหน้าที่คุณพิมพ์แก้เองจะไม่ถูกแทนที่</span>`))return;const r=importDirectory();renderStaff();toast(`เพิ่ม ${r.add} · อัปเดต ${r.upd} กลุ่มงาน`)}
-$('#grpPanel').addEventListener('click',async e=>{if(e.target.id==='hImport')return hImportClick();if(e.target.id==='dAdd')return dAddClick();const sel=e.target.dataset.dsel;if(sel){GF=sel;renderStaff();$('#grpPanel').scrollIntoView({behavior:'smooth'});return}const rs=e.target.dataset.dreset;if(rs){const d=S.depts.find(x=>x.id===rs);if(d&&await ask(`รีเซ็ตรหัสผ่านของ ${esc(d.name)} กลับเป็นรหัสเข้าระบบ (${esc(d.code)})?`)){delete d.pwHash;saveDepts();renderStaff();toast('รีเซ็ตรหัสผ่านแล้ว')}return}const id=e.target.dataset.drm;if(!id)return;const d=S.depts.find(x=>x.id===id),n=S.staff.filter(x=>norm(x.dept)===norm(d.name)).length;
+$('#grpPanel').addEventListener('click',async e=>{if(e.target.id==='hImport')return hImportClick();if(e.target.id==='dAdd')return dAddClick();const sel=e.target.dataset.dsel||(e.target.closest('[data-dsel]')||{dataset:{}}).dataset.dsel;if(sel){GF=sel;renderStaff();$('#grpPanel').scrollIntoView({behavior:'smooth'});return}const rs=e.target.dataset.dreset;if(rs){const d=S.depts.find(x=>x.id===rs);if(d&&await ask(`รีเซ็ตรหัสผ่านของ ${esc(d.name)} กลับเป็นรหัสเข้าระบบ (${esc(d.code)})?`)){delete d.pwHash;saveDepts();renderStaff();toast('รีเซ็ตรหัสผ่านแล้ว')}return}const id=e.target.dataset.drm;if(!id)return;const d=S.depts.find(x=>x.id===id),n=S.staff.filter(x=>norm(x.dept)===norm(d.name)).length;
   if(!await ask(`ลบกลุ่มงาน <b>${esc(d.name||'(ไม่มีชื่อ)')}</b>?${n?`<br>มีเจ้าหน้าที่ ${n} คนอยู่ในกลุ่มนี้ ต้องเลือกกลุ่มงานใหม่ให้ภายหลัง`:''}`))return;S.depts=S.depts.filter(x=>x!==d);saveDepts();GF='';renderStaff()});
 function dAddClick(){const t=S.depts[0]||{},n=S.depts.map(d=>parseInt(d.code,10)).filter(x=>!isNaN(x)),nd={id:uid(),name:'',cat:t.cat||'อื่นๆ',min:t.min||'',code:String((n.length?Math.max(...n):0)+100).padStart(4,'0'),supName:'',supPos:'',headName:t.headName||'',headPos:t.headPos||''};S.depts.push(nd);saveDepts();GF=nd.id;renderStaff();const i=document.querySelector('#dTable input[data-f="name"]');if(i)i.focus()}
 $('#bStaff').addEventListener('change',e=>{const f=e.target.dataset.f;if(f==='dept'){saveStaff();renderStaff()}if(f==='etype'){const st=staffById(e.target.dataset.sid);if(st){st.etype=e.target.value;const d=qDefOf(st.etype);Object.assign(st,{qVac:d.qVac,qSick:d.qSick,qBiz:d.qBiz});saveStaff();renderStaff();toast('ตั้งโควต้าตามประเภท '+st.etype+' แล้ว (แก้รายคนได้)')}}});
@@ -1526,6 +1644,7 @@ $('#fmLogoDel').onclick=()=>{FORMS.logo='';saveForms();renderForm()};
 $('#fmTest').onclick=()=>{const l=sampleLeave();if(l.id==='x'){const t={...l};LV.push(t);leavePDF(t).finally(()=>{LV=LV.filter(x=>x!==t)})}else leavePDF(l)};
 $('#fmReset').onclick=async()=>{if(!await ask('คืนค่าแบบฟอร์มใบลาเป็นค่าเริ่มต้นทั้งหมด?'))return;FORMS=mergeForms(null);cfgSet('forms',FORMS);renderForm();toast('คืนค่าเริ่มต้นแล้ว')};
 
+try{$('#tabs').appendChild($('#adminBar'))}catch(e){}
 const setNavH=()=>document.documentElement.style.setProperty('--navh',($('#tabs').offsetHeight||46)+'px');window.addEventListener('resize',setNavH);setTimeout(setNavH,300);
 /* ---------- กรอกประวัติลาย้อนหลัง (ผู้ดูแลระบบ) ---------- */
 let BK=[];
@@ -1774,15 +1893,57 @@ function renderHome(){
     if(!fyHol)T2.push([`ยังไม่มีวันหยุดราชการของปีงบ ${curFY()}`,'hol','เพิ่มวันหยุด']);
     if(!all.some(s=>+s.qCarry))T2.push(['ยังไม่ได้กรอกวันลาพักผ่อนสะสมของใครเลย','add','อัปโหลดไฟล์']);
   }
+  if(role==='admin'&&fbNew())T2.unshift([`มีเรื่องแจ้งปัญหา/ข้อเสนอแนะใหม่ ${fbNew()} เรื่อง`,'fb','ดูเรื่อง']);
   if(over)T2.push([`มีเจ้าหน้าที่ ${over} คน ลาเกินเกณฑ์ในรอบนี้`,'sum','ดูตารางสรุป']);
+  $('#hmTodoN').textContent=T2.length?`${T2.length} เรื่อง`:'';
   $('#hmTodo').innerHTML=T2.length?`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(360px,100%),1fr));gap:8px">${T2.map(([t,go,b])=>`<div class="alert" data-go2="${go}" style="margin:0"><span>⚠️ ${esc(t)}</span><span class="btn sec sm">${b} →</span></div>`).join('')}</div>`:'<div class="alert ok">✅ ข้อมูลครบ ไม่มีสิ่งที่ต้องทำ</div>';
   const NAV=[['all','📋','ใบลาทั้งหมด','ค้นหา แก้ไข ลบ พิมพ์ใบลา'],['rec','➕','เพิ่มใบลา 1 ใบ','กรอกใบลาแล้วพิมพ์ใบลา PDF'],['back','🧾','เพิ่มใบลาหลายใบ','กรอกหลายใบพร้อมกัน ใช้กับใบลาย้อนหลัง'],
     ['sum','📊','ตารางสรุปรายคน','วันลาของแต่ละคนในรอบครึ่งปี ใครเกินเกณฑ์'],['rep','📈','กราฟ / รายเดือน / รายคน','ดูภาพรวมและพิมพ์รายงานรายคน'],['staff','👥','เจ้าหน้าที่','รายชื่อ เลข ID โควต้าวันลา กลุ่มงาน'],
     ['add','⬆️','อัปโหลดไฟล์ Excel','ดาวน์โหลดไฟล์ต้นแบบ กรอก แล้วอัปโหลดกลับ'],['exp','⬇️','ดาวน์โหลดรายงาน / สำรองข้อมูล','ไฟล์ Excel รายงานพิมพ์ และไฟล์สำรอง'],
-    ['base','⚙️','ปีงบ / เกณฑ์ / รหัสผ่าน','ตั้งปีงบ รอบครึ่งปี เกณฑ์การลา'],['hol','🗓️','วันหยุดราชการ','ใช้นับวันทำการในใบลา'],['form','🖨️','หน้าตาใบลา','ข้อความและผู้ลงนามในใบลาที่พิมพ์']].filter(x=>canTab(x[0]));
-  $('#hmNav').innerHTML=NAV.map(([t,i,n,d],k)=>`<button class="hcard" data-go2="${t}" style="animation-delay:${200+k*40}ms"><span class="ic">${i}</span><span><b>${n}</b><span class="l">${d}</span></span></button>`).join('');
+    ['base','⚙️','ปีงบ / เกณฑ์ / รหัสผ่าน','ตั้งปีงบ รอบครึ่งปี เกณฑ์การลา'],['hol','🗓️','วันหยุดราชการ','ใช้นับวันทำการในใบลา'],['form','🖨️','หน้าตาใบลา','ข้อความและผู้ลงนามในใบลาที่พิมพ์'],['fb','💬','แจ้งปัญหา / ข้อเสนอแนะ',role==='admin'?'ดูเรื่องที่ผู้ใช้แจ้ง เพื่อนำไปพัฒนาระบบ':'บอกปัญหาหรือสิ่งที่อยากให้ปรับปรุง']].filter(x=>canTab(x[0]));
+  $('#hmNav').innerHTML=NAV.map(([t,i,n,d],k)=>`<button class="hcard" data-go2="${t}" title="${esc(d)}" style="animation-delay:${200+k*30}ms"><span class="ic">${i}</span><b>${n}</b></button>`).join('');
 }
 $('#home').addEventListener('click',e=>{const b=e.target.closest('[data-go2]');if(b)showTab(b.dataset.go2)});
+
+/* ---------- แจ้งปัญหา / ข้อเสนอแนะ ---------- */
+let FB=[],fbLoaded=false;
+const FB_ST=['ใหม่','กำลังดำเนินการ','แก้แล้ว','ไม่ดำเนินการ'];
+async function loadFb(){if(store.cloud){try{const q=await store.db.collection('feedback').get();FB=q.docs.map(d=>({...d.data()}))}catch(e){}}else{const l=lsGet('feedback');FB=Array.isArray(l)?l:[]}FB.sort((a,b)=>b.ts-a.ts);fbLoaded=true;fbBadge()}
+function putFb(r){const i=FB.findIndex(x=>x.id===r.id);if(i>=0)FB[i]=r;else FB.unshift(r);if(store.cloud)qWrite('F:'+r.id,()=>store.db.doc('feedback/'+r.id).set(r));else lsSet('feedback',FB);fbBadge()}
+function delFb(id){FB=FB.filter(x=>x.id!==id);if(store.cloud)qWrite('F:'+id,()=>store.db.doc('feedback/'+id).delete());else lsSet('feedback',FB);fbBadge()}
+const fbNew=()=>FB.filter(x=>x.status==='ใหม่').length;
+function fbBadge(){const n=role==='admin'?fbNew():0;$('#fbN').textContent=n;$('#fbN').style.display=n?'':'none'}
+const fbTypeV=()=>(document.querySelector('input[name=fbT]:checked')||{}).value||'ปัญหา';
+const PAGE_NAME={rec:'ยื่นใบลา / เพิ่มใบลา',home:'หน้าหลัก',all:'ใบลาทั้งหมด',back:'ยื่นใบลา / เพิ่มใบลา',sum:'สรุปวันลา / รายงาน',rep:'สรุปวันลา / รายงาน',staff:'เจ้าหน้าที่ / กลุ่มงาน',add:'อัปโหลด / ดาวน์โหลดไฟล์',exp:'อัปโหลด / ดาวน์โหลดไฟล์',base:'ตั้งค่า',hol:'ตั้งค่า',form:'ใบลา PDF ที่พิมพ์'};
+let fbFrom='rec';
+function openFb(){fbFrom=curTab()==='fb'?fbFrom:curTab();showTab('fb');const p=PAGE_NAME[fbFrom];if(p)$('#fbPage').value=p;if(document.documentElement.dataset.device==='mobile')$('#fbPage').value=p||'ใช้บนมือถือ';
+  if(!$('#fbWho').value){const st=role==='staff'?whoOf($('#fName').value):null;if(st)$('#fbWho').value=`${st.code} ${st.name}`;else if(role==='head'&&myDept())$('#fbWho').value='หัวหน้า'+myDept().name;else if(role==='admin')$('#fbWho').value='ผู้ดูแลระบบ'}}
+$('#fbFab').onclick=openFb;
+$('#fbBack').onclick=()=>showTab('rec');
+$('#fbType').addEventListener('change',()=>{$('#fbPriRow').style.display=fbTypeV()==='ปัญหา'?'':'none'});
+$('#fbSend').onclick=()=>{const text=$('#fbText').value.trim();if(text.length<5)return toast('กรุณาเขียนรายละเอียดอย่างน้อย 5 ตัวอักษร',true);
+  const type=fbTypeV(),r={id:uid(),ts:Date.now(),type,page:$('#fbPage').value,pri:type==='ปัญหา'?$('#fbPri').value:'',title:$('#fbTitle').value.trim(),text,who:$('#fbWho').value.trim(),contact:$('#fbContact').value.trim(),
+    role,device:document.documentElement.dataset.device||'',ua:navigator.userAgent.slice(0,160),from:fbFrom,ver:'2569-11-25',status:'ใหม่',note:''};
+  putFb(r);['fbTitle','fbText','fbContact'].forEach(i=>$('#'+i).value='');
+  $('#fbMineP').style.display='';$('#fbMine').innerHTML=`<div class="alert ok" style="cursor:default">✅ ส่งเรื่อง “${esc(r.title||r.text.slice(0,40))}” แล้ว ขอบคุณที่ช่วยพัฒนาระบบ</div>`+(store.cloud?'':'<div class="muted">หมายเหตุ: ตอนนี้ข้อมูลเก็บในเครื่องนี้ ผู้ดูแลระบบจะเห็นเมื่อเปิดจากเครื่องเดียวกัน หรือเมื่อย้ายไปใช้ฐานข้อมูลกลาง</div>');
+  toast('ส่งเรื่องแล้ว ขอบคุณครับ');renderFb()};
+function renderFb(){const isA=role==='admin';$('#fbBack').style.display=role==='staff'?'':'none';$('#fbGrid').style.gridTemplateColumns=isA?'':'minmax(0,620px)';
+  $('#fbPriRow').style.display=fbTypeV()==='ปัญหา'?'':'none';
+  if(!isA)return;if(!fbLoaded){loadFb().then(renderFb);return}
+  const c=st=>FB.filter(x=>x.status===st).length;
+  $('#fbKpi').innerHTML=[['🆕',c('ใหม่'),'ใหม่'],['🔧',c('กำลังดำเนินการ'),'กำลังทำ'],['✅',c('แก้แล้ว'),'แก้แล้ว'],['📦',FB.length,'ทั้งหมด']].map(([i,n,l])=>`<div class="hcard" style="cursor:default;padding:10px"><div class="n" style="font-size:22px">${i} ${n}</div><div class="l">${l}</div></div>`).join('');
+  const fs=$('#fbFS').value,ft=$('#fbFT').value,L=FB.filter(x=>(!fs||x.status===fs)&&(!ft||x.type===ft));
+  $('#fbList').innerHTML=L.length?L.map(x=>`<div class="fbi${x.status==='ใหม่'?' new':''}"><div class="hd"><span><span class="tg${x.type==='ปัญหา'?' p':x.type==='ข้อเสนอแนะ'?' s':''}">${x.type==='ปัญหา'?'🐞':x.type==='ข้อเสนอแนะ'?'💡':'❓'} ${esc(x.type)}</span> ${x.pri?`<span class="tg">${esc(x.pri)}</span>`:''} <b>${esc(x.title||'(ไม่มีหัวข้อ)')}</b></span><span class="muted">${thTime(x.ts)}</span></div>
+    <div style="margin:6px 0;white-space:pre-wrap">${esc(x.text)}</div>
+    <div class="muted">หน้า: ${esc(x.page)} · ผู้แจ้ง: ${esc(x.who||'ไม่ระบุ')}${x.contact?' · ติดต่อ: '+esc(x.contact):''} · ${esc(x.role)} / ${esc(x.device)}</div>
+    <div class="filters" style="margin:8px 0 0"><select data-fbs="${x.id}" style="min-width:150px">${FB_ST.map(s=>opt(s,s,s===x.status)).join('')}</select><input data-fbn="${x.id}" value="${esc(x.note||'')}" placeholder="บันทึกของผู้พัฒนา / สิ่งที่แก้" style="flex:1;min-width:200px"><button class="btn red sm" data-fbd="${x.id}">ลบ</button></div></div>`).join(''):'<div class="empty">ยังไม่มีเรื่องที่ได้รับ</div>'}
+$('#fbFS').onchange=$('#fbFT').onchange=renderFb;
+let fbT;$('#fbList').addEventListener('change',e=>{const id=e.target.dataset.fbs;if(!id)return;const x=FB.find(y=>y.id===id);if(x){putFb({...x,status:e.target.value});renderFb()}});
+$('#fbList').addEventListener('input',e=>{const id=e.target.dataset.fbn;if(!id)return;const x=FB.find(y=>y.id===id);if(!x)return;x.note=e.target.value;clearTimeout(fbT);fbT=setTimeout(()=>putFb(x),600)});
+$('#fbList').addEventListener('click',async e=>{const id=e.target.dataset.fbd;if(!id)return;if(!await ask('ลบเรื่องนี้?'))return;delFb(id);renderFb()});
+$('#fbXlsx').onclick=()=>{const rows=FB.map((x,i)=>[i+1,thTime(x.ts),x.type,x.pri||'',x.page,x.title||'',x.text,x.who||'',x.contact||'',x.role,x.device,x.status,x.note||'']);
+  const b=xlsxBlob([{name:'ข้อเสนอแนะ',rows:[['แจ้งปัญหาและข้อเสนอแนะ ระบบบันทึกข้อมูลการลา'],[S.settings.org||''],[],['ที่','วันเวลา','ประเภท','ความเร่งด่วน','หน้า','หัวข้อ','รายละเอียด','ผู้แจ้ง','ติดต่อกลับ','บทบาท','อุปกรณ์','สถานะ','บันทึกผู้พัฒนา'],...rows],titles:2,hdr:3,widths:[5,18,12,12,22,30,60,22,18,10,10,16,40]}]);
+  saveFile(`ข้อเสนอแนะระบบการลา_${todayISO()}.xlsx`,b,b.type)};
 
 /* ---------- ตรวจจับอุปกรณ์ ---------- */
 const DEV_T={mobile:'📱 มือถือ',tablet:'📲 แท็บเล็ต',desktop:'💻 คอมพิวเตอร์'};
