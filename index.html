@@ -742,6 +742,88 @@ html[data-device=desktop] #home .hmain.v4 #hmLs span{font-size:11px!important}
 .tb1 .ch span.z{color:#cbd5e1}.tb1 .ch span b{color:var(--c)}
 @media(min-height:950px){html[data-device=desktop] .tb1{padding:14px 0}html[data-device=desktop] .tb1 .sb{height:22px}html[data-device=desktop] .tb1 .sb i{line-height:22px}}
 @media(max-height:900px){.tb1{padding:4px 0}.tb1 .hd{margin-bottom:2px;font-size:14px}.tb1 .ch{margin-top:3px}}
+
+/* ================= iOS THEME ================= */
+:root{--ios-bg:#F2F2F7;--ios-card:#FFFFFF;--ios-sep:#E5E5EA;--ios-label:#000;--ios-sub:#8E8E93;--ios-blue:#007AFF;--ios-fill:#7676801F;
+ --navy:#007AFF;--navy2:#007AFF;--bg:#F2F2F7;--line:#E5E5EA;--ink:#000;--sub:#8E8E93;--grad:#007AFF;--r:16px;--sh:none;--red:#FF3B30;--green:#34C759;--amber:#FF9500;
+ --ff:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','IBM Plex Sans Thai Looped','Noto Sans Thai',sans-serif}
+body{background:var(--ios-bg)!important;color:#000!important;font-family:var(--ff)!important;-webkit-font-smoothing:antialiased;letter-spacing:-.1px}
+body *:not(.lf):not(.lf *):not(.arp):not(.arp *){font-family:inherit}
+.muted{color:var(--ios-sub)!important}
+/* แถบหัว: แบบ navigation bar ของ iOS */
+header{background:rgba(249,249,249,.86)!important;-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);color:#000!important;box-shadow:0 .5px 0 rgba(0,0,0,.18)!important;padding:10px 20px!important}
+header::after{display:none!important}
+header h1{color:#000!important;font-size:20px!important;font-weight:700!important;letter-spacing:-.3px}
+header .sub{color:var(--ios-sub)!important;opacity:1!important}
+header .badge,header .btn,header .chip{background:var(--ios-fill)!important;color:#000!important;border:0!important;border-radius:999px!important;box-shadow:none!important;font-weight:500}
+header #demoBadge{background:#FF95001F!important;color:#C93400!important}
+header .seg{background:var(--ios-fill)!important;border-radius:9px!important;padding:2px!important;border:0!important;box-shadow:none!important}
+header .seg button{background:transparent!important;color:#000!important;border:0!important;border-radius:7px!important;font-weight:500;box-shadow:none!important}
+header .seg button.on{background:#fff!important;box-shadow:0 3px 8px rgba(0,0,0,.12),0 3px 1px rgba(0,0,0,.04)!important;font-weight:600}
+/* เมนูหลัก */
+nav{background:rgba(242,242,247,.9)!important;-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px)}
+nav button{background:transparent!important;color:#3C3C43!important;border-radius:10px!important;font-weight:500!important;box-shadow:none!important}
+nav button:hover{background:#7676801A!important}
+nav button.on{background:#fff!important;color:var(--ios-blue)!important;font-weight:600!important;box-shadow:0 1px 3px rgba(0,0,0,.08)!important}
+#adminBar,#adminBar *{color:#3C3C43}
+#adminBar .btn{background:transparent!important;color:var(--ios-blue)!important}
+/* เมนูย่อย: segmented control */
+#subnav.show{display:inline-flex!important;background:var(--ios-fill)!important;border-radius:9px!important;padding:2px!important;gap:0!important;margin:4px 12px 10px!important;width:auto;max-width:calc(100% - 24px);flex-wrap:wrap}
+#subnav button{background:transparent!important;border:0!important;color:#000!important;border-radius:7px!important;padding:5px 14px!important;box-shadow:none!important;font-weight:500}
+#subnav button.on{background:#fff!important;color:#000!important;box-shadow:0 3px 8px rgba(0,0,0,.12),0 3px 1px rgba(0,0,0,.04)!important;font-weight:600}
+#pbar .pt h2{font-size:28px!important;font-weight:700!important;letter-spacing:-.5px;color:#000!important}
+#pbar .pt p{color:var(--ios-sub)!important}
+/* การ์ด */
+.panel,.card,.hcard,.ps-card,.kstrip,#arBody,.attb,.atr,.ps-kpi div,.cal .d{border:0!important;box-shadow:none!important}
+.panel,.hcard,.ps-card,#arBody,.attb{background:#fff!important;border-radius:16px!important}
+.panel>h3{background:#fff!important;color:#000!important;font-weight:600!important;border-bottom:.5px solid var(--ios-sep)!important}
+.panel>h3::before{display:none!important}
+.panel>h3 .muted{font-weight:400}
+.hcard{animation:none!important;opacity:1!important}
+.hcard .ic{border-radius:10px!important;background:color-mix(in srgb,var(--c,#007AFF) 14%,#fff)!important}
+.hcard:hover{background:#fafafa!important}
+/* หัวหน้าหลัก: เรียบแบบ iOS ไม่มีไล่สี */
+.hero,.hero.att{background:#fff!important;color:#000!important;box-shadow:none!important;border-radius:16px!important}
+.hero .blob,.hero .wave{display:none!important}
+.hero h2{color:#000!important;font-weight:700!important;letter-spacing:-.3px}
+.hero p{color:var(--ios-sub)!important;opacity:1!important}.hero p b{color:#000}
+.hero .dnav button{background:var(--ios-fill)!important;color:var(--ios-blue)!important;border:0!important}
+.hero .dnav input,#home .hfil .grpF{background:var(--ios-fill)!important;color:#000!important;border:0!important}
+#home .hfil .etF button,.etF button{background:var(--ios-fill)!important;border:0!important;color:#000!important;border-radius:999px!important}
+#home .hfil .etF button b,.etF button b{background:#fff!important;color:#3C3C43!important}
+#home .hfil .etF button.on,.etF button.on{background:var(--ios-blue)!important;color:#fff!important}
+#home .hfil .etF button.on b,.etF button.on b{background:#ffffff33!important;color:#fff!important}
+/* ปุ่ม */
+.btn{background:var(--ios-blue)!important;color:#fff!important;border-radius:10px!important;box-shadow:none!important;font-weight:600!important;border:0!important}
+.btn:hover{filter:brightness(.92)}
+.btn.sec{background:#007AFF1A!important;color:var(--ios-blue)!important}
+.btn.red{background:#FF3B301A!important;color:#FF3B30!important}
+#fbFab{background:var(--ios-blue)!important;color:#fff!important;box-shadow:0 4px 14px rgba(0,122,255,.35)!important;border:0!important}
+/* ช่องกรอก */
+input,select,textarea{background:#fff!important;border:1px solid #D1D1D6!important;border-radius:10px!important;color:#000}
+input:focus,select:focus,textarea:focus{outline:0;border-color:var(--ios-blue)!important;box-shadow:0 0 0 3px #007AFF33!important}
+.attb td input{border-color:transparent!important;background:transparent!important}.attb td input:hover,.attb td input:focus{background:#fff!important;border-color:#D1D1D6!important}
+/* ตาราง */
+table th{background:#F2F2F7!important;color:#3C3C43!important;border-color:var(--ios-sep)!important}
+table td{border-color:var(--ios-sep)!important}
+.attb th{background:#F9F9F9!important}
+.attb tr.sec td{background:#F2F2F7!important;color:#3C3C43}.attb tr.sec .sn{color:#000!important}
+.attb tr[data-s="ขาด"] td{background:#FF3B300F!important}.attb tr[data-s="สาย"] td{background:#FF95000F!important}.attb tr[data-s="ลา"] td{background:#AF52DE0F!important}
+.attb td.tk button{border-radius:50%!important;border-color:#C7C7CC!important}
+/* แจ้งเตือน / chip */
+.alert{background:#FF95000F!important;border:0!important;border-radius:12px!important}
+.alert.ok{background:#34C7591A!important}
+.chip,.tg{background:var(--ios-fill)!important;border:0!important;color:#3C3C43}
+.atchip{background:#fff!important;border:0!important;box-shadow:0 0 0 1px var(--ios-sep) inset}
+.atchip.on{background:var(--c)!important;box-shadow:none}
+.sb,.qbar{background:#E5E5EA!important}
+#hmLs button{background:#F2F2F7!important;border:0!important;border-radius:12px!important}
+#toast,.toast{border-radius:14px!important}
+.gsub{color:var(--ios-sub)!important;text-transform:uppercase;letter-spacing:.2px}
+#pvPanel.ready{box-shadow:0 0 0 2px #34C759!important}
+#pvModal .pvm{border-radius:16px}
+#pvModal .pvb{background:#F2F2F7!important}
+html[data-device=mobile] #pbar .pt h2{font-size:24px!important}
 </style>
 </head>
 <body class="staff">
@@ -1049,12 +1131,12 @@ html[data-device=desktop] #home .hmain.v4 #hmLs span{font-size:11px!important}
 <script>const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const TYPES=[
- {n:'ลาป่วย',s:'ป่วย',q:1,c:'#e06666'},
- {n:'ลากิจส่วนตัว',s:'กิจ',q:1,c:'#f6b26b'},
- {n:'ลาพักผ่อน',s:'พักผ่อน',c:'#6aa84f'},
- {n:'ลาคลอดบุตร',s:'คลอด',cal:1,c:'#c27ba0'},
- {n:'ลาไปช่วยเหลือภริยาที่คลอดบุตร',s:'ช่วยภริยาคลอด',c:'#8e7cc3'},
- {n:'ลาอุปสมบท/ประกอบพิธีฮัจย์',s:'อุปสมบท/ฮัจย์',cal:1,c:'#76a5af'},
+ {n:'ลาป่วย',s:'ป่วย',q:1,c:'#FF3B30'},
+ {n:'ลากิจส่วนตัว',s:'กิจ',q:1,c:'#FF9500'},
+ {n:'ลาพักผ่อน',s:'พักผ่อน',c:'#34C759'},
+ {n:'ลาคลอดบุตร',s:'คลอด',cal:1,c:'#FF2D55'},
+ {n:'ลาไปช่วยเหลือภริยาที่คลอดบุตร',s:'ช่วยภริยาคลอด',c:'#5856D6'},
+ {n:'ลาอุปสมบท/ประกอบพิธีฮัจย์',s:'อุปสมบท/ฮัจย์',cal:1,c:'#30B0C7'},
  {n:'มาสาย',s:'มาสาย',late:1,adm:1,c:'#999999'},
  {n:'ขาดราชการ',s:'ขาดราชการ',adm:1,c:'#cc0000'}];
 const T=Object.fromEntries(TYPES.map(t=>[t.n,t]));
@@ -2263,7 +2345,7 @@ function renderAdd(){$('#addSum').textContent='ตอนนี้ในระบ
 
 /* ---------- หน้าหลัก (dashboard) ---------- */
 const todayISO=()=>iso(new Date(Date.now()+7*36e5));
-const AVC=['#2563eb','#0ea5e9','#7c3aed','#db2777','#ea580c','#16a34a','#0891b2','#4f46e5'];
+const AVC=['#007AFF','#5AC8FA','#AF52DE','#FF2D55','#FF9500','#34C759','#30B0C7','#5856D6'];
 const avOf=n=>{const t=String(n||'?').replace(/^(นาย|นางสาว|นาง|ว่าที่ร้อยตรี|ดร\.)\s*/,'');let h=0;for(const c of t)h=(h*31+c.charCodeAt(0))>>>0;return`<span class="av" style="background:${AVC[h%AVC.length]}">${esc(t.slice(0,1))}</span>`};
 function countUp(root){root.querySelectorAll('[data-count]').forEach(el=>{const to=+el.dataset.count,suf=el.dataset.suf||'',t0=performance.now(),d=900;
   const f=now=>{const p=Math.min(1,(now-t0)/d),e=1-Math.pow(1-p,3);el.textContent=fmt(Math.round(to*e*10)/10)+suf;if(p<1)requestAnimationFrame(f)};requestAnimationFrame(f)})}
@@ -2271,8 +2353,8 @@ function fitHome(){const el=$('#home');if(!el||!el.classList.contains('on'))retu
 window.addEventListener('resize',()=>{clearTimeout(window._fh);window._fh=setTimeout(fitHome,80)});
 
 /* ---------- มา ลา ขาด ---------- */
-const AST=[{k:'มา',i:'✅',c:'#16a34a'},{k:'สาย',i:'⏰',c:'#f59e0b'},{k:'ไปราชการ',i:'🚗',c:'#2563eb'},{k:'ลา',i:'📝',c:'#8b5cf6'},{k:'ขาด',i:'❌',c:'#dc2626'}];
-const ASC=Object.fromEntries(AST.map(x=>[x.k,x]));ASC['']={k:'',i:'❔',c:'#94a3b8'};
+const AST=[{k:'มา',i:'✅',c:'#34C759'},{k:'สาย',i:'⏰',c:'#FF9500'},{k:'ไปราชการ',i:'🚗',c:'#007AFF'},{k:'ลา',i:'📝',c:'#AF52DE'},{k:'ขาด',i:'❌',c:'#FF3B30'}];
+const ASC=Object.fromEntries(AST.map(x=>[x.k,x]));ASC['']={k:'',i:'❔',c:'#C7C7CC'};
 const stLbl=s=>s||'ยังไม่บันทึก';
 const ETG=[{k:'1',n:'ข้าราชการ',t:['ข้าราชการ']},{k:'2',n:'พนักงานราชการ / ลูกจ้างประจำ',t:['พนักงานราชการ','ลูกจ้างประจำ']},{k:'3',n:'ลูกจ้างชั่วคราว (เหมาบริการ)',t:['ลูกจ้างเหมาบริการ']}];
 const ETN={'0':'ยังไม่ระบุประเภท'};ETG.forEach(g=>ETN[g.k]=g.n);
@@ -2380,7 +2462,7 @@ function homeAtt(){ATD=ATD||todayISO();$('#adDate').value=ATD;
   const VS=attStaff(),LM=lvOn(ATD),A=VS.map(st=>({st,a:attOf(st,ATD,LM)})),c={'':0};AST.forEach(x=>c[x.k]=0);A.forEach(x=>c[x.a.s]++);
   const g=gDept(),here=c['มา']+c['สาย']+c['ไปราชการ'],done=VS.length-c[''];
   $('#adDonutT').textContent=thD(ATD);$('#adSub').innerHTML=`${esc(g?g.name:role==='head'&&myDept()?myDept().name:'ทุกกลุ่มงาน')}${ETF?' · '+esc(ETN[ETF]):''} · ${WD[pd(ATD).getUTCDay()]} ${thDL(ATD)}${isOff(ATD)?' · <b>วันหยุด: '+esc(offName(ATD))+'</b>':''} · ปฏิบัติงาน <b>${pct(here,VS.length)}%</b> · บันทึกแล้ว ${done}/${VS.length} คน`;
-  const K=[['👥',VS.length,'เจ้าหน้าที่ทั้งหมด','*','#0f766e'],...AST.map(x=>[x.i,c[x.k],x.k==='มา'?'มาปฏิบัติงาน':x.k==='สาย'?'มาสาย':x.k,x.k,x.c]),['❔',c[''],'ยังไม่บันทึก','','#94a3b8']];
+  const K=[['👥',VS.length,'เจ้าหน้าที่ทั้งหมด','*','#000000'],...AST.map(x=>[x.i,c[x.k],x.k==='มา'?'มาปฏิบัติงาน':x.k==='สาย'?'มาสาย':x.k,x.k,x.c]),['❔',c[''],'ยังไม่บันทึก','','#94a3b8']];
   $('#adKpi').innerHTML=K.map(([ic,n,l,f,col],i)=>`<button class="hcard${f===''&&n&&!isOff(ATD)?' warn':''}" data-af="${f}" style="animation-delay:${i*40}ms;--c:${col}"><div class="ic">${ic}</div><div class="n" data-count="${n}" data-suf=" คน">0</div><div class="l">${l}</div></button>`).join('');countUp($('#adKpi'));
   const D=[...AST,ASC['']].map(x=>({x,v:c[x.k]})).filter(o=>o.v),C=2*Math.PI*52;let off=0;
   $('#adDonut').innerHTML=VS.length?`<div><svg class="donut" viewBox="0 0 140 140"><circle cx="70" cy="70" r="52" fill="none" stroke="#eef2f7" stroke-width="18"/>${D.map(o=>{const len=o.v/VS.length*C,el=`<circle cx="70" cy="70" r="52" fill="none" stroke="${o.x.c}" stroke-width="18" stroke-dasharray="0 ${C}" data-da="${len} ${C-len}" stroke-dashoffset="${-off}" transform="rotate(-90 70 70)"/>`;off+=len;return el}).join('')}<text x="70" y="70" text-anchor="middle" font-size="28" font-weight="700" fill="#0f172a" font-family="inherit">${pct(here,VS.length)}%</text><text x="70" y="90" text-anchor="middle" font-size="12" fill="#64748b" font-family="inherit">ปฏิบัติงาน</text></svg>
@@ -2439,7 +2521,7 @@ $('#arXlsx').onclick=()=>{const D=arData(),org=orgN(),hd=COLS.map(stLbl);let sh;
 
 /* ----- ประวัติรายคน ----- */
 let PSID='',PSM='';
-const QC={'ลาพักผ่อน':'#6aa84f','ลาป่วย':'#e06666','ลากิจส่วนตัว':'#f6b26b'};
+const QC={'ลาพักผ่อน':'#34C759','ลาป่วย':'#FF3B30','ลากิจส่วนตัว':'#FF9500'};
 function renderPsn(){if(!attReady(renderPsn))return;const V=visStaff();
   $('#psList').innerHTML=V.map(st=>`<option value="${esc((st.code?st.code+' ':'')+st.name)}">`).join('');
   if(!V.some(x=>x.id===PSID))PSID=V[0]?V[0].id:'';const st=staffById(PSID);
