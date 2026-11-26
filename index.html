@@ -875,7 +875,7 @@ html[data-device=mobile] .pvact{position:sticky;top:0;z-index:3}html[data-device
     <div class="row" id="rEnd"><label>วันสิ้นสุดการลา</label><input type="date" id="fEnd"></div>
     <div class="row" id="rHalf"><label>ลาครึ่งวัน</label><select id="fHalf"><option value="">เต็มวัน</option><option>ครึ่งวันเช้า</option><option>ครึ่งวันบ่าย</option></select></div>
     <div class="row"><label>เหตุผลการลา</label><input id="fNote" placeholder="เช่น ป่วยเป็นไข้หวัด"></div>
-    <div class="row" id="rSub" style="display:none"><label>ผู้ปฏิบัติหน้าที่แทน <span style="color:var(--red)">*</span></label><input id="fSub" list="subList" placeholder="เลือกจากรายการ (กลุ่มงานเดียวกัน ระดับตามเกณฑ์)"><datalist id="subList"></datalist></div>
+    <div class="row" id="rSub" style="display:none"><label>ผู้ปฏิบัติหน้าที่แทน <span style="color:var(--red)">*</span></label><select id="fSub"><option value="">— เลือกผู้ปฏิบัติหน้าที่แทน —</option></select></div>
     <div class="row"><label>ติดต่อได้ที่ (ระหว่างลา)</label><input id="fContact" placeholder="ที่อยู่/เบอร์โทรระหว่างลา (ถ้าไม่กรอกใช้เบอร์โทร)"></div>
     <div class="row"><label>รวมการลาครั้งนี้</label><div><span class="big" id="fDays">0</span> <span id="fUnit">วัน</span> <span class="muted" id="fNo"></span></div></div>
     <div id="fMsg"></div>
@@ -1510,7 +1510,11 @@ function attachSug(input,box,onPick){
 let contactAuto=true;
 function fillFromStaff(st){if(contactAuto||!$('#fContact').value){$('#fContact').value=st.addr||'';contactAuto=true}}
 $('#fContact').addEventListener('input',()=>contactAuto=false);
-$('#fSub').addEventListener('focus',()=>{const me=formVals().st,L=me?subPool(me):[];$('#subList').innerHTML=L.map(x=>`<option value="${esc(x.name)}">${esc(x.pos||'')}</option>`).join('')});
+function fillSub(){const sel=$('#fSub'),cur=sel.dataset.want!=null?sel.dataset.want:sel.value;delete sel.dataset.want;const me=formVals().st,L=me?subPool(me):[];
+  const names=L.map(x=>x.name);let h=`<option value="">${me?(L.length?'— เลือกผู้ปฏิบัติหน้าที่แทน —':'— ไม่มีผู้ที่มอบหมายได้ —'):'— ระบุผู้ขอลาก่อน —'}</option>`+L.map(x=>`<option value="${esc(x.name)}">${esc(x.name)}${x.pos?' · '+esc(x.pos):''}</option>`).join('');
+  if(cur&&!names.includes(cur))h+=`<option value="${esc(cur)}">${esc(cur)} (ไม่อยู่ในรายชื่อที่มอบหมายได้)</option>`;
+  if(sel.innerHTML!==h)sel.innerHTML=h;sel.value=cur||''}
+const setSub=v=>{$('#fSub').dataset.want=v||'';fillSub()};
 attachSug($('#fName'),$('#fSug'),st=>{if(editId)clearForm(true);fillFromStaff(st);renderPerson();updForm()});
 function renderRec(){
   $('#formTitle').textContent=editId?'แก้ไขรายการการลา':(isMgr()?'เพิ่มใบลา 1 ใบ':'ยื่นใบลา');
@@ -1591,6 +1595,7 @@ $('#pvSaveOnly').onclick=()=>{closePv();pvOk=true;pvPrint=false;$('#bSave').clic
 window.addEventListener('resize',()=>{if(curTab()==='rec')renderPv(checkForm());if($('#pvModal').classList.contains('on')&&pvRec)fitPv($('#pvFull'),formHTML(pvRec))});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('#pvModal').classList.contains('on'))closePv()});
 function updForm(){
+  if($('#fType').value==='ลาพักผ่อน')fillSub();
   const t=T[$('#fType').value]||TYPES[0];
   $('#rEnd').style.display=t.late||$('#fHalf').value?'none':'';
   $('#rHalf').style.display=t.late||t.cal?'none':'';
@@ -1607,9 +1612,9 @@ function updForm(){
 }
 let nameTimer;
 $('#fName').addEventListener('input',()=>{clearTimeout(nameTimer);nameTimer=setTimeout(()=>{const st=whoOf($('#fName').value);if(st)fillFromStaff(st);renderPerson();updForm()},250)});
-['fType','fEnd','fHalf','fSub'].forEach(id=>$('#'+id).addEventListener('change',updForm));$('#fSub').addEventListener('input',updForm);
+['fType','fEnd','fHalf','fSub'].forEach(id=>$('#'+id).addEventListener('change',updForm));let updT;['fNote','fContact'].forEach(id=>$('#'+id).addEventListener('input',()=>{clearTimeout(updT);updT=setTimeout(updForm,250)}));
 $('#fStart').addEventListener('change',()=>{if(!$('#fEnd').value||$('#fEnd').value<$('#fStart').value)$('#fEnd').value=$('#fStart').value;updForm()});
-function clearForm(keepPerson){editId=null;['fStart','fEnd','fNote','fContact','fSub'].forEach(i=>$('#'+i).value='');$('#fHalf').value='';contactAuto=true;if(!keepPerson)$('#fName').value='';$('#bDel').style.display='none';$('#formPanel').classList.remove('editing');renderRec()}
+function clearForm(keepPerson){editId=null;['fStart','fEnd','fNote','fContact'].forEach(i=>$('#'+i).value='');setSub('');$('#fHalf').value='';contactAuto=true;if(!keepPerson)$('#fName').value='';$('#bDel').style.display='none';$('#formPanel').classList.remove('editing');renderRec()}
 $('#bClear').onclick=()=>clearForm(isMgr()?false:true);
 $('#bSave').onclick=()=>{
   const r=checkForm();if(!r.ok){const m=r.msgs.find(x=>x[0]==='err')||r.msgs[0];if(m)toast(m[1],true);return}const v=r.v,t=T[v.type];
@@ -1635,7 +1640,7 @@ function editLeave(id){
   showTab('rec');editId=id;
   const st=staffById(l.staffId)||staffByName(l.nm);
   $('#fName').value=st?(isMgr()?st.name:st.code||st.name):l.nm||'';contactAuto=false;
-  $('#fType').value=l.type;$('#fStart').value=l.start;$('#fEnd').value=l.end||l.start;$('#fHalf').value=l.half||'';$('#fNote').value=l.note||'';$('#fContact').value=l.contact||'';$('#fSub').value=l.sub||'';
+  $('#fType').value=l.type;$('#fStart').value=l.start;$('#fEnd').value=l.end||l.start;$('#fHalf').value=l.half||'';$('#fNote').value=l.note||'';$('#fContact').value=l.contact||'';setSub(l.sub||'');
   $('#bDel').style.display='';$('#formPanel').classList.add('editing');renderRec();window.scrollTo({top:0,behavior:'smooth'});
 }
 function renderPerson(){
