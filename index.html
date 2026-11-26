@@ -1361,8 +1361,9 @@ let GF='';
 const gDept=()=>role==='admin'&&GF?S.depts.find(d=>d.id===GF)||null:null;
 const inGF=st=>{const g=gDept();return !g||!!(st&&norm(st.dept)===norm(g.name))};
 const visStaff0=()=>role==='head'?S.staff.filter(inDept):S.staff.filter(inGF);
-const visStaff=()=>visStaff0().filter(st=>!ETF||etgOf(st)===ETF);
-const inScope=l=>{const st=staffById(l.staffId)||staffByName(l.nm);if(ETF&&(!st||etgOf(st)!==ETF))return false;if(role==='head')return inDept(st);const g=gDept();return !g||(st?inGF(st):norm(l.dept)===norm(g.name))};
+const etOn=()=>{if(!ETF||typeof PAGES==='undefined')return!!ETF;const P=PAGES[curT];return!P||!!P[2]};
+const visStaff=()=>{const on=etOn();return visStaff0().filter(st=>!on||etgOf(st)===ETF)};
+const inScope=l=>{const st=staffById(l.staffId)||staffByName(l.nm);if(ETF&&etOn()&&(!st||etgOf(st)!==ETF))return false;if(role==='head')return inDept(st);const g=gDept();return !g||(st?inGF(st):norm(l.dept)===norm(g.name))};
 function renderGrpF(){const opts=opt('','🏢 ทุกกลุ่มงาน')+S.depts.map(d=>opt(d.id,`${d.code?d.code+' ':''}${d.name}`,d.id===GF)).join('');document.querySelectorAll('.grpF').forEach(x=>{x.innerHTML=opts;x.value=GF})}
 document.addEventListener('change',e=>{if(!e.target.classList||!e.target.classList.contains('grpF'))return;GF=e.target.value;renderGrpF();renderTab(curTab())});
 function setRole(r,quiet){if(r==='admin'&&!fbLoaded)setTimeout(()=>loadFb().then(()=>{if(curTab()==='home')renderHome()}),0);
