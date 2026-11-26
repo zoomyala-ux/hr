@@ -1382,9 +1382,11 @@ $('#roleSeg').onclick=e=>{const b=e.target.closest('[data-r]');if(!b)return;if(b
 $('#exitAdmin').onclick=()=>{GF='';sess=null;saveSess();setRole('staff');toast('ออกจากระบบแล้ว')};
 $('#chgPw').onclick=async()=>{
   const p=await ask('<b>เปลี่ยนรหัสผ่าน</b><br>รหัสผ่านใหม่ (อย่างน้อย 4 ตัว)','password');if(p===false)return;if(p.length<4)return toast('รหัสผ่านต้องมีอย่างน้อย 4 ตัว',true);
+  const p2=await ask('<b>ยืนยันรหัสผ่านใหม่</b><br>กรอกรหัสผ่านใหม่อีกครั้ง','password');if(p2===false)return;if(p2!==p)return toast('รหัสผ่านทั้งสองครั้งไม่ตรงกัน ยังไม่ได้เปลี่ยนรหัสผ่าน',true);
   if(sess.role==='admin'){const A=sess.aid&&(S.settings.admins||[]).find(a=>a.id===sess.aid);if(A)A.hash=await sha('adm|'+A.user.toLowerCase()+'|'+p);else S.settings.adminHash=await sha('admin|'+p);saveSet()}else{const d=myDept();d.pwHash=await sha('head|'+d.code+'|'+p);saveDepts()}
-  toast('เปลี่ยนรหัสผ่านแล้ว');
+  pwDone();
 };
+function pwDone(){if(store.cloud)toast('เปลี่ยนรหัสผ่านแล้ว มีผลทุกเครื่องที่เปิดหน้านี้');else{const pr=ask(`<b>เปลี่ยนรหัสผ่านแล้ว</b><br>รหัสผ่านใหม่มีผล<b>เฉพาะเครื่องและเบราว์เซอร์นี้</b> เพราะระบบยังเก็บข้อมูลแยกในแต่ละเครื่อง<br><br>เครื่องอื่น หรือเบราว์เซอร์อื่นในเครื่องเดียวกัน ยังใช้รหัสผ่านเดิมจนกว่าจะเปลี่ยนที่เครื่องนั้นด้วย หรือนำเข้าไฟล์สำรองข้อมูลจากเครื่องนี้<br><br>ถ้าเบราว์เซอร์จำรหัสผ่านเดิมไว้ ให้แก้รหัสที่บันทึกไว้ในเบราว์เซอร์ด้วย`);const y=$('#mYes'),n=$('#mNo'),yc=y.className,yt=y.textContent;y.textContent='รับทราบ';y.className='btn';n.style.display='none';pr.then(()=>{y.textContent=yt;y.className=yc;n.style.display=''})}}
 
 /* ---------- derived ---------- */
 const curFY=()=>+S.settings.year;
@@ -1491,7 +1493,7 @@ function showTab(t){if(t==='pend')t='all';if(!canTab(t))t=isMgr()?(canTab('home'
   document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x.dataset.t===t||(!!g&&x.dataset.g===g)));
   const sub=g?GROUPS[g].filter(x=>canTab(x[0])):[];const sn=$('#subnav');sn.className=sub.length>1?'show':'';sn.innerHTML=sub.length>1?sub.map(([k,l])=>`<button data-t="${k}" class="${k===t?'on':''}">${l}</button>`).join(''):'';
   document.querySelectorAll('main section').forEach(s=>s.classList.toggle('on',s.id===t));setPbar(t);renderTab(t);if(typeof setNavH==='function')setNavH()}
-$('#tabs').onclick=e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.g){const L=GROUPS[b.dataset.g].map(x=>x[0]).filter(canTab);showTab(L.includes(lastInG[b.dataset.g])?lastInG[b.dataset.g]:L[0])}else showTab(b.dataset.t)};
+$('#tabs').onclick=e=>{const b=e.target.closest('button[data-t],button[data-g]');if(!b)return;if(b.dataset.g){const L=GROUPS[b.dataset.g].map(x=>x[0]).filter(canTab);showTab(L.includes(lastInG[b.dataset.g])?lastInG[b.dataset.g]:L[0])}else showTab(b.dataset.t)};
 $('#subnav').onclick=e=>{const b=e.target.closest('[data-t]');if(b)showTab(b.dataset.t)};
 const curTab=()=>curT;
 function renderTab(t){if(LV.some(l=>T[l.type]&&T[l.type].adm))migAdm();if(role==='admin')renderGrpF();if(PAGES[t]&&PAGES[t][2]&&isMgr())etBar();({admins:renderAdm,person:renderPsn,att:renderAtt,arep:renderArep,fb:renderFb,home:renderHome,add:renderAdd,back:renderBack,pend:renderPend,rec:renderRec,all:renderAllList,sum:renderSum,rep:renderRep,base:renderBase,staff:renderStaff,hol:renderHol,exp:renderExp,form:renderForm})[t]()}
@@ -1866,7 +1868,7 @@ function setChanged(){
 }
 ['bOrg','bAdmin','bRound','bYear','bMaxT','bMaxD','bMaxL'].forEach(i=>$('#'+i).addEventListener('input',setChanged));
 $('#demoLoad').onclick=loadDemo;$('#demoClear').onclick=clearDemo;
-$('#bPinSave').onclick=async()=>{const p=$('#bPin').value;if(p.length<4)return toast('รหัสผ่านต้องมีอย่างน้อย 4 ตัว',true);S.settings.adminHash=await sha('admin|'+p);saveSet();$('#bPin').value='';renderBase();toast('เปลี่ยนรหัสผ่านผู้ดูแลระบบแล้ว')};
+$('#bPinSave').onclick=async()=>{const p=$('#bPin').value;if(p.length<4)return toast('รหัสผ่านต้องมีอย่างน้อย 4 ตัว',true);S.settings.adminHash=await sha('admin|'+p);saveSet();$('#bPin').value='';renderBase();pwDone()};
 let staffTimer;
 $('#bStaff').addEventListener('input',e=>{const i=e.target;if(!i.dataset.sid)return;const s=staffById(i.dataset.sid);if(!s)return;s[i.dataset.f]=/^(vac|q[A-Z])/.test(i.dataset.f)?(+i.value||0):i.dataset.f==='cid'?cidDigits(i.value):i.value.trim();if(i.dataset.f==='cid'){const bad=s.cid&&(!cidValid(s.cid)||S.staff.some(x=>x!==s&&cidDigits(x.cid)===s.cid));i.classList.toggle('dup',!!bad);if(s.cid.length===13&&bad)toast(cidValid(s.cid)?'เลขบัตรประชาชนนี้ซ้ำกับคนอื่น':'เลขบัตรประชาชนไม่ถูกต้อง (ตรวจหลักสุดท้ายไม่ผ่าน)',true)}if(i.dataset.f==='code'){const dup=s.code&&S.staff.some(x=>x!==s&&norm(x.code)===norm(s.code));i.classList.toggle('dup',!!dup);if(dup)toast('เลข ID นี้ซ้ำกับคนอื่น',true)}clearTimeout(staffTimer);staffTimer=setTimeout(saveStaff,600)});
 $('#bStaff').addEventListener('click',async e=>{
@@ -2647,7 +2649,7 @@ $('#amAdd').onclick=async()=>{const user=$('#amUser').value.trim(),name=$('#amNa
   admList().push({id:uid(),user,name,pos,hash:await sha('adm|'+u+'|'+p),off:false,created:Date.now(),by:curAdm()?curAdm().user:'admin'});saveSet();
   ['amUser','amName','amPos','amPass'].forEach(i=>$('#'+i).value='');renderAdm();toast(`เพิ่มผู้ดูแลระบบ “${user}” แล้ว`)};
 $('#amList').addEventListener('click',async e=>{const b=e.target.closest('button');if(!b)return;
-  if(b.dataset.amb){const p=await ask('<b>ตั้งรหัสผ่านใหม่ของบัญชี admin</b><br>อย่างน้อย 6 ตัว','password');if(p===false)return;if(p.length<6)return toast('รหัสผ่านต้องมีอย่างน้อย 6 ตัว',true);S.settings.adminHash=await sha('admin|'+p);saveSet();toast('ตั้งรหัสผ่านใหม่แล้ว');return}
+  if(b.dataset.amb){const p=await ask('<b>ตั้งรหัสผ่านใหม่ของบัญชี admin</b><br>อย่างน้อย 6 ตัว','password');if(p===false)return;if(p.length<6)return toast('รหัสผ่านต้องมีอย่างน้อย 6 ตัว',true);S.settings.adminHash=await sha('admin|'+p);saveSet();pwDone();return}
   const id=b.dataset.amp||b.dataset.amo||b.dataset.amd,a=admList().find(x=>x.id===id);if(!a)return;
   if(b.dataset.amp){const p=await ask(`<b>ตั้งรหัสผ่านใหม่ของ “${esc(a.user)}”</b><br>อย่างน้อย 6 ตัว`,'password');if(p===false)return;if(p.length<6)return toast('รหัสผ่านต้องมีอย่างน้อย 6 ตัว',true);a.hash=await sha('adm|'+a.user.toLowerCase()+'|'+p);saveSet();toast('ตั้งรหัสผ่านใหม่แล้ว')}
   else if(b.dataset.amo){a.off=!a.off;saveSet();renderAdm();toast(a.off?`ระงับบัญชี “${a.user}” แล้ว`:`เปิดใช้งานบัญชี “${a.user}” แล้ว`)}
