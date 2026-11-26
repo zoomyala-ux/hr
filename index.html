@@ -966,6 +966,24 @@ html[data-device=mobile] .amt thead{display:none}html[data-device=mobile] .amt t
   <div class="panel"><h3><span>👤 รายชื่อผู้ดูแลระบบ</span><span class="muted" id="amN"></span></h3><div class="bd" id="amList"></div></div>
  </div>
 </section>
+<!-- ฐานข้อมูลกลาง -->
+<section id="gh">
+ <div class="am-grid">
+  <div class="panel"><h3><span>☁️ เชื่อมต่อฐานข้อมูลกลาง</span></h3><div class="bd">
+   <div class="row"><label>บัญชี GitHub</label><input id="ghOwner" placeholder="xarif09" autocomplete="off"></div>
+   <div class="row"><label>Repository (ส่วนตัว)</label><input id="ghRepo" placeholder="leave-data" autocomplete="off"></div>
+   <div class="row" id="ghTokRow"><label>Token</label><input id="ghTok" type="password" placeholder="วาง token ที่ขึ้นต้นด้วย github_pat_" autocomplete="off"></div>
+   <div class="btns"><button class="btn" id="ghOn">ทดสอบและเชื่อมต่อ</button><button class="btn red" id="ghOff" style="display:none">ยกเลิกการเชื่อมต่อที่เครื่องนี้</button></div>
+   <div class="muted" id="ghMsg" style="margin-top:6px"></div>
+  </div></div>
+  <div class="panel"><h3><span>📡 สถานะ</span></h3><div class="bd"><div id="ghStatus"></div>
+   <div class="muted" style="margin-top:10px;line-height:1.7">
+    • ต้องเชื่อมต่อ<b>ทุกเครื่อง</b>ที่ใช้บันทึกข้อมูล (เครื่องผู้ดูแล หัวหน้ากลุ่มงาน และเครื่องที่ใช้ยื่นใบลา) เข้าสู่ระบบผู้ดูแลที่เครื่องนั้นแล้ววาง token ครั้งเดียว<br>
+    • เครื่องที่ไม่ได้เชื่อมต่อ ยังเก็บข้อมูลแยกในเครื่องตามเดิม<br>
+    • token เก็บไว้ในเบราว์เซอร์ของเครื่องนั้นเท่านั้น ไม่ได้อยู่ในตัวเว็บ · ห้ามใช้กับเครื่องสาธารณะ<br>
+    • ทุกการบันทึกจะเก็บประวัติไว้ใน GitHub ย้อนดูหรือกู้คืนได้</div></div></div>
+ </div>
+</section>
 <!-- เพิ่ม/อัปโหลดข้อมูล -->
 <section id="add">
  <p class="muted" id="addSum" style="margin:0 2px 10px"></p>
@@ -1204,7 +1222,7 @@ const thTime=ts=>{if(!ts)return'';const d=new Date(ts);return thD(iso(new Date(d
 let S={settings:{...DEF_SET},staff:[],holidays:[],depts:[]};
 let LV=[];               // leaves: cloud = current FY (live), local = all
 let role='staff',firstRun=false;
-const store={db:null,cloud:false,owner:false};
+const store={db:null,cloud:false,owner:false,gh:false};
 const LSK='leaveapp2:';
 const timeout=(p,ms)=>Promise.race([p,new Promise((_,rej)=>setTimeout(()=>rej({code:'timeout'}),ms))]);
 const lsGet=k=>{try{const v=localStorage.getItem(LSK+k);return v?JSON.parse(v):null}catch(e){return null}};
@@ -1315,9 +1333,10 @@ async function boot(){
   if(window.claude&&typeof claude.use==='function'){try{[db,u]=await Promise.all([claude.use('db'),claude.use('user')])}catch(e){}}
   let canWrite=null;if(u){try{canWrite=await u.can('data.write')}catch(e){}}
   if(db&&canWrite!==false){store.db=db;store.cloud=true;try{store.owner=!!(u&&(await u.canEdit()))}catch(e){}}
+  else{const gc=ghCfg();if(gc){store.db=makeGhDB(gc);store.cloud=true;store.owner=true;store.gh=true;try{await timeout(store.db.ready,15000)}catch(e){store.db=null;store.cloud=store.owner=store.gh=false;setTimeout(()=>toast('เชื่อมต่อฐานข้อมูลกลางไม่ได้: '+ghErrText(e)+' — ใช้ข้อมูลในเครื่องนี้ชั่วคราว',true),800)}}}
   try{await loadCfg()}
   catch(e){if(store.cloud){store.cloud=false;toast('เชื่อมต่อฐานข้อมูลออนไลน์ไม่ได้ ใช้ข้อมูลในเครื่องนี้แทน',true);try{await loadCfg()}catch(_){}}}
-  $('#mode').textContent=store.cloud?'☁ ออนไลน์':'💾 เก็บในเครื่องนี้';
+  $('#mode').textContent=store.gh?'☁ ฐานข้อมูลกลาง':store.cloud?'☁ ออนไลน์':'💾 เก็บในเครื่องนี้';if(store.gh)ghBadge();
   if(!store.cloud&&db)toast('โหมดทดลองใช้: ข้อมูลจะเก็บในเครื่องของท่านเท่านั้น');
   $('#bModeNote').textContent=store.cloud?'ข้อมูลเก็บออนไลน์ในหน้านี้ ผู้ยื่นใบลาที่เปิดหน้านี้จะส่งใบลาเข้ามาที่เดียวกัน ควรดาวน์โหลดไฟล์สำรองไว้เป็นระยะ':'ข้อมูลเก็บในเบราว์เซอร์ของเครื่องนี้เท่านั้น หากล้างประวัติเบราว์เซอร์ข้อมูลจะหาย ควรดาวน์โหลดไฟล์สำรองไว้เป็นระยะ';
   subLeaves();
@@ -1361,6 +1380,7 @@ function loadSess(){try{const v=JSON.parse(sessionStorage.getItem('leaveapp:sess
 function openLogin(){$('#lgCode').checked=true;lgMode();$('#lgUser').value='';$('#lgPass').value='';$('#lgErr').textContent='';$('#login').className='show';setTimeout(()=>$('#lgUser').focus(),50)}
 $('#lgCancel').onclick=()=>$('#login').className='';
 async function doLogin(){
+  if(store.gh){try{await store.db.pull();const st=await cfgGet('settings');if(st)S.settings={...DEF_SET,...st};const dp=await cfgGet('depts');if(dp&&Array.isArray(dp.items))S.depts=dp.items}catch(e){}}
   const u=norm($('#lgUser').value),p=$('#lgPass').value;if(!u||!p){$('#lgErr').textContent='กรอกชื่อผู้ใช้และรหัสผ่าน';return}
   const AD=(S.settings.admins||[]).find(a=>a.user.toLowerCase()===u.toLowerCase());
   if(u.toLowerCase()==='admin'){if(await sha('admin|'+p)===(S.settings.adminHash||ADMIN_HASH)){sess={role:'admin'}}}
@@ -1478,12 +1498,12 @@ function reportDoc(title,body){
 function printHTML(html){$('#printArea').innerHTML=html.replace(/^[\s\S]*?<body>/,'').replace(/<\/body>[\s\S]*$/,'');try{window.print()}catch(e){}}
 
 /* ---------- tabs ---------- */
-const ACC={admins:'admin',fb:'all',home:'mgr',att:'mgr',rec:'all',all:'mgr',back:'admin',pend:'mgr',arep:'mgr',sum:'mgr',rep:'mgr',staff:'mgr',person:'mgr',add:'admin',exp:'mgr',base:'admin',hol:'admin',form:'admin'};
-const GROUPS={leave:[['all','📋 ใบลาทั้งหมด'],['rec','➕ เพิ่มใบลา 1 ใบ'],['back','🧾 เพิ่มใบลาหลายใบ / ย้อนหลัง']],report:[['arep','🕘 การมาปฏิบัติราชการ (รายวัน/รายเดือน)'],['sum','📊 สรุปวันลารายคน (รอบครึ่งปี)'],['rep','📈 กราฟ / รายเดือน / รายบุคคล']],people:[['staff','👥 รายชื่อ / กลุ่มงาน / โควต้า'],['person','🪪 ประวัติรายคน']],set:[['base','🏢 หน่วยงาน / ปีงบ / เกณฑ์'],['hol','🗓️ วันหยุดราชการ'],['form','🖨️ หน้าตาใบลา'],['admins','👤 ผู้ดูแลระบบ'],['add','⬆ นำเข้า Excel'],['exp','⬇ ดาวน์โหลด / สำรองข้อมูล']]};
+const ACC={gh:'admin',admins:'admin',fb:'all',home:'mgr',att:'mgr',rec:'all',all:'mgr',back:'admin',pend:'mgr',arep:'mgr',sum:'mgr',rep:'mgr',staff:'mgr',person:'mgr',add:'admin',exp:'mgr',base:'admin',hol:'admin',form:'admin'};
+const GROUPS={leave:[['all','📋 ใบลาทั้งหมด'],['rec','➕ เพิ่มใบลา 1 ใบ'],['back','🧾 เพิ่มใบลาหลายใบ / ย้อนหลัง']],report:[['arep','🕘 การมาปฏิบัติราชการ (รายวัน/รายเดือน)'],['sum','📊 สรุปวันลารายคน (รอบครึ่งปี)'],['rep','📈 กราฟ / รายเดือน / รายบุคคล']],people:[['staff','👥 รายชื่อ / กลุ่มงาน / โควต้า'],['person','🪪 ประวัติรายคน']],set:[['base','🏢 หน่วยงาน / ปีงบ / เกณฑ์'],['hol','🗓️ วันหยุดราชการ'],['form','🖨️ หน้าตาใบลา'],['admins','👤 ผู้ดูแลระบบ'],['gh','☁️ ฐานข้อมูลกลาง'],['add','⬆ นำเข้า Excel'],['exp','⬇ ดาวน์โหลด / สำรองข้อมูล']]};
 const PAGES={home:['หน้าหลัก','',1],att:['บันทึกประจำวัน','บันทึกสถานะการมาปฏิบัติราชการรายบุคคล ระบบจัดเก็บข้อมูลโดยอัตโนมัติ · ผู้ที่มีใบลาในระบบจะแสดงสถานะ “ลา” โดยอัตโนมัติ',1],all:['ใบลาทั้งหมด','ค้นหา แก้ไข ลบ และพิมพ์ใบลา',1],rec:['เพิ่มใบลา 1 ใบ','บันทึกใบลาและพิมพ์เป็น PDF (กรณีมาสาย/ขาดราชการ ให้บันทึกที่เมนูบันทึกประจำวัน)',0],back:['เพิ่มใบลาหลายใบ','บันทึกใบลาหลายรายการพร้อมกัน สำหรับข้อมูลย้อนหลัง',1],
   arep:['รายงานการมาปฏิบัติราชการ','รายวันหรือสรุปรายเดือน · พิมพ์ / PDF / Excel',1],sum:['สรุปวันลารายคน','รอบครึ่งปีปัจจุบัน ผู้ที่ลาเกินเกณฑ์ · มาสาย/ขาด นับจากบันทึกประจำวัน',1],rep:['กราฟและรายงานการลา','ภาพรวม รายเดือน และรายบุคคล',1],
   staff:['รายชื่อบุคลากร','กลุ่มงาน ประเภทบุคลากร เลข ID และโควต้าวันลา',0],person:['ประวัติรายคน','ข้อมูลใบลา สิทธิ์วันลา และการมาปฏิบัติราชการรายบุคคล',1],
-  base:['หน่วยงาน / ปีงบ / เกณฑ์','ชื่อหน่วยงาน รอบครึ่งปี เกณฑ์การลา และรหัสผ่าน',0],hol:['วันหยุดราชการ','ใช้นับวันทำการทั้งในใบลาและบันทึกประจำวัน',0],form:['หน้าตาใบลา','ข้อความและผู้ลงนามในใบลาที่พิมพ์',0],add:['นำเข้าข้อมูลจาก Excel','ดาวน์โหลดแบบฟอร์ม กรอกข้อมูล แล้วนำเข้าระบบ',0],exp:['ดาวน์โหลดรายงาน / สำรองข้อมูล','ไฟล์ Excel และไฟล์สำรองข้อมูลทั้งระบบ',1],admins:['จัดการผู้ดูแลระบบ','เพิ่ม แก้ไข ระงับ หรือลบบัญชีผู้ดูแลระบบ · ผู้ดูแลระบบทุกคนใช้งานได้ทุกเมนู',0],fb:['แจ้งปัญหา / ข้อเสนอแนะ','แจ้งปัญหาการใช้งานหรือข้อเสนอแนะเพื่อการปรับปรุงระบบ',0],pend:['','',0]};
+  base:['หน่วยงาน / ปีงบ / เกณฑ์','ชื่อหน่วยงาน รอบครึ่งปี เกณฑ์การลา และรหัสผ่าน',0],hol:['วันหยุดราชการ','ใช้นับวันทำการทั้งในใบลาและบันทึกประจำวัน',0],form:['หน้าตาใบลา','ข้อความและผู้ลงนามในใบลาที่พิมพ์',0],add:['นำเข้าข้อมูลจาก Excel','ดาวน์โหลดแบบฟอร์ม กรอกข้อมูล แล้วนำเข้าระบบ',0],exp:['ดาวน์โหลดรายงาน / สำรองข้อมูล','ไฟล์ Excel และไฟล์สำรองข้อมูลทั้งระบบ',1],gh:['ฐานข้อมูลกลาง (GitHub)','เชื่อมต่อทุกเครื่องให้ใช้ข้อมูลชุดเดียวกัน เก็บใน repository ส่วนตัวบน GitHub',0],admins:['จัดการผู้ดูแลระบบ','เพิ่ม แก้ไข ระงับ หรือลบบัญชีผู้ดูแลระบบ · ผู้ดูแลระบบทุกคนใช้งานได้ทุกเมนู',0],fb:['แจ้งปัญหา / ข้อเสนอแนะ','แจ้งปัญหาการใช้งานหรือข้อเสนอแนะเพื่อการปรับปรุงระบบ',0],pend:['','',0]};
 function setPbar(t){const P=PAGES[t]||['','',0],b=$('#pbar');$('#pTitle').textContent=P[0];$('#pDesc').textContent=P[1];b.className=(t==='home'?'home ':'')+(P[2]&&isMgr()?'':'nof')+(!P[0]?' off':'');if(P[2]&&isMgr())etBar()}
 const canTab=t=>{const a=ACC[t]||'mgr';return a==='all'||(a==='mgr'&&isMgr())||(a==='admin'&&role==='admin')};
 const grpOf=t=>Object.keys(GROUPS).find(g=>GROUPS[g].some(x=>x[0]===t));
@@ -1496,7 +1516,7 @@ function showTab(t){if(t==='pend')t='all';if(!canTab(t))t=isMgr()?(canTab('home'
 $('#tabs').onclick=e=>{const b=e.target.closest('button[data-t],button[data-g]');if(!b)return;if(b.dataset.g){const L=GROUPS[b.dataset.g].map(x=>x[0]).filter(canTab);showTab(L.includes(lastInG[b.dataset.g])?lastInG[b.dataset.g]:L[0])}else showTab(b.dataset.t)};
 $('#subnav').onclick=e=>{const b=e.target.closest('[data-t]');if(b)showTab(b.dataset.t)};
 const curTab=()=>curT;
-function renderTab(t){if(LV.some(l=>T[l.type]&&T[l.type].adm))migAdm();if(role==='admin')renderGrpF();if(PAGES[t]&&PAGES[t][2]&&isMgr())etBar();({admins:renderAdm,person:renderPsn,att:renderAtt,arep:renderArep,fb:renderFb,home:renderHome,add:renderAdd,back:renderBack,pend:renderPend,rec:renderRec,all:renderAllList,sum:renderSum,rep:renderRep,base:renderBase,staff:renderStaff,hol:renderHol,exp:renderExp,form:renderForm})[t]()}
+function renderTab(t){if(LV.some(l=>T[l.type]&&T[l.type].adm))migAdm();if(role==='admin')renderGrpF();if(PAGES[t]&&PAGES[t][2]&&isMgr())etBar();({gh:renderGh,admins:renderAdm,person:renderPsn,att:renderAtt,arep:renderArep,fb:renderFb,home:renderHome,add:renderAdd,back:renderBack,pend:renderPend,rec:renderRec,all:renderAllList,sum:renderSum,rep:renderRep,base:renderBase,staff:renderStaff,hol:renderHol,exp:renderExp,form:renderForm})[t]()}
 function renderAll(){renderHeader();renderTab(curTab())}
 function renderLive(){renderHeader();const t=curTab();if(t==='base'&&document.activeElement&&document.activeElement.closest('#base'))return;if(t==='rec'){renderPerson();updForm()}else renderTab(t)}
 function renderHeader(){const st=S.settings,[a,b]=curPeriod();$('#hSub').textContent=`${st.org||'-'} · รอบ${+st.round===1?'ครึ่งปีแรก':'ครึ่งปีหลัง'} ปีงบประมาณ ${st.year} (${thD(a)} – ${thD(b)})`;const n=pendCount();$('#pendN').textContent=n||'';$('#demoBadge').style.display=hasDemo()?'':'none'}
@@ -2457,7 +2477,8 @@ function migAdm(){if(store.cloud&&!store.owner)return;const L=LV.filter(l=>T[l.t
   L.forEach(l=>{const st=staffById(l.staffId)||staffByName(l.nm);if(st){const late=!!T[l.type].late;let d=l.start;const e=late?l.start:(l.end||l.start);let g=0;
     while(d<=e&&g++<400){if(late||!isOff(d)){const k=d+'_'+dkOf(st),doc=AT[k]||{key:k,date:d,dept:dkOf(st),rows:{}};if(!(doc.rows[st.id]&&doc.rows[st.id].s)){doc.rows[st.id]={s:late?'สาย':'ขาด',...(l.note?{n:l.note}:{})};doc.ts=Date.now();doc.by='ย้ายจากใบลา';AT[k]=doc;putAtt(k)}}d=addD(d,1)}}
     removeLeave(l.id)});avC=null}
-function putAtt(key,later){avC=null;clearTimeout(atTimer[key]);const go=()=>{const v=AT[key];if(store.cloud)qWrite('A:'+key,()=>v?store.db.doc('attendance/'+key).set(JSON.parse(JSON.stringify(v))):store.db.doc('attendance/'+key).delete());else lsSet('att',AT)};if(later)atTimer[key]=setTimeout(go,600);else go()}
+const atChg={};
+function putAtt(key,later,chg){avC=null;clearTimeout(atTimer[key]);if(chg)(atChg[key]=atChg[key]||new Set).add(chg);const go=()=>{const v=AT[key];if(store.gh&&atChg[key]){const ch=[...atChg[key]];delete atChg[key];const d=v||{key,date:key.slice(0,10),dept:key.slice(11),rows:{}};qWrite('A:'+key+':'+ch.join(','),()=>store.db.doc('attendance/'+key).set({...JSON.parse(JSON.stringify(d)),_chg:ch}));return}if(store.cloud)qWrite('A:'+key,()=>v?store.db.doc('attendance/'+key).set(JSON.parse(JSON.stringify(v))):store.db.doc('attendance/'+key).delete());else lsSet('att',AT)};if(later)atTimer[key]=setTimeout(go,600);else go()}
 function lvOn(d){const m={};LV.forEach(l=>{if(l.status==='rejected')return;if(l.start<=d&&(l.end||l.start)>=d){const k=keyOf(l);(m[k]=m[k]||[]).push(l)}});return m}
 const lvTxt=l=>l.type+(l.half?' ('+l.half+')':'');
 function attOf(st,d,LM){const r=((AT[d+'_'+dkOf(st)]||{}).rows||{})[st.id],ls=(LM||lvOn(d))[st.id]||[];
@@ -2480,7 +2501,7 @@ function setAtt(st,patch,later){const k=ATD+'_'+dkOf(st),doc=AT[k]||{key:k,date:
   const cur=doc.rows[st.id]||{},row={...cur,...patch};Object.keys(row).forEach(x=>{if(!row[x])delete row[x]});
   if(row.s)doc.rows[st.id]=row;else delete doc.rows[st.id];
   doc.by=role==='admin'?'ผู้ดูแลระบบ':(myDept()||{}).name||'';doc.ts=Date.now();
-  if(Object.keys(doc.rows).length)AT[k]=doc;else delete AT[k];putAtt(k,later)}
+  if(Object.keys(doc.rows).length)AT[k]=doc;else delete AT[k];putAtt(k,later,st.id)}
 function renderAtt(){if(!attReady(renderAtt))return;ATD=ATD||todayISO();$('#atDate').value=ATD;
   etBar();const q=norm($('#atSearch').value).toLowerCase(),LM=lvOn(ATD),VS=attStaff(),all=!gDept()&&role==='admin';
   const A=VS.map(st=>({st,a:attOf(st,ATD,LM)})),c={'':0};AST.forEach(x=>c[x.k]=0);A.forEach(x=>c[x.a.s]++);
@@ -2654,6 +2675,85 @@ $('#amList').addEventListener('click',async e=>{const b=e.target.closest('button
   if(b.dataset.amp){const p=await ask(`<b>ตั้งรหัสผ่านใหม่ของ “${esc(a.user)}”</b><br>อย่างน้อย 6 ตัว`,'password');if(p===false)return;if(p.length<6)return toast('รหัสผ่านต้องมีอย่างน้อย 6 ตัว',true);a.hash=await sha('adm|'+a.user.toLowerCase()+'|'+p);saveSet();toast('ตั้งรหัสผ่านใหม่แล้ว')}
   else if(b.dataset.amo){a.off=!a.off;saveSet();renderAdm();toast(a.off?`ระงับบัญชี “${a.user}” แล้ว`:`เปิดใช้งานบัญชี “${a.user}” แล้ว`)}
   else if(b.dataset.amd){if(!await ask(`ลบบัญชีผู้ดูแลระบบ “${esc(a.user)}” (${esc(a.name)}) ?<br>บัญชีนี้จะเข้าสู่ระบบไม่ได้อีก`))return;S.settings.admins=admList().filter(x=>x.id!==id);saveSet();renderAdm();toast('ลบบัญชีแล้ว')}});
+
+/* ---------- ฐานข้อมูลกลางบน GitHub (repository ส่วนตัว) ---------- */
+const GHK='leaveapp:gh';
+const ghCfg=()=>{try{const c=JSON.parse(localStorage.getItem(GHK)||'null');return c&&c.token&&c.owner&&c.repo?c:null}catch(e){return null}};
+const ghB64e=s=>{const b=new TextEncoder().encode(s);let o='';for(let i=0;i<b.length;i+=0x8000)o+=String.fromCharCode.apply(null,b.subarray(i,i+0x8000));return btoa(o)};
+const ghB64d=s=>{const bin=atob(String(s||'').replace(/\s/g,''));const u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return new TextDecoder().decode(u)};
+const ghClone=v=>v==null?v:JSON.parse(JSON.stringify(v));
+async function ghFetch(c,url,opt){const r=await fetch(url,{cache:'no-store',...opt,headers:{Authorization:'Bearer '+c.token,'X-GitHub-Api-Version':'2022-11-28',Accept:'application/vnd.github+json',...((opt&&opt.headers)||{})}});return r}
+async function ghGetFile(c,etag){const api=`https://api.github.com/repos/${c.owner}/${c.repo}/contents/${c.path||'data.json'}`;
+  const r=await ghFetch(c,api,{headers:etag?{'If-None-Match':etag}:{}});
+  if(r.status===304)return{same:true};if(r.status===404)return{missing:true};
+  if(!r.ok){const e=new Error('GitHub '+r.status);e.status=r.status;throw e}
+  const j=await r.json();let txt=j.content&&j.encoding==='base64'?ghB64d(j.content):'';
+  if(!txt&&j.size>0){const r2=await ghFetch(c,api,{headers:{Accept:'application/vnd.github.raw+json'}});if(!r2.ok){const e=new Error('GitHub '+r2.status);e.status=r2.status;throw e}txt=await r2.text()}
+  let data={};try{data=txt?JSON.parse(txt):{}}catch(e){const er=new Error('ไฟล์ข้อมูลกลางเสียหาย');er.status=-1;throw er}
+  return{data,sha:j.sha,etag:r.headers.get('ETag'),size:j.size}}
+async function ghPutFile(c,data,sha,msg){const api=`https://api.github.com/repos/${c.owner}/${c.repo}/contents/${c.path||'data.json'}`;
+  const r=await ghFetch(c,api,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:msg||'บันทึกข้อมูล',content:ghB64e(JSON.stringify(data)),...(sha?{sha}:{})})});
+  if(!r.ok){const e=new Error('GitHub '+r.status);e.status=r.status;throw e}const j=await r.json();return j.content.sha}
+function makeGhDB(c){
+  let D={},sha=null,etag=null,ops=[],timer=null,saving=null,listeners=[],state='load',err='',lastSync=0,size=0;
+  const apply=(o,X)=>{const i=o.p.indexOf('/'),col=o.p.slice(0,i),id=o.p.slice(i+1);X[col]=X[col]||{};
+    if(o.v&&Array.isArray(o.v._chg)){const v=ghClone(o.v),ch=v._chg;delete v._chg;const cur=X[col][id],rows={...((cur&&cur.rows)||{})};ch.forEach(k=>{if(v.rows&&v.rows[k])rows[k]=v.rows[k];else delete rows[k]});if(Object.keys(rows).length)X[col][id]={...(cur||{}),...v,rows};else delete X[col][id];return}
+    if(o.v==null)delete X[col][id];else X[col][id]=ghClone(o.v)};
+  const snap=(col,f)=>({docs:Object.values(D[col]||{}).filter(x=>!f||f(x)).map(x=>({data:()=>ghClone(x)})),metadata:{fromCache:false}});
+  const notify=()=>listeners.forEach(L=>{try{L.cb(snap(L.c,L.f))}catch(e){}});
+  const setState=(s,e)=>{state=s;err=e||'';if(typeof ghBadge==='function')ghBadge()};
+  const pull=async()=>{const R=await ghGetFile(c,etag);if(R.same){lastSync=Date.now();return false}
+    if(R.missing){D={};sha=null;etag=null}else{D=R.data||{};sha=R.sha;etag=R.etag;size=R.size||0}
+    ops.forEach(o=>apply(o,D));lastSync=Date.now();return true};
+  const ready=(async()=>{await pull();setState('ok')})();
+  ready.catch(e=>setState('err',ghErrText(e)));
+  async function save(){if(saving)return saving;if(!ops.length)return;
+    saving=(async()=>{let tries=0;
+      while(ops.length&&tries<4){tries++;const sent=ops.length;setState('saving');
+        try{const X=ghClone(D);sha=await ghPutFile(c,X,sha,`บันทึกข้อมูล ${new Date().toLocaleString('th-TH')}`);etag=null;size=JSON.stringify(X).length;ops=ops.slice(sent);lastSync=Date.now();setState(ops.length?'saving':'ok')}
+        catch(e){if(e.status===409||e.status===422){try{etag=null;await pull();notify();continue}catch(e2){setState('err',ghErrText(e2));break}}
+          setState('err',ghErrText(e));break}}
+    })().finally(()=>{saving=null;if(ops.length&&state!=='err')sched()});return saving}
+  const sched=()=>{clearTimeout(timer);timer=setTimeout(save,1500)};
+  const put=(p,v)=>{const o={p,v:ghClone(v)};ops.push(o);apply(o,D);setState('saving');sched();notify()};
+  setInterval(async()=>{if(document.hidden||saving||ops.length||state==='err'&&!err.includes('เชื่อมต่อ'))return;try{if(await pull()){notify();if(typeof ghOnRemote==='function')ghOnRemote()}if(state!=='ok')setState('ok')}catch(e){setState('err',ghErrText(e))}},45000);
+  window.addEventListener('beforeunload',e=>{if(ops.length||saving){e.preventDefault();e.returnValue='ยังบันทึกข้อมูลขึ้นฐานข้อมูลกลางไม่เสร็จ'}});
+  const q=(col,f)=>({get:async()=>{await ready;return snap(col,f)},onSnapshot:(cb,er)=>{const L={c:col,f,cb};listeners.push(L);ready.then(()=>cb(snap(col,f))).catch(e=>er&&er(e));return()=>{listeners=listeners.filter(x=>x!==L)}}});
+  return{gh:true,cfg:c,ready,
+    doc:p=>({get:async()=>{await ready;const i=p.indexOf('/'),v=(D[p.slice(0,i)]||{})[p.slice(i+1)];return{exists:v!=null,data:()=>ghClone(v)}},set:async v=>put(p,v),delete:async()=>put(p,null)}),
+    collection:col=>({...q(col,null),where:(k,op,v)=>q(col,x=>x&&x[k]===v)}),
+    pull:async()=>{if(saving)await saving;try{if(await pull())notify()}catch(e){}},
+    flush:()=>{clearTimeout(timer);return save()},
+    info:()=>({state,err,lastSync,size,pending:ops.length,counts:Object.fromEntries(['leaves','attendance','feedback'].map(k=>[k,Object.keys(D[k]||{}).length]))})}}
+function ghErrText(e){const s=e&&e.status;return s===401?'token ไม่ถูกต้องหรือหมดอายุ':s===403?'token ไม่มีสิทธิ์เขียน หรือเรียกใช้งานถี่เกินไป':s===404?'ไม่พบ repository (ตรวจชื่อ หรือสิทธิ์ของ token)':s===-1?String(e.message):(navigator.onLine===false?'ไม่มีการเชื่อมต่ออินเทอร์เน็ต':'เชื่อมต่อ GitHub ไม่ได้ ('+(e&&e.message||'')+')')}
+function ghBadge(){const m=document.getElementById('mode');if(!m||!store.gh)return;const I=store.db.info();
+  m.textContent=I.state==='saving'?'☁ กำลังบันทึก…':I.state==='err'?'⚠ ฐานข้อมูลกลาง: '+I.err:'☁ ฐานข้อมูลกลาง';m.title=I.lastSync?'ซิงค์ล่าสุด '+new Date(I.lastSync).toLocaleTimeString('th-TH'):'';m.style.color=I.state==='err'?'#FF3B30':'';
+  if(typeof curTab==='function'&&curTab()==='gh'&&typeof renderGh==='function')renderGh()}
+function ghOnRemote(){const ae=document.activeElement;if(ae&&/INPUT|TEXTAREA|SELECT/.test(ae.tagName)&&ae.closest('main'))return;if(typeof renderLive==='function'&&typeof curTab==='function'&&!['rec','base','form','gh','admins'].includes(curTab())){atLoaded=0;try{renderTab(curTab())}catch(e){}}}
+function localSnapshot(){const C={};['settings','staff','holidays','forms','depts'].forEach(k=>{const v=lsGet('cfg:'+k);if(v)C[k]=v});
+  const L=lsGet('leaves'),A=lsGet('att'),F=lsGet('feedback'),o=(arr)=>Object.fromEntries((arr||[]).filter(x=>x&&x.id).map(x=>[x.id,x]));
+  return{cfg:C,leaves:o(Array.isArray(L)?L:[]),attendance:A&&typeof A==='object'?A:{},feedback:o(Array.isArray(F)?F:[])}}
+
+/* หน้าตั้งค่าฐานข้อมูลกลาง */
+function renderGh(){const c=ghCfg()||{};if(!$('#ghOwner').value)$('#ghOwner').value=c.owner||'xarif09';if(!$('#ghRepo').value)$('#ghRepo').value=c.repo||'leave-data';
+  const on=!!store.gh,I=on?store.db.info():null;
+  $('#ghStatus').innerHTML=on?`<div class="alert ${I.state==='err'?'':'ok'}" style="cursor:default">${I.state==='err'?'⚠️ '+esc(I.err):'✅ เชื่อมต่อฐานข้อมูลกลางแล้ว'} · <b>${esc(c.owner+'/'+c.repo)}</b></div>
+    <div class="ps-kpi"><div><b>${I.counts.leaves}</b><span>ใบลา</span></div><div><b>${I.counts.attendance}</b><span>รายการบันทึกประจำวัน</span></div><div><b>${(I.size/1024).toFixed(0)} KB</b><span>ขนาดข้อมูล</span></div><div><b>${I.lastSync?new Date(I.lastSync).toLocaleTimeString('th-TH'):'-'}</b><span>ซิงค์ล่าสุด${I.pending?` · รอบันทึก ${I.pending}`:''}</span></div></div>`
+    :(c.token?'':'<div class="alert" style="cursor:default">⚠️ เครื่องนี้ยังเก็บข้อมูลแยกในเครื่อง ยังไม่ได้เชื่อมต่อฐานข้อมูลกลาง</div>');
+  $('#ghOff').style.display=on?'':'none';$('#ghTokRow').style.display=on?'none':'';$('#ghOn').textContent=on?'เชื่อมต่อใหม่':'ทดสอบและเชื่อมต่อ'}
+$('#ghOn').onclick=async()=>{const owner=$('#ghOwner').value.trim(),repo=$('#ghRepo').value.trim(),token=($('#ghTok').value.trim()||(ghCfg()||{}).token||'');
+  if(!owner||!repo)return toast('กรุณาระบุชื่อบัญชีและ repository',true);if(!/^(github_pat_|ghp_)/.test(token))return toast('กรุณาวาง token ที่ขึ้นต้นด้วย github_pat_',true);
+  const c={owner,repo,token,path:'data.json'};$('#ghOn').disabled=true;$('#ghMsg').textContent='กำลังตรวจสอบ…';
+  try{const r=await ghFetch(c,`https://api.github.com/repos/${owner}/${repo}`);if(!r.ok){const e=new Error();e.status=r.status;throw e}const R=await r.json();
+    if(!R.private){$('#ghMsg').textContent='';return ask('<b>repository นี้เป็นแบบสาธารณะ (Public)</b><br>ห้ามใช้เก็บข้อมูลบุคลากร กรุณาเปลี่ยนเป็น Private ก่อน หรือสร้าง repository ใหม่แบบ Private')}
+    if(R.permissions&&!R.permissions.push)throw Object.assign(new Error(),{status:403});
+    const F=await ghGetFile(c);
+    if(F.missing){if(!await ask(`<b>ยังไม่มีข้อมูลในฐานข้อมูลกลาง</b><br>ระบบจะอัปโหลดข้อมูลจากเครื่องนี้ (เจ้าหน้าที่ ${S.staff.length} คน · ใบลา ${LV.length} รายการ) ขึ้นเป็นข้อมูลตั้งต้น<br>ต้องการดำเนินการหรือไม่?`))return;
+      $('#ghMsg').textContent='กำลังอัปโหลดข้อมูลตั้งต้น…';await ghPutFile(c,localSnapshot(),null,'ข้อมูลตั้งต้นจากระบบ')}
+    else{const d=F.data||{};if(!await ask(`<b>พบข้อมูลในฐานข้อมูลกลางแล้ว</b><br>ใบลา ${Object.keys(d.leaves||{}).length} รายการ · บันทึกประจำวัน ${Object.keys(d.attendance||{}).length} รายการ<br>เครื่องนี้จะใช้ข้อมูลกลางแทนข้อมูลในเครื่อง (ข้อมูลเดิมในเครื่องยังเก็บไว้ ไม่ถูกลบ)`))return}
+    localStorage.setItem(GHK,JSON.stringify(c));$('#ghMsg').textContent='เชื่อมต่อสำเร็จ กำลังโหลดใหม่…';setTimeout(()=>location.reload(),600)}
+  catch(e){$('#ghMsg').textContent='';toast('เชื่อมต่อไม่สำเร็จ: '+ghErrText(e),true)}finally{$('#ghOn').disabled=false;$('#ghTok').value=''}};
+$('#ghOff').onclick=async()=>{if(!await ask('ยกเลิกการเชื่อมต่อฐานข้อมูลกลางที่เครื่องนี้?<br>เครื่องนี้จะกลับไปใช้ข้อมูลที่เก็บในเครื่อง และลบ token ออกจากเครื่องนี้'))return;if(store.gh){try{await store.db.flush()}catch(e){}}localStorage.removeItem(GHK);location.reload()};
 
 /* ---------- แจ้งปัญหา / ข้อเสนอแนะ ---------- */
 let FB=[],fbLoaded=false;
