@@ -842,6 +842,12 @@ html[data-device=mobile] .pvact{position:sticky;top:0;z-index:3}html[data-device
 .lf .nw{white-space:nowrap}
 .lf .sig .pos-s{font-size:.86em;letter-spacing:-.2px}
 .lf{line-height:1.24!important}.lf p{line-height:1.3}
+.am-grid{display:grid;grid-template-columns:minmax(0,380px) minmax(0,1fr);gap:12px;align-items:start}
+html[data-device=mobile] .am-grid,html[data-device=tablet] .am-grid{grid-template-columns:1fr}
+.amt{width:100%;border-collapse:collapse;font-size:14.5px}.amt th,.amt td{padding:8px;text-align:left;border-bottom:.5px solid var(--line)}
+.amt td.act{white-space:nowrap;text-align:right}.amt td.act .btn{margin-left:4px}
+.amt tr.off td{opacity:.55}.tg.ok{background:#34C7591F!important;color:#248A3D!important}
+html[data-device=mobile] .amt thead{display:none}html[data-device=mobile] .amt tr{display:block;border-bottom:.5px solid var(--line);padding:6px 0}html[data-device=mobile] .amt td{display:block;border:0;padding:2px 4px}html[data-device=mobile] .amt td.act{text-align:left}
 </style>
 </head>
 <body class="staff">
@@ -945,6 +951,20 @@ html[data-device=mobile] .pvact{position:sticky;top:0;z-index:3}html[data-device
   <span id="arDateW"><input type="date" id="arDate"></span><select id="arMon"></select>
   <button class="btn" id="arPrint">🖨 พิมพ์ / PDF</button><button class="btn sec" id="arXlsx">⬇ Excel</button></div>
  <div id="arBody"></div>
+</section>
+<!-- จัดการผู้ดูแลระบบ -->
+<section id="admins">
+ <div class="am-grid">
+  <div class="panel"><h3><span>➕ เพิ่มผู้ดูแลระบบ</span></h3><div class="bd">
+   <div class="row"><label>ชื่อผู้ใช้ (ใช้เข้าสู่ระบบ)</label><input id="amUser" placeholder="ภาษาอังกฤษ/ตัวเลข เช่น somchai" autocomplete="off"></div>
+   <div class="row"><label>ชื่อ-สกุล</label><input id="amName" list="amNames" placeholder="พิมพ์หรือเลือกจากรายชื่อเจ้าหน้าที่"><datalist id="amNames"></datalist></div>
+   <div class="row"><label>ตำแหน่ง</label><input id="amPos" placeholder="ตำแหน่ง"></div>
+   <div class="row"><label>รหัสผ่านเริ่มต้น</label><input id="amPass" type="password" placeholder="อย่างน้อย 6 ตัว" autocomplete="new-password"></div>
+   <div class="btns"><button class="btn" id="amAdd">เพิ่มผู้ดูแลระบบ</button></div>
+   <p class="muted" style="margin:8px 0 0">ผู้ดูแลระบบเข้าสู่ระบบด้วยชื่อผู้ใช้และรหัสผ่านนี้ แล้วเปลี่ยนรหัสผ่านของตนเองได้ที่ปุ่ม “เปลี่ยนรหัสผ่าน” มุมขวาบน</p>
+  </div></div>
+  <div class="panel"><h3><span>👤 รายชื่อผู้ดูแลระบบ</span><span class="muted" id="amN"></span></h3><div class="bd" id="amList"></div></div>
+ </div>
 </section>
 <!-- เพิ่ม/อัปโหลดข้อมูล -->
 <section id="add">
@@ -1314,6 +1334,7 @@ async function boot(){
 const ADMIN_HASH='f7b436b49913943df9828827b2d93270f52a27467320536ba0a5a1be44a764ff';
 let sess=null; // {role:'admin'|'head', deptId}
 const isMgr=()=>role==='admin'||role==='head';
+const curAdm=()=>sess&&sess.aid?(S.settings.admins||[]).find(a=>a.id===sess.aid):null;
 const myDept=()=>sess&&sess.role==='head'?S.depts.find(d=>d.id===sess.deptId):null;
 const inDept=st=>{const d=myDept();return !!(d&&st&&norm(st.dept)===norm(d.name))};
 let GF='';
@@ -1329,19 +1350,21 @@ function setRole(r,quiet){if(r==='admin'&&!fbLoaded)setTimeout(()=>loadFb().then
   const d=myDept();
   document.querySelectorAll('#roleSeg button').forEach(b=>b.classList.toggle('on',(b.dataset.r==='staff')===(r==='staff')));
   $('#segMgr').textContent=sess?(sess.role==='admin'?'🛡 ผู้ดูแลระบบ':'🏢 หัวหน้ากลุ่มงาน'):'🔐 เข้าสู่ระบบ';
-  {const d=myDept();$('#abText').innerHTML=r==='admin'?'🛡 <b>ผู้ดูแลระบบ</b>':r==='head'?`🏢 <b>หัวหน้ากลุ่มงาน</b> · ${esc(d?d.name:'')}`:''}
+  {const d=myDept();$('#abText').innerHTML=r==='admin'?`🛡 <b>ผู้ดูแลระบบ</b>${curAdm()?' · '+esc(curAdm().name||curAdm().user):''}`:r==='head'?`🏢 <b>หัวหน้ากลุ่มงาน</b> · ${esc(d?d.name:'')}`:''}
   $('#fType').innerHTML=TYPES.filter(t=>!t.adm).map(t=>opt(t.n,t.n)).join('');
   editId=null;
   if(!quiet){clearForm(true);showTab(isMgr()?'home':'rec')}
 }
 async function sha(s){try{const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('leaveapp|'+s));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}catch(e){let h=0;for(const c of 'leaveapp|'+s)h=(h*31+c.charCodeAt(0))|0;return 'x'+h}}
 function saveSess(){try{sess?sessionStorage.setItem('leaveapp:sess',JSON.stringify(sess)):sessionStorage.removeItem('leaveapp:sess')}catch(e){}}
-function loadSess(){try{const v=JSON.parse(sessionStorage.getItem('leaveapp:sess')||'null');if(v&&(v.role==='admin'||(v.role==='head'&&S.depts.some(d=>d.id===v.deptId))))sess=v}catch(e){}}
+function loadSess(){try{const v=JSON.parse(sessionStorage.getItem('leaveapp:sess')||'null');if(v&&((v.role==='admin'&&(!v.aid||(S.settings.admins||[]).some(a=>a.id===v.aid&&!a.off)))||(v.role==='head'&&S.depts.some(d=>d.id===v.deptId))))sess=v}catch(e){}}
 function openLogin(){$('#lgCode').checked=true;lgMode();$('#lgUser').value='';$('#lgPass').value='';$('#lgErr').textContent='';$('#login').className='show';setTimeout(()=>$('#lgUser').focus(),50)}
 $('#lgCancel').onclick=()=>$('#login').className='';
 async function doLogin(){
   const u=norm($('#lgUser').value),p=$('#lgPass').value;if(!u||!p){$('#lgErr').textContent='กรอกชื่อผู้ใช้และรหัสผ่าน';return}
+  const AD=(S.settings.admins||[]).find(a=>a.user.toLowerCase()===u.toLowerCase());
   if(u.toLowerCase()==='admin'){if(await sha('admin|'+p)===(S.settings.adminHash||ADMIN_HASH)){sess={role:'admin'}}}
+  else if(AD){if(AD.off){$('#lgErr').textContent='บัญชีนี้ถูกระงับการใช้งาน';return}if(await sha('adm|'+AD.user.toLowerCase()+'|'+p)===AD.hash){sess={role:'admin',aid:AD.id};AD.last=Date.now();saveSet()}}
   else{const cid=cidDigits(u),viaCid=$('#lgCid').checked||cid.length===13;let d=null,pst=null;
     if(viaCid){if(!cidValid(cid)){$('#lgErr').textContent='เลขบัตรประชาชนไม่ถูกต้อง';return}pst=staffByCid(cid);if(!pst){$('#lgErr').textContent='ไม่พบเลขบัตรประชาชนนี้ในฐานข้อมูล';return}
       d=S.depts.find(x=>x.code&&norm(x.supName)===norm(pst.name));if(!d){$('#lgErr').textContent='เลขบัตรนี้ไม่ใช่หัวหน้ากลุ่มงาน (ผู้ยื่นใบลาไม่ต้องเข้าสู่ระบบ)';return}}
@@ -1359,7 +1382,7 @@ $('#roleSeg').onclick=e=>{const b=e.target.closest('[data-r]');if(!b)return;if(b
 $('#exitAdmin').onclick=()=>{GF='';sess=null;saveSess();setRole('staff');toast('ออกจากระบบแล้ว')};
 $('#chgPw').onclick=async()=>{
   const p=await ask('<b>เปลี่ยนรหัสผ่าน</b><br>รหัสผ่านใหม่ (อย่างน้อย 4 ตัว)','password');if(p===false)return;if(p.length<4)return toast('รหัสผ่านต้องมีอย่างน้อย 4 ตัว',true);
-  if(sess.role==='admin'){S.settings.adminHash=await sha('admin|'+p);saveSet()}else{const d=myDept();d.pwHash=await sha('head|'+d.code+'|'+p);saveDepts()}
+  if(sess.role==='admin'){const A=sess.aid&&(S.settings.admins||[]).find(a=>a.id===sess.aid);if(A)A.hash=await sha('adm|'+A.user.toLowerCase()+'|'+p);else S.settings.adminHash=await sha('admin|'+p);saveSet()}else{const d=myDept();d.pwHash=await sha('head|'+d.code+'|'+p);saveDepts()}
   toast('เปลี่ยนรหัสผ่านแล้ว');
 };
 
@@ -1453,12 +1476,12 @@ function reportDoc(title,body){
 function printHTML(html){$('#printArea').innerHTML=html.replace(/^[\s\S]*?<body>/,'').replace(/<\/body>[\s\S]*$/,'');try{window.print()}catch(e){}}
 
 /* ---------- tabs ---------- */
-const ACC={fb:'all',home:'mgr',att:'mgr',rec:'all',all:'mgr',back:'admin',pend:'mgr',arep:'mgr',sum:'mgr',rep:'mgr',staff:'mgr',person:'mgr',add:'admin',exp:'mgr',base:'admin',hol:'admin',form:'admin'};
-const GROUPS={leave:[['all','📋 ใบลาทั้งหมด'],['rec','➕ เพิ่มใบลา 1 ใบ'],['back','🧾 เพิ่มใบลาหลายใบ / ย้อนหลัง']],report:[['arep','🕘 การมาปฏิบัติราชการ (รายวัน/รายเดือน)'],['sum','📊 สรุปวันลารายคน (รอบครึ่งปี)'],['rep','📈 กราฟ / รายเดือน / รายบุคคล']],people:[['staff','👥 รายชื่อ / กลุ่มงาน / โควต้า'],['person','🪪 ประวัติรายคน']],set:[['base','🏢 หน่วยงาน / ปีงบ / เกณฑ์'],['hol','🗓️ วันหยุดราชการ'],['form','🖨️ หน้าตาใบลา'],['add','⬆ นำเข้า Excel'],['exp','⬇ ดาวน์โหลด / สำรองข้อมูล']]};
+const ACC={admins:'admin',fb:'all',home:'mgr',att:'mgr',rec:'all',all:'mgr',back:'admin',pend:'mgr',arep:'mgr',sum:'mgr',rep:'mgr',staff:'mgr',person:'mgr',add:'admin',exp:'mgr',base:'admin',hol:'admin',form:'admin'};
+const GROUPS={leave:[['all','📋 ใบลาทั้งหมด'],['rec','➕ เพิ่มใบลา 1 ใบ'],['back','🧾 เพิ่มใบลาหลายใบ / ย้อนหลัง']],report:[['arep','🕘 การมาปฏิบัติราชการ (รายวัน/รายเดือน)'],['sum','📊 สรุปวันลารายคน (รอบครึ่งปี)'],['rep','📈 กราฟ / รายเดือน / รายบุคคล']],people:[['staff','👥 รายชื่อ / กลุ่มงาน / โควต้า'],['person','🪪 ประวัติรายคน']],set:[['base','🏢 หน่วยงาน / ปีงบ / เกณฑ์'],['hol','🗓️ วันหยุดราชการ'],['form','🖨️ หน้าตาใบลา'],['admins','👤 ผู้ดูแลระบบ'],['add','⬆ นำเข้า Excel'],['exp','⬇ ดาวน์โหลด / สำรองข้อมูล']]};
 const PAGES={home:['หน้าหลัก','',1],att:['บันทึกประจำวัน','บันทึกสถานะการมาปฏิบัติราชการรายบุคคล ระบบจัดเก็บข้อมูลโดยอัตโนมัติ · ผู้ที่มีใบลาในระบบจะแสดงสถานะ “ลา” โดยอัตโนมัติ',1],all:['ใบลาทั้งหมด','ค้นหา แก้ไข ลบ และพิมพ์ใบลา',1],rec:['เพิ่มใบลา 1 ใบ','บันทึกใบลาและพิมพ์เป็น PDF (กรณีมาสาย/ขาดราชการ ให้บันทึกที่เมนูบันทึกประจำวัน)',0],back:['เพิ่มใบลาหลายใบ','บันทึกใบลาหลายรายการพร้อมกัน สำหรับข้อมูลย้อนหลัง',1],
   arep:['รายงานการมาปฏิบัติราชการ','รายวันหรือสรุปรายเดือน · พิมพ์ / PDF / Excel',1],sum:['สรุปวันลารายคน','รอบครึ่งปีปัจจุบัน ผู้ที่ลาเกินเกณฑ์ · มาสาย/ขาด นับจากบันทึกประจำวัน',1],rep:['กราฟและรายงานการลา','ภาพรวม รายเดือน และรายบุคคล',1],
   staff:['รายชื่อบุคลากร','กลุ่มงาน ประเภทบุคลากร เลข ID และโควต้าวันลา',0],person:['ประวัติรายคน','ข้อมูลใบลา สิทธิ์วันลา และการมาปฏิบัติราชการรายบุคคล',1],
-  base:['หน่วยงาน / ปีงบ / เกณฑ์','ชื่อหน่วยงาน รอบครึ่งปี เกณฑ์การลา และรหัสผ่าน',0],hol:['วันหยุดราชการ','ใช้นับวันทำการทั้งในใบลาและบันทึกประจำวัน',0],form:['หน้าตาใบลา','ข้อความและผู้ลงนามในใบลาที่พิมพ์',0],add:['นำเข้าข้อมูลจาก Excel','ดาวน์โหลดแบบฟอร์ม กรอกข้อมูล แล้วนำเข้าระบบ',0],exp:['ดาวน์โหลดรายงาน / สำรองข้อมูล','ไฟล์ Excel และไฟล์สำรองข้อมูลทั้งระบบ',1],fb:['แจ้งปัญหา / ข้อเสนอแนะ','แจ้งปัญหาการใช้งานหรือข้อเสนอแนะเพื่อการปรับปรุงระบบ',0],pend:['','',0]};
+  base:['หน่วยงาน / ปีงบ / เกณฑ์','ชื่อหน่วยงาน รอบครึ่งปี เกณฑ์การลา และรหัสผ่าน',0],hol:['วันหยุดราชการ','ใช้นับวันทำการทั้งในใบลาและบันทึกประจำวัน',0],form:['หน้าตาใบลา','ข้อความและผู้ลงนามในใบลาที่พิมพ์',0],add:['นำเข้าข้อมูลจาก Excel','ดาวน์โหลดแบบฟอร์ม กรอกข้อมูล แล้วนำเข้าระบบ',0],exp:['ดาวน์โหลดรายงาน / สำรองข้อมูล','ไฟล์ Excel และไฟล์สำรองข้อมูลทั้งระบบ',1],admins:['จัดการผู้ดูแลระบบ','เพิ่ม แก้ไข ระงับ หรือลบบัญชีผู้ดูแลระบบ · ผู้ดูแลระบบทุกคนใช้งานได้ทุกเมนู',0],fb:['แจ้งปัญหา / ข้อเสนอแนะ','แจ้งปัญหาการใช้งานหรือข้อเสนอแนะเพื่อการปรับปรุงระบบ',0],pend:['','',0]};
 function setPbar(t){const P=PAGES[t]||['','',0],b=$('#pbar');$('#pTitle').textContent=P[0];$('#pDesc').textContent=P[1];b.className=(t==='home'?'home ':'')+(P[2]&&isMgr()?'':'nof')+(!P[0]?' off':'');if(P[2]&&isMgr())etBar()}
 const canTab=t=>{const a=ACC[t]||'mgr';return a==='all'||(a==='mgr'&&isMgr())||(a==='admin'&&role==='admin')};
 const grpOf=t=>Object.keys(GROUPS).find(g=>GROUPS[g].some(x=>x[0]===t));
@@ -1471,7 +1494,7 @@ function showTab(t){if(t==='pend')t='all';if(!canTab(t))t=isMgr()?(canTab('home'
 $('#tabs').onclick=e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.g){const L=GROUPS[b.dataset.g].map(x=>x[0]).filter(canTab);showTab(L.includes(lastInG[b.dataset.g])?lastInG[b.dataset.g]:L[0])}else showTab(b.dataset.t)};
 $('#subnav').onclick=e=>{const b=e.target.closest('[data-t]');if(b)showTab(b.dataset.t)};
 const curTab=()=>curT;
-function renderTab(t){if(LV.some(l=>T[l.type]&&T[l.type].adm))migAdm();if(role==='admin')renderGrpF();if(PAGES[t]&&PAGES[t][2]&&isMgr())etBar();({person:renderPsn,att:renderAtt,arep:renderArep,fb:renderFb,home:renderHome,add:renderAdd,back:renderBack,pend:renderPend,rec:renderRec,all:renderAllList,sum:renderSum,rep:renderRep,base:renderBase,staff:renderStaff,hol:renderHol,exp:renderExp,form:renderForm})[t]()}
+function renderTab(t){if(LV.some(l=>T[l.type]&&T[l.type].adm))migAdm();if(role==='admin')renderGrpF();if(PAGES[t]&&PAGES[t][2]&&isMgr())etBar();({admins:renderAdm,person:renderPsn,att:renderAtt,arep:renderArep,fb:renderFb,home:renderHome,add:renderAdd,back:renderBack,pend:renderPend,rec:renderRec,all:renderAllList,sum:renderSum,rep:renderRep,base:renderBase,staff:renderStaff,hol:renderHol,exp:renderExp,form:renderForm})[t]()}
 function renderAll(){renderHeader();renderTab(curTab())}
 function renderLive(){renderHeader();const t=curTab();if(t==='base'&&document.activeElement&&document.activeElement.closest('#base'))return;if(t==='rec'){renderPerson();updForm()}else renderTab(t)}
 function renderHeader(){const st=S.settings,[a,b]=curPeriod();$('#hSub').textContent=`${st.org||'-'} · รอบ${+st.round===1?'ครึ่งปีแรก':'ครึ่งปีหลัง'} ปีงบประมาณ ${st.year} (${thD(a)} – ${thD(b)})`;const n=pendCount();$('#pendN').textContent=n||'';$('#demoBadge').style.display=hasDemo()?'':'none'}
@@ -2587,6 +2610,30 @@ $('#psName').addEventListener('change',e=>{const v=norm(e.target.value).toLowerC
 $('#psMon').onchange=e=>{PSM=e.target.value;renderPsn()};
 $('#psPrint').onclick=()=>printHTML(`<html><body><div style="font-family:inherit">${$('#psBody').innerHTML}</div></body></html>`);
 const openPerson=id=>{PSID=id;showTab('person')};
+
+
+/* ---------- จัดการผู้ดูแลระบบ ---------- */
+const admList=()=>S.settings.admins||(S.settings.admins=[]);
+function renderAdm(){const L=admList(),me=curAdm();
+  $('#amList').innerHTML=`<table class="amt"><thead><tr><th>ชื่อผู้ใช้</th><th>ชื่อ-สกุล / ตำแหน่ง</th><th>สถานะ</th><th>เข้าใช้ล่าสุด</th><th></th></tr></thead><tbody>
+   <tr><td><b>admin</b></td><td>ผู้ดูแลระบบหลัก<div class="muted">บัญชีเริ่มต้นของระบบ · ลบหรือระงับไม่ได้</div></td><td><span class="tg ok">ใช้งาน</span>${!me&&sess?' <span class="tg">ท่าน</span>':''}</td><td class="muted">-</td><td class="act"><button class="btn sec sm" data-amb="1">ตั้งรหัสผ่านใหม่</button></td></tr>
+   ${L.map(a=>`<tr class="${a.off?'off':''}"><td><b>${esc(a.user)}</b></td><td>${esc(a.name||'-')}<div class="muted">${esc(a.pos||'')}</div></td><td><span class="tg ${a.off?'p':'ok'}">${a.off?'ระงับ':'ใช้งาน'}</span>${me&&me.id===a.id?' <span class="tg">ท่าน</span>':''}</td><td class="muted">${a.last?thTime(a.last):'ยังไม่เคยเข้าใช้'}</td>
+     <td class="act"><button class="btn sec sm" data-amp="${a.id}">ตั้งรหัสผ่านใหม่</button>${me&&me.id===a.id?'':`<button class="btn sec sm" data-amo="${a.id}">${a.off?'เปิดใช้งาน':'ระงับ'}</button><button class="btn red sm" data-amd="${a.id}">ลบ</button>`}</td></tr>`).join('')}</tbody></table>`;
+  $('#amN').textContent=`${L.length+1} บัญชี`;
+  $('#amNames').innerHTML=S.staff.map(st=>`<option value="${esc(st.name)}">`).join('')}
+$('#amName').addEventListener('input',()=>{const st=staffByName($('#amName').value);if(st)$('#amPos').value=st.pos||''});
+$('#amAdd').onclick=async()=>{const user=$('#amUser').value.trim(),name=$('#amName').value.trim(),pos=$('#amPos').value.trim(),p=$('#amPass').value;
+  if(!/^[A-Za-z0-9._-]{3,20}$/.test(user))return toast('ชื่อผู้ใช้ต้องเป็นภาษาอังกฤษหรือตัวเลข 3–20 ตัว',true);
+  const u=user.toLowerCase();if(u==='admin'||admList().some(a=>a.user.toLowerCase()===u)||S.depts.some(d=>d.code&&norm(d.code).replace(/-/g,'').toLowerCase()===u))return toast('ชื่อผู้ใช้นี้ถูกใช้แล้ว',true);
+  if(!name)return toast('กรุณาระบุชื่อ-สกุล',true);if(p.length<6)return toast('รหัสผ่านต้องมีอย่างน้อย 6 ตัว',true);
+  admList().push({id:uid(),user,name,pos,hash:await sha('adm|'+u+'|'+p),off:false,created:Date.now(),by:curAdm()?curAdm().user:'admin'});saveSet();
+  ['amUser','amName','amPos','amPass'].forEach(i=>$('#'+i).value='');renderAdm();toast(`เพิ่มผู้ดูแลระบบ “${user}” แล้ว`)};
+$('#amList').addEventListener('click',async e=>{const b=e.target.closest('button');if(!b)return;
+  if(b.dataset.amb){const p=await ask('<b>ตั้งรหัสผ่านใหม่ของบัญชี admin</b><br>อย่างน้อย 6 ตัว','password');if(p===false)return;if(p.length<6)return toast('รหัสผ่านต้องมีอย่างน้อย 6 ตัว',true);S.settings.adminHash=await sha('admin|'+p);saveSet();toast('ตั้งรหัสผ่านใหม่แล้ว');return}
+  const id=b.dataset.amp||b.dataset.amo||b.dataset.amd,a=admList().find(x=>x.id===id);if(!a)return;
+  if(b.dataset.amp){const p=await ask(`<b>ตั้งรหัสผ่านใหม่ของ “${esc(a.user)}”</b><br>อย่างน้อย 6 ตัว`,'password');if(p===false)return;if(p.length<6)return toast('รหัสผ่านต้องมีอย่างน้อย 6 ตัว',true);a.hash=await sha('adm|'+a.user.toLowerCase()+'|'+p);saveSet();toast('ตั้งรหัสผ่านใหม่แล้ว')}
+  else if(b.dataset.amo){a.off=!a.off;saveSet();renderAdm();toast(a.off?`ระงับบัญชี “${a.user}” แล้ว`:`เปิดใช้งานบัญชี “${a.user}” แล้ว`)}
+  else if(b.dataset.amd){if(!await ask(`ลบบัญชีผู้ดูแลระบบ “${esc(a.user)}” (${esc(a.name)}) ?<br>บัญชีนี้จะเข้าสู่ระบบไม่ได้อีก`))return;S.settings.admins=admList().filter(x=>x.id!==id);saveSet();renderAdm();toast('ลบบัญชีแล้ว')}});
 
 /* ---------- แจ้งปัญหา / ข้อเสนอแนะ ---------- */
 let FB=[],fbLoaded=false;
