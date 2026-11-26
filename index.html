@@ -1603,11 +1603,13 @@ function nextPosAfter(el,p){const w=document.createTreeWalker(p,NodeFilter.SHOW_
     else if(cur!==p&&(/^(svg|img|input)$/i.test(cur.tagName)||cur.classList.contains('dl')||cur.classList.contains('de')||cur.classList.contains('cb'))){const rr=cur.getBoundingClientRect();if(rr.width||rr.height)return rr}
     cur=W.nextNode()}return null}
 function justifyLF(root){(root||document).querySelectorAll('.lf p').forEach(p=>{
-  const els=[...p.querySelectorAll('.dl,.de')];els.forEach(el=>{el.style.paddingRight='';el.style.minWidth=''});
-  const pr=p.getBoundingClientRect();if(!pr.width||!p.offsetWidth)return;const sc=pr.width/p.offsetWidth,right=pr.right;
-  els.forEach(el=>{const rs=el.getClientRects();if(!rs.length)return;const r=rs[rs.length-1],nx=nextPosAfter(el,p);
-    if(nx&&nx.top<r.bottom-1&&nx.bottom>r.top+1)return;
-    const gap=(right-r.right)/sc;if(gap>3){if(el.classList.contains('de'))el.style.minWidth=(el.getBoundingClientRect().width/sc+gap-2)+'px';else el.style.paddingRight=(parseFloat(getComputedStyle(el).paddingRight)||0)+gap-2+'px'}})})}
+  const els=[...p.querySelectorAll('.dl,.de')];els.forEach(el=>{el.style.paddingRight='';el.style.minWidth=''});if(!els.length)return;
+  const pr=p.getBoundingClientRect();if(!pr.width||!p.offsetWidth)return;const sc=pr.width/p.offsetWidth;
+  const rg=document.createRange();rg.selectNodeContents(p);const lines=[];
+  [...rg.getClientRects()].filter(r=>r.width>0&&r.height>2).forEach(r=>{const c=(r.top+r.bottom)/2;let L=lines.find(l=>c>l.top&&c<l.bottom);if(L){L.right=Math.max(L.right,r.right);L.top=Math.min(L.top,r.top);L.bottom=Math.max(L.bottom,r.bottom)}else lines.push({top:r.top,bottom:r.bottom,right:r.right,f:[]})});
+  els.forEach(el=>{const rs=el.getClientRects();if(!rs.length)return;const r=rs[rs.length-1],y=r.bottom-1;const L=lines.find(l=>y>=l.top&&y<=l.bottom+2);if(L)L.f.push({el,w:r.width})});
+  lines.forEach(L=>{if(!L.f.length)return;const gap=(pr.right-L.right)/sc-2;if(gap<3)return;const per=gap/L.f.length;
+    L.f.forEach(({el,w})=>{if(el.classList.contains('de'))el.style.minWidth=(w/sc+per)+'px';else el.style.paddingRight=(parseFloat(getComputedStyle(el).paddingRight)||0)+per+'px'})})})}
 function justifyLFsoon(root){justifyLF(root);try{document.fonts.ready.then(()=>justifyLF(root))}catch(e){}}
 function fitPv(box,html){const pe=box.parentElement,cs=getComputedStyle(pe),W=pe.classList.contains('zoom')?794:Math.min(pe.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight)-2,794),sc=W/794;box.style.width=W+'px';box.innerHTML=`<div style="transform:scale(${sc});transform-origin:0 0;width:794px">${html}</div>`;justifyLFsoon(box);box.style.height=(box.firstElementChild.firstElementChild.offsetHeight*sc)+'px'}
 let pvOk=false,pvPrint=false,pvBtn=false,pvRec=null,pvT;
