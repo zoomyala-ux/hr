@@ -1594,7 +1594,22 @@ function checkForm(){
 function draftRec(r){const v=r.v,t=T[v.type]||TYPES[0],old=editId&&findLeave(editId);
   return{id:editId||uid(),staffId:v.st?v.st.id:'',nm:v.nm,pos:v.pos,dept:v.dept,tel:v.tel,type:v.type,start:v.start,end:t.late?v.start:(v.end&&v.end>=v.start?v.end:v.start),half:v.half,note:v.note,contact:v.contact,sub:v.type==='ลาพักผ่อน'?v.sub:'',days:r.days,fy:fyOf(v.start||todayISO()),
     status:'approved',by:role,ts:old&&old.ts||Date.now()}}
-function fitPv(box,html){const pe=box.parentElement,cs=getComputedStyle(pe),W=pe.classList.contains('zoom')?794:Math.min(pe.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight)-2,794),sc=W/794;box.style.width=W+'px';box.innerHTML=`<div style="transform:scale(${sc});transform-origin:0 0;width:794px">${html}</div>`;box.style.height=(box.firstElementChild.firstElementChild.offsetHeight*sc)+'px'}
+
+/* ยืดเส้นประของค่าท้ายบรรทัดให้ชิดขอบขวา */
+function nextPosAfter(el,p){const w=document.createTreeWalker(p,NodeFilter.SHOW_TEXT|NodeFilter.SHOW_ELEMENT);w.currentNode=el;
+  let n=el;while(n&&!n.nextSibling&&n!==p)n=n.parentNode;if(!n||n===p)return null;n=n.nextSibling;
+  const W=document.createTreeWalker(p,NodeFilter.SHOW_TEXT|NodeFilter.SHOW_ELEMENT);W.currentNode=n;let cur=n;
+  while(cur){if(cur.nodeType===3){const i=cur.data.search(/\S/);if(i>=0){const r=document.createRange();r.setStart(cur,i);r.setEnd(cur,i+1);const rs=r.getClientRects();if(rs.length)return rs[0]}}
+    else if(cur!==p&&(/^(svg|img|input)$/i.test(cur.tagName)||cur.classList.contains('dl')||cur.classList.contains('de')||cur.classList.contains('cb'))){const rr=cur.getBoundingClientRect();if(rr.width||rr.height)return rr}
+    cur=W.nextNode()}return null}
+function justifyLF(root){(root||document).querySelectorAll('.lf p').forEach(p=>{
+  const els=[...p.querySelectorAll('.dl,.de')];els.forEach(el=>{el.style.paddingRight='';el.style.minWidth=''});
+  const pr=p.getBoundingClientRect();if(!pr.width||!p.offsetWidth)return;const sc=pr.width/p.offsetWidth,right=pr.right;
+  els.forEach(el=>{const rs=el.getClientRects();if(!rs.length)return;const r=rs[rs.length-1],nx=nextPosAfter(el,p);
+    if(nx&&nx.top<r.bottom-1&&nx.bottom>r.top+1)return;
+    const gap=(right-r.right)/sc;if(gap>3){if(el.classList.contains('de'))el.style.minWidth=(el.getBoundingClientRect().width/sc+gap-2)+'px';else el.style.paddingRight=(parseFloat(getComputedStyle(el).paddingRight)||0)+gap-2+'px'}})})}
+function justifyLFsoon(root){justifyLF(root);try{document.fonts.ready.then(()=>justifyLF(root))}catch(e){}}
+function fitPv(box,html){const pe=box.parentElement,cs=getComputedStyle(pe),W=pe.classList.contains('zoom')?794:Math.min(pe.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight)-2,794),sc=W/794;box.style.width=W+'px';box.innerHTML=`<div style="transform:scale(${sc});transform-origin:0 0;width:794px">${html}</div>`;justifyLFsoon(box);box.style.height=(box.firstElementChild.firstElementChild.offsetHeight*sc)+'px'}
 let pvOk=false,pvPrint=false,pvBtn=false,pvRec=null,pvT;
 function pvHist(r){const v=r.v,l=draftRec(r);l.start=v.start||todayISO();l.end=l.end||l.start;l.fy=fyOf(l.start);l.days=v.start?r.days:0;if(!v.start)l.type='__none';
   let V;try{V=formVars(l)}catch(e){return''}
@@ -2154,6 +2169,7 @@ async function leavePDF(l){
   const box=document.createElement('div');box.style.cssText='position:fixed;left:-12000px;top:0;background:#fff';box.innerHTML=formHTML(l);document.body.appendChild(box);
   try{
     await pdfLibs();try{await document.fonts.load("21px THSarabunIT9","ใบลา");await document.fonts.load("bold 21px THSarabunIT9","ใบลา");await document.fonts.ready}catch(e){}
+    justifyLF(box);
     const cv=await html2canvas(box.firstElementChild,{scale:2,backgroundColor:'#ffffff',logging:false});
     const pdf=new window.jspdf.jsPDF({unit:'mm',format:'a4'}),r=cv.height/cv.width;
     let w=210,h=210*r,x=0;if(h>297){h=297;w=297/r;x=(210-w)/2}
@@ -2185,7 +2201,7 @@ function renderForm(){
 function renderPrev(){
   const box=$('#fmPrev');if(!box||!box.offsetParent)return;
   const W=Math.min(box.parentElement.clientWidth-24,794),sc=W/794;
-  box.style.width=W+'px';box.innerHTML=`<div style="transform:scale(${sc});transform-origin:0 0;width:794px">${formHTML(sampleLeave())}</div>`;
+  box.style.width=W+'px';box.innerHTML=`<div style="transform:scale(${sc});transform-origin:0 0;width:794px">${formHTML(sampleLeave())}</div>`;justifyLFsoon(box);
   box.style.height=(box.firstElementChild.firstElementChild.offsetHeight*sc)+'px';
 }
 window.addEventListener('resize',()=>{if(curTab()==='form')renderPrev()});
