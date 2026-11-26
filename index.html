@@ -2101,10 +2101,11 @@ const DEF_FORMS={v:3,writtenAt:'ศาลากลางจังหวัดย
   sup2Label:'คำสั่ง',sup2Name:'',sup2Pos:'',
   showStats:true,showChecker:true,checkerName:'',checkerPos:'',
   general:{title:'แบบใบลาป่วย ลาคลอดบุตร ลากิจส่วนตัว',body:'ข้าพเจ้า {ชื่อ} ตำแหน่ง {ตำแหน่ง}\nสังกัด {สังกัด}\n{ช่องขอลา}\nตั้งแต่วันที่ {ตั้งแต่} ถึงวันที่ {ถึง} มีกำหนด {จำนวนวัน} วัน ( {วันทำการ} วันทำการ)\nข้าพเจ้าได้ลา {ช่องครั้งสุดท้าย} ครั้งสุดท้าย ตั้งแต่วันที่ {ครั้งสุดท้ายตั้งแต่} ถึงวันที่ {ครั้งสุดท้ายถึง} มีกำหนด {ครั้งสุดท้ายจำนวน} วัน ( {ครั้งสุดท้ายวันทำการ} วันทำการ)\nในระหว่างลาจะติดต่อข้าพเจ้าได้ที่ {ติดต่อ} หมายเลขโทรศัพท์ {โทร}'},
-  vacation:{title:'แบบใบลาพักผ่อน',body:'ข้าพเจ้า {ชื่อ} ตำแหน่ง {ตำแหน่ง}\nสังกัด {สังกัด}\nมีวันลาพักผ่อนสะสม {วันพักผ่อนสะสม} วันทำการ มีสิทธิลาพักผ่อนประจำปีนี้อีก {วันพักผ่อนปีนี้} วันทำการ รวมเป็น {สิทธิ์พักผ่อนรวม} วันทำการ ขอลาพักผ่อนตั้งแต่วันที่ {ตั้งแต่} ถึงวันที่ {ถึง} มีกำหนด {จำนวนวัน} วัน ( {วันทำการ} วันทำการ) ในระหว่างลาจะติดต่อข้าพเจ้าได้ที่ {ติดต่อ} โทรศัพท์ {โทร}'}};
+  vacation:{title:'แบบใบลาพักผ่อน',body:'ข้าพเจ้า {ชื่อ} ตำแหน่ง {ตำแหน่ง}\nสังกัด {สังกัด}\nมีวันลาพักผ่อนสะสม {วันพักผ่อนสะสม} วันทำการ มีสิทธิลาพักผ่อนประจำปีนี้อีก {วันพักผ่อนปีนี้} วันทำการ รวมเป็น {สิทธิ์พักผ่อนรวม} วันทำการ\nขอลาพักผ่อนตั้งแต่วันที่ {ตั้งแต่} ถึงวันที่ {ถึง}\nมีกำหนด {จำนวนวัน} วัน ( {วันทำการ} วันทำการ) ในระหว่างลาจะติดต่อข้าพเจ้าได้ที่ {ติดต่อ}\nโทรศัพท์ {โทร} ทั้งนี้ {เหตุผล}'}};
 let FORMS=JSON.parse(JSON.stringify(DEF_FORMS));
 const mergeForms=f=>{const d=JSON.parse(JSON.stringify(DEF_FORMS));if(!f)return d;
   if(f.v!==d.v){f={...f};['general','vacation','to','writtenAt','sup1Label','sup2Label','sup2Name','sup2Pos','v'].forEach(k=>delete f[k])}
+  if(f.vacation&&f.vacation.body==='ข้าพเจ้า {ชื่อ} ตำแหน่ง {ตำแหน่ง}\nสังกัด {สังกัด}\nมีวันลาพักผ่อนสะสม {วันพักผ่อนสะสม} วันทำการ มีสิทธิลาพักผ่อนประจำปีนี้อีก {วันพักผ่อนปีนี้} วันทำการ รวมเป็น {สิทธิ์พักผ่อนรวม} วันทำการ ขอลาพักผ่อนตั้งแต่วันที่ {ตั้งแต่} ถึงวันที่ {ถึง} มีกำหนด {จำนวนวัน} วัน ( {วันทำการ} วันทำการ) ในระหว่างลาจะติดต่อข้าพเจ้าได้ที่ {ติดต่อ} โทรศัพท์ {โทร}'){f={...f,vacation:{...f.vacation}};delete f.vacation.body}
   return{...d,...f,general:{...d.general,...(f.general||{})},vacation:{...d.vacation,...(f.vacation||{})}}};
 const PH=['ชื่อ','ตำแหน่ง','สังกัด','ช่องขอลา','ช่องเลือกประเภท','ช่องครั้งสุดท้าย','ประเภท','เหตุผล','ตั้งแต่','ถึง','จำนวนวัน','วันทำการ','ครั้งสุดท้ายตั้งแต่','ครั้งสุดท้ายถึง','ครั้งสุดท้ายจำนวน','ครั้งสุดท้ายวันทำการ','ติดต่อ','โทร','วันพักผ่อนสะสม','วันพักผ่อนปีนี้','สิทธิ์พักผ่อนรวม','ปีงบประมาณ'];
 const hasForm=l=>l&&!T[l.type]?.late&&l.type!=='ขาดราชการ';
@@ -2173,10 +2174,10 @@ function formHTML(l,F){
   <div>เรียน&nbsp;&nbsp;${esc(F.to||(TP&&TP.pos)||'')}</div>
   <div style="margin-top:6px">${body}</div>`;
   if(vacF)return`<div class="lf" style="font-size:${((+F.fontSize||15)*1.4).toFixed(1)}px">${head}
-  <div class="cols"><div>${F.showStats?vacStats(l,V):''}<div style="margin-top:6px">${checker}</div></div>
-   <div>${me}<div style="margin-top:8px"><b><u>หมายเหตุ</u></b> ในระหว่างลาข้าพเจ้าได้มอบหมายให้<br><span class="nw">${l.sub?`<span class="dl">${esc(l.sub)}</span>`:'<span class="de" style="min-width:220px"></span>'}</span><br>ตำแหน่ง ${subSt&&subSt.pos?`<span class="dl${subSt.pos.length>28?' pos-s':''}"${subSt.pos.length<=44?' style="white-space:nowrap"':''}>${esc(subSt.pos)}</span>`:'<span class="de" style="min-width:200px"></span>'}<br>เป็นผู้ปฏิบัติหน้าที่แทน</div>
-   <div class="sig" style="white-space:nowrap">(ลงชื่อ) ${dots(28)} ผู้ปฏิบัติหน้าที่แทน</div></div></div>
-  <div class="cols"><div></div><div>${opinion}${approve}</div></div></div>`;
+  <div style="margin-left:30%;margin-right:15%">${me}</div>
+  <div class="cols" style="margin-top:6px"><div>${F.showStats?vacStats(l,V):''}<div style="margin-top:6px">${checker}</div></div>
+   <div><div><b><u>หมายเหตุ</u></b> ในระหว่างลาข้าพเจ้าได้มอบหมายให้<br><span class="nw">${l.sub?`<span class="dl">${esc(l.sub)}</span>`:'<span class="de" style="min-width:220px"></span>'}</span><br>ตำแหน่ง ${subSt&&subSt.pos?`<span class="dl${subSt.pos.length>28?' pos-s':''}"${subSt.pos.length<=44?' style="white-space:nowrap"':''}>${esc(subSt.pos)}</span>`:'<span class="de" style="min-width:200px"></span>'}<br>เป็นผู้ปฏิบัติหน้าที่แทน</div>
+   <div class="sig" style="white-space:nowrap">(ลงชื่อ) ${dots(28)} ผู้ปฏิบัติหน้าที่แทน</div><div style="margin-top:10px">${opinion}${approve}</div></div></div></div>`;
   return`<div class="lf" style="font-size:${((+F.fontSize||15)*1.4).toFixed(1)}px">${head}
   <div style="margin-left:45%">${me}</div>
   <div class="cols"><div>${F.showStats?halfStats(l,V,1)+halfStats(l,V,2):''}<div style="margin-top:6px">${checker}</div></div>
