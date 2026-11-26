@@ -1083,6 +1083,7 @@ html[data-device=mobile] .amt thead{display:none}html[data-device=mobile] .amt t
   </div>
 
  </div>
+ <div class="panel" style="margin-top:12px"><h3><span style="color:#FF3B30">⚠️ ล้างข้อมูล</span></h3><div class="bd"><p class="muted" style="margin-top:0">ลบใบลาและบันทึกการมาปฏิบัติงานทั้งหมด (สถิติทุกหน้าจะเริ่มนับใหม่) · ข้อมูลเจ้าหน้าที่ วันหยุด โควต้า และการตั้งค่า ยังอยู่ครบ · ระบบดาวน์โหลดไฟล์สำรองให้ก่อนลบ</p><button class="btn red" id="bWipeAll">🗑 ล้างข้อมูลการลาและการมาปฏิบัติงานทั้งหมด</button></div></div>
 </section>
 
 <!-- เจ้าหน้าที่ -->
@@ -1269,7 +1270,7 @@ function importDirectory(){let add=0,upd=0;DIR.forEach(([cat,min,name,hn,hp,code
   if(!d.headName||d.headSrc){if(d.headName!==hn||d.headPos!==hp)upd++;d.headName=hn;d.headPos=hp;d.headSrc=DIR_SRC}});
   saveDepts();return{add,upd}}
 async function wipeLeaves(){
-  if(store.cloud){try{const q=await store.db.collection('leaves').get();q.docs.forEach(d=>qWrite('L:'+d.id,()=>store.db.doc('leaves/'+d.id).delete()))}catch(e){}}
+  if(store.cloud){try{const q=await store.db.collection('leaves').get();q.docs.forEach(d=>{const id=d.id||(d.data()||{}).id;if(id)qWrite('L:'+id,()=>store.db.doc('leaves/'+id).delete())})}catch(e){}}
   else lsSet('leaves',[]);
   LV=[];for(const k in histCache)delete histCache[k];
 }
@@ -1904,8 +1905,7 @@ async function allLeaves(){
   const out=[];for(let y=curFY()-5;y<=curFY()+1;y++){const s=await store.db.collection('leaves').where('fy','==',y).get();s.docs.forEach(d=>out.push({...d.data()}))}return out;
 }
 $('#bBackup').onclick=async()=>{
-  let L;try{L=await allLeaves()}catch(e){return toast('อ่านข้อมูลไม่สำเร็จ',true)}
-  const data={app:'leave-app',version:2,exported:new Date().toISOString(),settings:S.settings,staff:S.staff,holidays:S.holidays,leaves:L};
+  let data;try{data=await dbSnapshot()}catch(e){return toast('อ่านข้อมูลไม่สำเร็จ',true)}
   saveFile(`ฐานข้อมูลการลา_${new Date().toISOString().slice(0,10)}.json`,JSON.stringify(data,null,1),'application/json');S.settings.lastBackup=Date.now();saveSet();
 };
 $('#bRestore').onchange=async e=>{
@@ -2755,6 +2755,19 @@ $('#ghOn').onclick=async()=>{const owner=$('#ghOwner').value.trim(),repo=$('#ghR
     localStorage.setItem(GHK,JSON.stringify(c));$('#ghMsg').textContent='เชื่อมต่อสำเร็จ กำลังโหลดใหม่…';setTimeout(()=>location.reload(),600)}
   catch(e){$('#ghMsg').textContent='';toast('เชื่อมต่อไม่สำเร็จ: '+ghErrText(e),true)}finally{$('#ghOn').disabled=false;$('#ghTok').value=''}};
 $('#ghOff').onclick=async()=>{if(!await ask('ยกเลิกการเชื่อมต่อฐานข้อมูลกลางที่เครื่องนี้?<br>เครื่องนี้จะกลับไปใช้ข้อมูลที่เก็บในเครื่อง และลบ token ออกจากเครื่องนี้'))return;if(store.gh){try{await store.db.flush()}catch(e){}}localStorage.removeItem(GHK);location.reload()};
+
+
+/* ล้างข้อมูลการลาและการมาปฏิบัติงานทั้งหมด */
+$('#bWipeAll').onclick=async()=>{if(!atLoaded)await loadAtt();const nL=LV.length,nA=Object.keys(AT).length;
+  if(!nL&&!nA)return toast('ไม่มีข้อมูลการลาและการมาปฏิบัติงานให้ล้าง');
+  const t=await ask(`<b style="color:#FF3B30">ล้างข้อมูลการลาและการมาปฏิบัติงานทั้งหมด</b><br>ใบลา ${nL} รายการ · บันทึกประจำวัน ${nA} รายการ จะถูกลบ${store.cloud?' <b>จากฐานข้อมูลกลาง (ทุกเครื่อง)</b>':' จากเครื่องนี้'}<br>ข้อมูลเจ้าหน้าที่ วันหยุด และการตั้งค่า ยังอยู่ครบ<br><br>ระบบจะดาวน์โหลดไฟล์สำรองข้อมูลให้ก่อนล้างอัตโนมัติ<br>พิมพ์คำว่า <b>ล้างข้อมูล</b> เพื่อยืนยัน`,'text');
+  if(t===false)return;if(String(t).trim()!=='ล้างข้อมูล')return toast('คำยืนยันไม่ถูกต้อง ยังไม่ได้ล้างข้อมูล',true);
+  try{const data=await dbSnapshot();await saveFile(`สำรองก่อนล้างข้อมูล_${todayISO()}.json`,JSON.stringify(data,null,1),'application/json')}catch(e){if(!await ask('สร้างไฟล์สำรองไม่สำเร็จ ต้องการล้างข้อมูลต่อหรือไม่?'))return}
+  await wipeLeaves();
+  if(store.cloud){Object.keys(AT).forEach(k=>qWrite('A:'+k,()=>store.db.doc('attendance/'+k).delete()))}else lsSet('att',{});
+  AT={};avC=null;S.settings.lastBackup=Date.now();saveSet();
+  if(store.gh){try{await store.db.flush()}catch(e){}}
+  renderAll();toast(`ล้างข้อมูลแล้ว: ใบลา ${nL} รายการ · บันทึกประจำวัน ${nA} รายการ`)};
 
 /* ---------- แจ้งปัญหา / ข้อเสนอแนะ ---------- */
 let FB=[],fbLoaded=false;
