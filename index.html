@@ -958,12 +958,12 @@ html[data-device=mobile] .amt thead{display:none}html[data-device=mobile] .amt t
 <!-- จัดการผู้ดูแลระบบ -->
 <section id="admins">
  <div class="am-grid">
-  <div class="panel"><h3><span>➕ เพิ่มผู้ดูแลระบบ</span></h3><div class="bd">
+  <div class="panel"><h3><span id="amTitle">➕ เพิ่มผู้ดูแลระบบ</span></h3><div class="bd">
    <div class="row"><label>ชื่อผู้ใช้ (ใช้เข้าสู่ระบบ)</label><input id="amUser" placeholder="ภาษาอังกฤษ/ตัวเลข เช่น somchai" autocomplete="off"></div>
-   <div class="row"><label>ชื่อ-สกุล</label><input id="amName" list="amNames" placeholder="พิมพ์หรือเลือกจากรายชื่อเจ้าหน้าที่"><datalist id="amNames"></datalist></div>
+   <div class="row"><label>ชื่อ-สกุล</label><div><select id="amSel"></select><input id="amName" placeholder="พิมพ์ชื่อ-สกุล" style="display:none;margin-top:6px"></div></div>
    <div class="row"><label>ตำแหน่ง</label><input id="amPos" placeholder="ตำแหน่ง"></div>
    <div class="row"><label>รหัสผ่านเริ่มต้น</label><input id="amPass" type="password" placeholder="อย่างน้อย 6 ตัว" autocomplete="new-password"></div>
-   <div class="btns"><button class="btn" id="amAdd">เพิ่มผู้ดูแลระบบ</button></div>
+   <div class="btns"><button class="btn" id="amAdd">เพิ่มผู้ดูแลระบบ</button><button class="btn sec" id="amCancel" style="display:none">ยกเลิกการแก้ไข</button></div>
    <p class="muted" style="margin:8px 0 0">ผู้ดูแลระบบเข้าสู่ระบบด้วยชื่อผู้ใช้และรหัสผ่านนี้ แล้วเปลี่ยนรหัสผ่านของตนเองได้ที่ปุ่ม “เปลี่ยนรหัสผ่าน” มุมขวาบน</p>
   </div></div>
   <div class="panel"><h3><span>👤 รายชื่อผู้ดูแลระบบ</span><span class="muted" id="amN"></span></h3><div class="bd" id="amList"></div></div>
@@ -2709,19 +2709,25 @@ function renderAdm(){const L=admList(),me=curAdm();
   $('#amList').innerHTML=`<table class="amt"><thead><tr><th>ชื่อผู้ใช้</th><th>ชื่อ-สกุล / ตำแหน่ง</th><th>สถานะ</th><th>เข้าใช้ล่าสุด</th><th></th></tr></thead><tbody>
    <tr><td><b>admin</b></td><td>ผู้ดูแลระบบหลัก<div class="muted">บัญชีเริ่มต้นของระบบ · ลบหรือระงับไม่ได้</div></td><td><span class="tg ok">ใช้งาน</span>${!me&&sess?' <span class="tg">ท่าน</span>':''}</td><td class="muted">-</td><td class="act"><button class="btn sec sm" data-amb="1">ตั้งรหัสผ่านใหม่</button></td></tr>
    ${L.map(a=>`<tr class="${a.off?'off':''}"><td><b>${esc(a.user)}</b></td><td>${esc(a.name||'-')}<div class="muted">${esc(a.pos||'')}</div></td><td><span class="tg ${a.off?'p':'ok'}">${a.off?'ระงับ':'ใช้งาน'}</span>${me&&me.id===a.id?' <span class="tg">ท่าน</span>':''}</td><td class="muted">${a.last?thTime(a.last):'ยังไม่เคยเข้าใช้'}</td>
-     <td class="act"><button class="btn sec sm" data-amp="${a.id}">ตั้งรหัสผ่านใหม่</button>${me&&me.id===a.id?'':`<button class="btn sec sm" data-amo="${a.id}">${a.off?'เปิดใช้งาน':'ระงับ'}</button><button class="btn red sm" data-amd="${a.id}">ลบ</button>`}</td></tr>`).join('')}</tbody></table>`;
+     <td class="act"><button class="btn sec sm" data-ame="${a.id}">✏️ แก้ไข</button><button class="btn sec sm" data-amp="${a.id}">ตั้งรหัสผ่านใหม่</button>${me&&me.id===a.id?'':`<button class="btn sec sm" data-amo="${a.id}">${a.off?'เปิดใช้งาน':'ระงับ'}</button><button class="btn red sm" data-amd="${a.id}">ลบ</button>`}</td></tr>`).join('')}</tbody></table>`;
   $('#amN').textContent=`${L.length+1} บัญชี`;
-  $('#amNames').innerHTML=S.staff.map(st=>`<option value="${esc(st.name)}">`).join('')}
-$('#amName').addEventListener('input',()=>{const st=staffByName($('#amName').value);if(st)$('#amPos').value=st.pos||''});
+  const cur=$('#amSel').value;$('#amSel').innerHTML='<option value="">— เลือกจากรายชื่อเจ้าหน้าที่ —</option>'+[...S.staff].sort((a,b)=>a.name.localeCompare(b.name,'th')).map(st=>`<option value="${st.id}">${esc(st.name)}${st.pos?' · '+esc(st.pos):''}</option>`).join('')+'<option value="_other">อื่น ๆ (พิมพ์ชื่อเอง)</option>';$('#amSel').value=cur}
+let amEdit=null;
+function amSetName(name){const st=staffByName(name);if(st){$('#amSel').value=st.id;$('#amName').style.display='none';$('#amName').value=st.name}else if(name){$('#amSel').value='_other';$('#amName').style.display='';$('#amName').value=name}else{$('#amSel').value='';$('#amName').style.display='none';$('#amName').value=''}}
+function amReset(){amEdit=null;['amUser','amPos','amPass'].forEach(i=>$('#'+i).value='');amSetName('');$('#amUser').readOnly=false;$('#amPass').closest('.row').style.display='';$('#amTitle').textContent='➕ เพิ่มผู้ดูแลระบบ';$('#amAdd').textContent='เพิ่มผู้ดูแลระบบ';$('#amCancel').style.display='none'}
+$('#amSel').onchange=()=>{const v=$('#amSel').value;if(v==='_other'){$('#amName').style.display='';$('#amName').value='';$('#amName').focus();return}$('#amName').style.display='none';const st=staffById(v);$('#amName').value=st?st.name:'';$('#amPos').value=st?st.pos||'':''};
+$('#amCancel').onclick=amReset;
 $('#amAdd').onclick=async()=>{const user=$('#amUser').value.trim(),name=$('#amName').value.trim(),pos=$('#amPos').value.trim(),p=$('#amPass').value;
+  if(amEdit){const a=admList().find(x=>x.id===amEdit);if(!a)return amReset();if(!name)return toast('กรุณาเลือกหรือระบุชื่อ-สกุล',true);a.name=name;a.pos=pos;saveSet();amReset();renderAdm();if(typeof setRole==='function'&&curAdm()&&curAdm().id===a.id)setRole(role,true);return toast(`แก้ไขข้อมูลบัญชี “${a.user}” แล้ว`)}
   if(!/^[A-Za-z0-9._-]{3,20}$/.test(user))return toast('ชื่อผู้ใช้ต้องเป็นภาษาอังกฤษหรือตัวเลข 3–20 ตัว',true);
   const u=user.toLowerCase();if(u==='admin'||admList().some(a=>a.user.toLowerCase()===u)||S.depts.some(d=>d.code&&norm(d.code).replace(/-/g,'').toLowerCase()===u))return toast('ชื่อผู้ใช้นี้ถูกใช้แล้ว',true);
-  if(!name)return toast('กรุณาระบุชื่อ-สกุล',true);if(p.length<6)return toast('รหัสผ่านต้องมีอย่างน้อย 6 ตัว',true);
+  if(!name)return toast('กรุณาเลือกหรือระบุชื่อ-สกุล',true);if(p.length<6)return toast('รหัสผ่านต้องมีอย่างน้อย 6 ตัว',true);
   admList().push({id:uid(),user,name,pos,hash:await sha('adm|'+u+'|'+p),off:false,created:Date.now(),by:curAdm()?curAdm().user:'admin'});saveSet();
-  ['amUser','amName','amPos','amPass'].forEach(i=>$('#'+i).value='');renderAdm();toast(`เพิ่มผู้ดูแลระบบ “${user}” แล้ว`)};
+  amReset();renderAdm();toast(`เพิ่มผู้ดูแลระบบ “${user}” แล้ว`)};
 $('#amList').addEventListener('click',async e=>{const b=e.target.closest('button');if(!b)return;
   if(b.dataset.amb){const p=await ask('<b>ตั้งรหัสผ่านใหม่ของบัญชี admin</b><br>อย่างน้อย 6 ตัว','password');if(p===false)return;if(p.length<6)return toast('รหัสผ่านต้องมีอย่างน้อย 6 ตัว',true);S.settings.adminHash=await sha('admin|'+p);saveSet();pwDone();return}
-  const id=b.dataset.amp||b.dataset.amo||b.dataset.amd,a=admList().find(x=>x.id===id);if(!a)return;
+  const id=b.dataset.ame||b.dataset.amp||b.dataset.amo||b.dataset.amd,a=admList().find(x=>x.id===id);if(!a)return;
+  if(b.dataset.ame){amEdit=a.id;$('#amUser').value=a.user;$('#amUser').readOnly=true;amSetName(a.name||'');$('#amPos').value=a.pos||'';$('#amPass').closest('.row').style.display='none';$('#amTitle').textContent='✏️ แก้ไขบัญชี “'+a.user+'”';$('#amAdd').textContent='บันทึกการแก้ไข';$('#amCancel').style.display='';$('#amTitle').scrollIntoView({behavior:'smooth',block:'center'});return}
   if(b.dataset.amp){const p=await ask(`<b>ตั้งรหัสผ่านใหม่ของ “${esc(a.user)}”</b><br>อย่างน้อย 6 ตัว`,'password');if(p===false)return;if(p.length<6)return toast('รหัสผ่านต้องมีอย่างน้อย 6 ตัว',true);a.hash=await sha('adm|'+a.user.toLowerCase()+'|'+p);saveSet();toast('ตั้งรหัสผ่านใหม่แล้ว')}
   else if(b.dataset.amo){a.off=!a.off;saveSet();renderAdm();toast(a.off?`ระงับบัญชี “${a.user}” แล้ว`:`เปิดใช้งานบัญชี “${a.user}” แล้ว`)}
   else if(b.dataset.amd){if(!await ask(`ลบบัญชีผู้ดูแลระบบ “${esc(a.user)}” (${esc(a.name)}) ?<br>บัญชีนี้จะเข้าสู่ระบบไม่ได้อีก`))return;S.settings.admins=admList().filter(x=>x.id!==id);saveSet();renderAdm();toast('ลบบัญชีแล้ว')}});
