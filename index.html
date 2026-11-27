@@ -1420,8 +1420,8 @@ async function psPwFill(){const el=$('#psPw');if(!el)return;const st=staffById(e
 document.addEventListener('click',async e=>{const b=e.target.closest('[data-pwreset]');if(!b)return;const st=staffById(b.dataset.pwreset);if(!st||!await ask(`รีเซ็ตรหัสผ่านของ <b>${esc(st.name)}</b><br>กลับเป็นเลขบัตรประชาชน 13 หลัก?`))return;spwSet(st.id,null);toast('รีเซ็ตรหัสผ่านแล้ว');setTimeout(psPwFill,300)});
 let myEdit=false;
 function saveMine(){const st=sess&&sess.role==='staff'&&staffById(sess.sid);if(!st)return;
-  st.tel=norm($('#myTel').value).slice(0,40);st.addr=norm($('#myAddr').value).slice(0,200);
-  if(store.sheet)store.db.doc('sinfo/'+st.id).set({tel:st.tel,addr:st.addr});else saveStaff();
+  st.tel=norm($('#myTel').value).slice(0,40);st.addr=norm($('#myAddr').value).slice(0,200);st.subs=[...document.querySelectorAll('#mySubs input:checked')].map(i=>i.value).slice(0,80);
+  if(store.sheet)store.db.doc('sinfo/'+st.id).set({tel:st.tel,addr:st.addr,subs:st.subs});else saveStaff();
   myEdit=false;contactAuto=true;fillFromStaff(st);renderRec();toast('บันทึกข้อมูลของท่านแล้ว')}
 document.addEventListener('click',e=>{if(e.target.closest('[data-myedit]')){myEdit=true;renderRec();setTimeout(()=>$('#myTel')&&$('#myTel').focus(),50)}
   else if(e.target.closest('[data-mycancel]')){myEdit=false;renderRec()}else if(e.target.closest('[data-mysave]'))saveMine()});
@@ -1596,7 +1596,7 @@ function attachSug(input,box,onPick){
 let contactAuto=true;
 function fillFromStaff(st){if(contactAuto||!$('#fContact').value){$('#fContact').value=st.addr||'';contactAuto=true}}
 $('#fContact').addEventListener('input',()=>contactAuto=false);
-function fillSub(){const sel=$('#fSub'),cur=sel.dataset.want!=null?sel.dataset.want:sel.value;delete sel.dataset.want;const me=formVals().st,L=me?subPool(me):[];
+function fillSub(){const sel=$('#fSub'),cur=sel.dataset.want!=null?sel.dataset.want:sel.value;delete sel.dataset.want;const me=formVals().st,P0=me?subPool(me):[],L=me&&Array.isArray(me.subs)&&me.subs.length?P0.filter(x=>me.subs.includes(x.id)):P0;
   const names=L.map(x=>x.name);let h=`<option value="">${me?(L.length?'— เลือกผู้ปฏิบัติหน้าที่แทน —':'— ไม่มีผู้ที่มอบหมายได้ —'):'— ระบุผู้ขอลาก่อน —'}</option>`+L.map(x=>`<option value="${esc(x.name)}">${esc(x.name)}${x.pos?' · '+esc(x.pos):''}</option>`).join('');
   if(cur&&!names.includes(cur))h+=`<option value="${esc(cur)}">${esc(cur)} (ไม่อยู่ในรายชื่อที่มอบหมายได้)</option>`;
   if(sel.innerHTML!==h)sel.innerHTML=h;sel.value=cur||''}
@@ -1623,10 +1623,12 @@ function renderWho(v){
     ${ro('ชื่อ-สกุล',s.name)}${ro('เลข ID',s.code)}${ro('ตำแหน่ง',s.pos)}${ro('กลุ่มงาน',s.dept)}${ro('ประเภทบุคลากร',s.etype)}
     <div class="row"><label>หมายเลขโทรศัพท์</label><input id="myTel" value="${esc(s.tel||'')}" inputmode="tel" maxlength="40" placeholder="เช่น 08x-xxx-xxxx"></div>
     <div class="row"><label>ที่อยู่ที่ติดต่อได้<br>ระหว่างลา</label><textarea id="myAddr" rows="2" maxlength="200" placeholder="บ้านเลขที่ ถนน ตำบล อำเภอ จังหวัด">${esc(s.addr||'')}</textarea></div>
+    <div style="margin:10px 0 4px"><b>ผู้ที่มอบหมายงานแทนได้</b> <span class="muted" style="font-size:13px">(ใช้ในช่องมอบหมายงานตอนลาพักผ่อน · ถ้าไม่ติ๊กเลย จะแสดงทุกคนที่มอบหมายได้)</span></div>
+    <div id="mySubs" style="max-height:220px;overflow:auto;border:.5px solid var(--line);border-radius:10px;padding:6px 10px">${subPool(s).map(x=>`<label style="display:flex;gap:8px;align-items:flex-start;padding:4px 0;cursor:pointer"><input type="checkbox" value="${x.id}" ${(s.subs||[]).includes(x.id)?'checked':''} style="width:auto;margin-top:3px"><span>${esc(x.name)}<span class="muted" style="font-size:13px">${x.pos?' · '+esc(x.pos):''}</span></span></label>`).join('')||'<div class="muted">ไม่มีผู้ที่มอบหมายได้</div>'}</div>
     <div class="btns" style="justify-content:flex-end"><button class="btn sec" data-mycancel>ยกเลิก</button><button class="btn" data-mysave>💾 บันทึก</button></div></div>`;return}
   if(sess&&sess.role==='staff'&&v.st.id===sess.sid){const s=v.st,p=supOf(s),h=topOf(s);b.innerHTML=`<div class="who"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><b>👤 ข้อมูลของฉัน</b><button class="btn sec sm" data-myedit>✏️ แก้ไขข้อมูลของฉัน</button></div>
     <div style="margin-top:4px"><b>${esc(s.name)}</b>${s.code?` <span class="muted">(ID ${esc(s.code)})</span>`:''}</div>ตำแหน่ง ${esc(s.pos||'-')}${s.dept?` · ${esc(s.dept)}`:''}${s.etype?` · ${esc(s.etype)}`:''}
-    <br>โทรศัพท์ ${esc(s.tel||'-')} · ที่อยู่ติดต่อ ${esc(s.addr||'-')}${p.name?`<br>ผู้บังคับบัญชาชั้นต้น: ${esc(p.name)}${p.pos?` (${esc(p.pos)})`:''}`:''}${h?`<br>ผู้บังคับบัญชาสูงสุด: ${esc(h.name||'-')}${h.pos?` (${esc(h.pos)})`:''}`:''}</div>`;return}
+    <br>โทรศัพท์ ${esc(s.tel||'-')} · ที่อยู่ติดต่อ ${esc(s.addr||'-')}${`<br>ผู้ที่มอบหมายงานแทนได้: ${(s.subs&&s.subs.length)?s.subs.map(id=>(staffById(id)||{}).name).filter(Boolean).map(esc).join(', '):'ทุกคนที่มอบหมายได้'}`}${p.name?`<br>ผู้บังคับบัญชาชั้นต้น: ${esc(p.name)}${p.pos?` (${esc(p.pos)})`:''}`:''}${h?`<br>ผู้บังคับบัญชาสูงสุด: ${esc(h.name||'-')}${h.pos?` (${esc(h.pos)})`:''}`:''}</div>`;return}
   const s=v.st;b.innerHTML=`<div class="who"><b>✓ ${esc(s.name)}</b>${s.code?` <span class="muted">(ID ${esc(s.code)})</span>`:''}<br>ตำแหน่ง ${esc(s.pos||'-')}${s.dept?` · ${esc(s.dept)}`:''}${s.tel?` · โทร ${esc(s.tel)}`:''}${(()=>{const p=supOf(s);const h=topOf(s);return (p.name?`<br>ผู้บังคับบัญชาชั้นต้น: ${esc(p.name)}${p.pos?` (${esc(p.pos)})`:''}`:'')+(h?`<br>ผู้บังคับบัญชาสูงสุด: ${esc(h.name||'-')}${h.pos?` (${esc(h.pos)})`:''}`:'')})()}</div>`;
 }
 function checkForm(){
@@ -2744,7 +2746,7 @@ async function ghPutFile(c,data,sha,msg){const api=`https://api.github.com/repos
   if(!r.ok){const e=new Error('GitHub '+r.status);e.status=r.status;throw e}const j=await r.json();return j.content.sha}
 function makeGhDB(c){
   let D={},sha=null,etag=null,ops=[],timer=null,saving=null,listeners=[],state='load',err='',lastSync=0,size=0;
-  const apply=(o,X)=>{const i=o.p.indexOf('/'),col=o.p.slice(0,i),id=o.p.slice(i+1);if(col==='sinfo'){const it=X.cfg&&X.cfg.staff&&(X.cfg.staff.items||[]).find(x=>x.id===id);if(it&&o.v){['tel','addr'].forEach(k=>{if(k in o.v)it[k]=String(o.v[k]||'').slice(0,200)})}return}X[col]=X[col]||{};
+  const apply=(o,X)=>{const i=o.p.indexOf('/'),col=o.p.slice(0,i),id=o.p.slice(i+1);if(col==='sinfo'){const it=X.cfg&&X.cfg.staff&&(X.cfg.staff.items||[]).find(x=>x.id===id);if(it&&o.v){['tel','addr'].forEach(k=>{if(k in o.v)it[k]=String(o.v[k]||'').slice(0,200)});if(Array.isArray(o.v.subs))it.subs=o.v.subs.map(String).slice(0,80)}return}X[col]=X[col]||{};
     if(o.v&&Array.isArray(o.v._chg)){const v=ghClone(o.v),ch=v._chg;delete v._chg;const cur=X[col][id],rows={...((cur&&cur.rows)||{})};ch.forEach(k=>{if(v.rows&&v.rows[k])rows[k]=v.rows[k];else delete rows[k]});if(Object.keys(rows).length)X[col][id]={...(cur||{}),...v,rows};else delete X[col][id];return}
     if(o.v==null)delete X[col][id];else X[col][id]=ghClone(o.v)};
   const snap=(col,f)=>({docs:Object.values(D[col]||{}).filter(x=>!f||f(x)).map(x=>({data:()=>ghClone(x)})),metadata:{fromCache:false}});
@@ -2783,7 +2785,7 @@ async function shLogin(a){const r=await fetch(shUrl(),{method:'POST',body:JSON.s
 function shErr(e){return navigator.onLine===false?'ไม่มีการเชื่อมต่ออินเทอร์เน็ต':'เชื่อมต่อฐานข้อมูลกลางไม่ได้ ('+(e&&e.message||'')+')'}
 function makeSheetDB(url){
   let D={},ver=-1,ops=[],timer=null,saving=null,listeners=[],state='load',err='',lastSync=0,size=0;
-  const apply=(o,X)=>{const i=o.p.indexOf('/'),col=o.p.slice(0,i),id=o.p.slice(i+1);if(col==='sinfo'){const it=X.cfg&&X.cfg.staff&&(X.cfg.staff.items||[]).find(x=>x.id===id);if(it&&o.v){['tel','addr'].forEach(k=>{if(k in o.v)it[k]=String(o.v[k]||'').slice(0,200)})}return}X[col]=X[col]||{};
+  const apply=(o,X)=>{const i=o.p.indexOf('/'),col=o.p.slice(0,i),id=o.p.slice(i+1);if(col==='sinfo'){const it=X.cfg&&X.cfg.staff&&(X.cfg.staff.items||[]).find(x=>x.id===id);if(it&&o.v){['tel','addr'].forEach(k=>{if(k in o.v)it[k]=String(o.v[k]||'').slice(0,200)});if(Array.isArray(o.v.subs))it.subs=o.v.subs.map(String).slice(0,80)}return}X[col]=X[col]||{};
     if(o.v&&Array.isArray(o.v._chg)){const v=ghClone(o.v),ch=v._chg;delete v._chg;const cur=X[col][id],rows={...((cur&&cur.rows)||{})};ch.forEach(k=>{if(v.rows&&v.rows[k])rows[k]=v.rows[k];else delete rows[k]});if(Object.keys(rows).length)X[col][id]={...(cur||{}),...v,rows};else delete X[col][id];return}
     if(o.v==null)delete X[col][id];else X[col][id]=ghClone(o.v)};
   const snap=(col,f)=>({docs:Object.values(D[col]||{}).filter(x=>!f||f(x)).map(x=>({data:()=>ghClone(x)})),metadata:{fromCache:false}});
