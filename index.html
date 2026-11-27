@@ -458,7 +458,7 @@ body.admin #adminBar,body.head #adminBar{display:flex;justify-content:space-betw
 @media print{#printArea .lf{width:100%;min-height:0;padding:0}@page{size:A4;margin:12mm}}
 .srch{position:relative}.sug{position:absolute;left:0;right:0;top:100%;background:#fff;border:1px solid #9fb3c8;border-radius:6px;z-index:20;max-height:260px;overflow:auto;box-shadow:0 4px 12px #0002}.sug:empty{display:none}.sug div{padding:7px 9px;cursor:pointer;border-bottom:1px solid #eef2f6}.sug div:hover{background:#e8f0fb}
 body.staff .adm{display:none!important}
-body.head .adminonly{display:none!important}
+body.head .adminonly{display:none!important}body.head.hall .grpF.adminonly{display:inline-block!important}
 #login.gate{background:var(--bg,#F2F2F7);z-index:200}#login.gate #lgCancel{display:none}
 .lgSeg{display:flex;background:#7676801f;border-radius:9px;padding:2px;margin:0 0 12px}.lgSeg button{flex:1;border:0;background:transparent;padding:7px 4px;border-radius:7px;font:inherit;font-size:14px;cursor:pointer;color:#3C3C43}.lgSeg button.on{background:#fff;box-shadow:0 1px 3px #0002;font-weight:600}
 body.staff.me #adminBar{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}body.staff.me #roleSeg{display:none}
@@ -1360,23 +1360,26 @@ let sess=null; // {role:'admin'|'head', deptId}
 const isMgr=()=>role==='admin'||role==='head';
 const curAdm=()=>sess&&sess.aid?(S.settings.admins||[]).find(a=>a.id===sess.aid):null;
 const myDept=()=>sess&&sess.role==='head'?S.depts.find(d=>d.id===sess.deptId):null;
-const inDept=st=>{const d=myDept();return !!(d&&st&&norm(st.dept)===norm(d.name))};
+const deptAll=d=>!!d&&(d.all===undefined?/หัวหน้าสำนักงาน/.test(d.name||''):!!d.all);
+const headAll=()=>role==='head'&&deptAll(myDept());
+const hd=()=>role==='head'&&!headAll();
+const inDept=st=>{const d=myDept();return !!(d&&st&&(deptAll(d)||norm(st.dept)===norm(d.name)))};
 let GF='';
 const gDept=()=>role==='admin'&&GF?S.depts.find(d=>d.id===GF)||null:null;
 const inGF=st=>{const g=gDept();return !g||!!(st&&norm(st.dept)===norm(g.name))};
-const visStaff0=()=>role==='head'?S.staff.filter(inDept):S.staff.filter(inGF);
+const visStaff0=()=>hd()?S.staff.filter(inDept):S.staff.filter(inGF);
 const etOn=()=>{if(!ETF||typeof PAGES==='undefined')return!!ETF;const P=PAGES[curT];return!P||!!P[2]};
 const visStaff=()=>{const on=etOn();return visStaff0().filter(st=>!on||etgOf(st)===ETF)};
-const inScope=l=>{const st=staffById(l.staffId)||staffByName(l.nm);if(ETF&&etOn()&&(!st||etgOf(st)!==ETF))return false;if(role==='head')return inDept(st);const g=gDept();return !g||(st?inGF(st):norm(l.dept)===norm(g.name))};
+const inScope=l=>{const st=staffById(l.staffId)||staffByName(l.nm);if(ETF&&etOn()&&(!st||etgOf(st)!==ETF))return false;if(hd())return inDept(st);const g=gDept();return !g||(st?inGF(st):norm(l.dept)===norm(g.name))};
 function renderGrpF(){const opts=opt('','🏢 ทุกกลุ่มงาน')+S.depts.map(d=>opt(d.id,`${d.code?d.code+' ':''}${d.name}`,d.id===GF)).join('');document.querySelectorAll('.grpF').forEach(x=>{x.innerHTML=opts;x.value=GF})}
 document.addEventListener('change',e=>{if(!e.target.classList||!e.target.classList.contains('grpF'))return;GF=e.target.value;renderGrpF();renderTab(curTab())});
 function setRole(r,quiet){if(r==='admin'&&!fbLoaded)setTimeout(()=>loadFb().then(()=>{if(curTab()==='home')renderHome()}),0);
-  role=r;document.body.className=r+(sess&&sess.role==='staff'?' me':'');
+  role=r;document.body.className=r+(sess&&sess.role==='staff'?' me':'')+(headAll()?' hall':'');
   try{const ab=$('#adminBar');if(sess&&sess.role==='staff')$('#roleSeg').parentNode.appendChild(ab);else if(ab.parentNode!==$('#tabs'))$('#tabs').appendChild(ab)}catch(e){}
   const d=myDept();
   document.querySelectorAll('#roleSeg button').forEach(b=>b.classList.toggle('on',(b.dataset.r==='staff')===(r==='staff')));
   $('#segMgr').textContent=sess?(sess.role==='admin'?'🛡 ผู้ดูแลระบบ':'🏢 หัวหน้ากลุ่มงาน'):'🔐 เข้าสู่ระบบ';
-  {const d=myDept();$('#abText').innerHTML=r==='admin'?`🛡 <b>ผู้ดูแลระบบ</b>${curAdm()?' · '+esc(curAdm().name||curAdm().user):''}`:r==='head'?`🏢 <b>หัวหน้ากลุ่มงาน</b> · ${esc(d?d.name:'')}`:sess&&sess.role==='staff'?`👤 <b>${esc((staffById(sess.sid)||{}).name||'')}</b>`:''}
+  {const d=myDept();$('#abText').innerHTML=r==='admin'?`🛡 <b>ผู้ดูแลระบบ</b>${curAdm()?' · '+esc(curAdm().name||curAdm().user):''}`:r==='head'?(headAll()?`🏢 <b>หัวหน้าสำนักงาน</b> · ดูข้อมูลได้ทุกกลุ่มงาน`:`🏢 <b>หัวหน้ากลุ่มงาน</b> · ${esc(d?d.name:'')}`):sess&&sess.role==='staff'?`👤 <b>${esc((staffById(sess.sid)||{}).name||'')}</b>`:''}
   $('#fType').innerHTML=TYPES.filter(t=>!t.adm).map(t=>opt(t.n,t.n)).join('');
   editId=null;
   if(!quiet){clearForm(true);showTab(isMgr()?'home':'rec')}
@@ -1468,7 +1471,7 @@ const cidValid=v=>{const d=cidDigits(v);if(d.length!==13)return false;let s=0;fo
 const cidFmt=v=>{const d=cidDigits(v);return d.length===13?`${d[0]}-${d.slice(1,5)}-${d.slice(5,10)}-${d.slice(10,12)}-${d[12]}`:v||''};
 const staffByCid=c=>{c=cidDigits(c);return c.length===13?S.staff.find(s=>cidDigits(s.cid)===c):null};
 const staffByCode=c=>{c=norm(c);return c?(S.staff.find(s=>norm(s.code)===c)||staffByCid(c)):null};
-const whoOf=q=>{if(sess&&sess.role==='staff'&&role==='staff')return staffById(sess.sid);const st=staffByCode(q)||(isMgr()?staffByName(q):null);return st&&(role!=='head'||inDept(st))?st:null};
+const whoOf=q=>{if(sess&&sess.role==='staff'&&role==='staff')return staffById(sess.sid);const st=staffByCode(q)||(isMgr()?staffByName(q):null);return st&&(!hd()||inDept(st))?st:null};
 const keyOf=l=>l.staffId&&staffById(l.staffId)?l.staffId:((staffByName(l.nm)||{}).id||'n:'+norm(l.nm));
 const staffName=l=>{const s=staffById(l.staffId)||staffByName(l.nm);return s?s.name:(l.nm||'')};
 const posOf=l=>{const s=staffById(l.staffId)||staffByName(l.nm);return (s&&s.pos)||l.pos||''};
@@ -1551,7 +1554,7 @@ function showTab(t){if(t==='pend')t='all';if(!canTab(t))t=isMgr()?(canTab('home'
 $('#tabs').onclick=e=>{const b=e.target.closest('button[data-t],button[data-g]');if(!b)return;if(b.dataset.g){const L=GROUPS[b.dataset.g].map(x=>x[0]).filter(canTab);showTab(L.includes(lastInG[b.dataset.g])?lastInG[b.dataset.g]:L[0])}else showTab(b.dataset.t)};
 $('#subnav').onclick=e=>{const b=e.target.closest('[data-t]');if(b)showTab(b.dataset.t)};
 const curTab=()=>curT;
-function renderTab(t){if(LV.some(l=>T[l.type]&&T[l.type].adm))migAdm();if(role==='admin')renderGrpF();if(PAGES[t]&&PAGES[t][2]&&isMgr())etBar();({gh:renderGh,admins:renderAdm,person:renderPsn,att:renderAtt,arep:renderArep,fb:renderFb,home:renderHome,add:renderAdd,back:renderBack,pend:renderPend,rec:renderRec,all:renderAllList,sum:renderSum,rep:renderRep,base:renderBase,staff:renderStaff,hol:renderHol,exp:renderExp,form:renderForm})[t]()}
+function renderTab(t){if(LV.some(l=>T[l.type]&&T[l.type].adm))migAdm();if(role==='admin'||headAll())renderGrpF();if(PAGES[t]&&PAGES[t][2]&&isMgr())etBar();({gh:renderGh,admins:renderAdm,person:renderPsn,att:renderAtt,arep:renderArep,fb:renderFb,home:renderHome,add:renderAdd,back:renderBack,pend:renderPend,rec:renderRec,all:renderAllList,sum:renderSum,rep:renderRep,base:renderBase,staff:renderStaff,hol:renderHol,exp:renderExp,form:renderForm})[t]()}
 function renderAll(){renderHeader();renderTab(curTab())}
 let liveWait=false;
 const typing=()=>{const ae=document.activeElement;return !!(ae&&/INPUT|TEXTAREA|SELECT/.test(ae.tagName)&&ae.closest('main')&&!ae.readOnly&&ae.type!=='checkbox'&&ae.type!=='radio'&&ae.type!=='button')};
@@ -1879,7 +1882,7 @@ function renderBase(){
 function grpStaff(d){return S.staff.filter(x=>norm(x.dept)===norm(d.name))}
 function renderStaff(){
   const isA=role==='admin';renderQDef();
-  const cs=$('#dCat');let dc=GF;if(role==='head'){const md=myDept();dc=md?md.id:''}
+  const cs=$('#dCat');let dc=GF;if(hd()){const md=myDept();dc=md?md.id:''}
   cs.innerHTML=(isA?opt('','— ทุกกลุ่มงาน —'):'')+S.depts.filter(d=>isA||d.id===dc).map(d=>opt(d.id,`${d.code?d.code+' ':''}${d.name||'(กลุ่มใหม่)'} (${grpStaff(d).length} คน)`,d.id===dc)).join('');cs.value=dc;cs.disabled=!isA;
   const D=dc&&S.depts.find(d=>d.id===dc);
   const tops=[...new Set(S.depts.map(d=>(d.headName||'')+'|'+(d.headPos||'')))];
@@ -1892,7 +1895,8 @@ function renderStaff(){
      <div class="row"><label>ชื่อกลุ่มงาน</label>${din('name','ชื่อกลุ่มงาน',220)}</div>
      <div class="row"><label>รหัสเข้าระบบ<br><span class="muted" style="font-weight:400">หัวหน้ากลุ่มงาน</span></label><div style="display:flex;gap:6px;align-items:center">${din('code','เช่น 0800',90)}${D.pwHash?`<button class="btn sec sm" data-dreset="${D.id}">รีเซ็ตรหัสผ่าน</button>`:'<span class="muted">รหัสผ่าน = รหัสเข้าระบบ</span>'}</div></div>
      <div class="row"><label>ผู้บังคับบัญชาชั้นต้น<br><span class="muted" style="font-weight:400">ผอ./หัวหน้ากลุ่ม</span></label>${din('supName','เลือกจากเจ้าหน้าที่ในกลุ่ม',220)}</div>
-     <div class="row"><label>ตำแหน่ง</label>${din('supPos','ตำแหน่ง (เติมให้อัตโนมัติ)',220)}</div></div>
+     <div class="row"><label>ตำแหน่ง</label>${din('supPos','ตำแหน่ง (เติมให้อัตโนมัติ)',220)}</div>
+     <div class="row"><label>สิทธิ์ดูข้อมูล<br><span class="muted" style="font-weight:400">ของหัวหน้าที่ใช้รหัสนี้</span></label><label style="display:flex;gap:8px;align-items:center;font-weight:400"><input type="checkbox" data-dall="${D.id}" ${deptAll(D)?'checked':''} style="width:auto"> ดูข้อมูลได้ทุกกลุ่มงาน <span class="muted">(เช่น หัวหน้าสำนักงาน · ถ้าไม่ติ๊ก ดูได้เฉพาะกลุ่มนี้)</span></label></div></div>
      <datalist id="supList">${grpStaff(D).map(x=>`<option value="${esc(x.name)}">${esc(x.pos||'')}</option>`).join('')}</datalist></div>`}
   else{$('#grpTitle').textContent=`กลุ่มงานทั้งหมด (${S.depts.length})`;$('#grpBtns').innerHTML=`<button class="btn sec sm" id="hImport">อัปเดตจากรายชื่อ สนจ.ยล.</button> <button class="btn sec sm" id="dAdd">+ เพิ่มกลุ่มงาน</button>`;
     $('#dTable').innerHTML=`<div class="gchips">${S.depts.map(d=>`<button class="hcard" data-dsel="${d.id}" title="${esc(d.name)}"><span class="muted" data-dsel="${d.id}">${esc(d.code||'-')} · ${grpStaff(d).length} คน</span><b data-dsel="${d.id}">${esc((d.name||'(ยังไม่ตั้งชื่อ)').replace(/^กลุ่มงาน/,''))}</b><span class="muted" data-dsel="${d.id}" style="font-size:12px">${d.supName?esc(d.supName):'⚠ ยังไม่มีผู้บังคับบัญชาชั้นต้น'}</span></button>`).join('')}</div>`}
@@ -1906,7 +1910,7 @@ function renderStaff(){
    <td>${inp(s,'code','width:80px',` class="${s.code&&S.staff.filter(x=>norm(x.code)===norm(s.code)).length>1?'dup':''}"`)}</td>
    <td>${inp(s,'name','min-width:170px')}${isSup?'<div class="muted">★ ผู้บังคับบัญชาชั้นต้น</div>':''}</td><td>${inp(s,'pos','min-width:170px')}</td>
    <td><select data-sid="${s.id}" data-f="etype" style="min-width:120px">${opt('','— เลือก —')+ETYPES.map(e=>opt(e,e,e===s.etype)).join('')}</select></td>
-   ${D?'':`<td><select data-sid="${s.id}" data-f="dept" style="min-width:170px"${role==='head'?' disabled':''}>${dopts(s.dept)}</select></td>`}
+   ${D?'':`<td><select data-sid="${s.id}" data-f="dept" style="min-width:170px"${hd()?' disabled':''}>${dopts(s.dept)}</select></td>`}
    <td>${inp(s,'tel','width:115px')}</td><td>${inp(s,'addr','min-width:150px')}</td>
    ${isA?`<td><input data-sid="${s.id}" data-f="cid" value="${esc(cidFmt(s.cid))}" inputmode="numeric" maxlength="17" style="width:145px" class="${s.cid&&!cidValid(s.cid)?'dup':''}"></td>`:''}
    ${[['qVac',Q.vac],['qCarry',Q.carry],['qSick',Q.sick],['qBiz',Q.biz]].map(([f,v])=>`<td><input type="number" min="0" max="365" step="0.5" data-sid="${s.id}" data-f="${f}" value="${v}" style="width:60px"></td>`).join('')}
@@ -1923,6 +1927,7 @@ $('#stSearch').addEventListener('input',()=>renderStaff());$('#dCat').addEventLi
   if(id==='topName'){const m=S.staff.find(x=>norm(x.name)===norm(n));if(m&&m.pos){p=m.pos;$('#topPos').value=p}}
   S.depts.forEach(d=>{d.headName=n;d.headPos=p;delete d.headSrc});clearTimeout(deptTimer);deptTimer=setTimeout(()=>{saveDepts();$('#topNote').textContent='บันทึกแล้ว'},600)}));
 async function hImportClick(){if(!await ask(`อัปเดตกลุ่มงานและผู้บังคับบัญชาจาก${DIR_SRC}?<br><span class="muted">ชื่อหัวหน้าที่ท่านพิมพ์แก้เองจะไม่ถูกแทนที่</span>`))return;const r=importDirectory();renderStaff();toast(`เพิ่ม ${r.add} · อัปเดต ${r.upd} กลุ่มงาน`)}
+$('#grpPanel').addEventListener('change',e=>{const c=e.target.closest('[data-dall]');if(!c)return;const d=S.depts.find(x=>x.id===c.dataset.dall);if(!d)return;d.all=c.checked;saveDepts();toast(c.checked?`หัวหน้า${d.name} ดูข้อมูลได้ทุกกลุ่มงาน`:`หัวหน้า${d.name} ดูข้อมูลได้เฉพาะกลุ่มของตนเอง`)});
 $('#grpPanel').addEventListener('click',async e=>{if(e.target.id==='hImport')return hImportClick();if(e.target.id==='dAdd')return dAddClick();const sel=e.target.dataset.dsel||(e.target.closest('[data-dsel]')||{dataset:{}}).dataset.dsel;if(sel){GF=sel;renderStaff();$('#grpPanel').scrollIntoView({behavior:'smooth'});return}const rs=e.target.dataset.dreset;if(rs){const d=S.depts.find(x=>x.id===rs);if(d&&await ask(`รีเซ็ตรหัสผ่านของ ${esc(d.name)} กลับเป็นรหัสเข้าระบบ (${esc(d.code)})?`)){delete d.pwHash;saveDepts();renderStaff();toast('รีเซ็ตรหัสผ่านแล้ว')}return}const id=e.target.dataset.drm;if(!id)return;const d=S.depts.find(x=>x.id===id),n=S.staff.filter(x=>norm(x.dept)===norm(d.name)).length;
   if(!await ask(`ลบกลุ่มงาน <b>${esc(d.name||'(ไม่มีชื่อ)')}</b>?${n?`<br>มีเจ้าหน้าที่ ${n} คนอยู่ในกลุ่มนี้ ต้องเลือกกลุ่มงานใหม่ให้ภายหลัง`:''}`))return;S.depts=S.depts.filter(x=>x!==d);saveDepts();GF='';renderStaff()});
 function dAddClick(){const t=S.depts[0]||{},n=S.depts.map(d=>parseInt(d.code,10)).filter(x=>!isNaN(x)),nd={id:uid(),name:'',cat:t.cat||'อื่นๆ',min:t.min||'',code:String((n.length?Math.max(...n):0)+100).padStart(4,'0'),supName:'',supPos:'',headName:t.headName||'',headPos:t.headPos||''};S.depts.push(nd);saveDepts();GF=nd.id;renderStaff();const i=document.querySelector('#dTable input[data-f="name"]');if(i)i.focus()}
@@ -1948,7 +1953,7 @@ $('#bStaff').addEventListener('click',async e=>{
     if(!await ask(`ลบ <b>${esc(s.name||'(ไม่มีชื่อ)')}</b> ออกจากรายชื่อ?${n?`<br><span style="color:var(--red)">มีประวัติการลา ${n} รายการ (ยังเก็บไว้ แต่จะไม่แสดงในแบบสรุป)</span>`:''}`))return;
     S.staff=S.staff.filter(x=>x.id!==rm);saveStaff();renderStaff();toast('ลบรายชื่อแล้ว')}
 });
-$('#bAdd').onclick=()=>{const D=role==='head'?myDept():S.depts.find(d=>d.id===$('#dCat').value);$('#stSearch').value='';const pool=(D?grpStaff(D):S.staff).map(x=>parseInt(x.code,10)).filter(x=>!isNaN(x));let code=pool.length?Math.max(...pool)+1:(D&&parseInt(D.code,10)?parseInt(D.code,10)+1:1001);while(staffByCode(String(code).padStart(4,'0')))code++;const st={id:uid(),code:String(code).padStart(4,'0'),name:'',pos:'',etype:'ข้าราชการ',...qDefOf('ข้าราชการ'),qCarry:0,dept:D?D.name:''};S.staff.push(st);saveStaff();renderStaff();const el=document.querySelector(`#bStaff input[data-sid="${st.id}"][data-f="name"]`);if(el){el.focus();el.scrollIntoView({block:'center'})}toast(D?`เพิ่มแถวใหม่ใน${D.name} กรอกชื่อได้ทันที`:'เพิ่มแถวใหม่แล้ว อย่าลืมเลือกกลุ่มงาน')};
+$('#bAdd').onclick=()=>{const D=hd()?myDept():S.depts.find(d=>d.id===$('#dCat').value);$('#stSearch').value='';const pool=(D?grpStaff(D):S.staff).map(x=>parseInt(x.code,10)).filter(x=>!isNaN(x));let code=pool.length?Math.max(...pool)+1:(D&&parseInt(D.code,10)?parseInt(D.code,10)+1:1001);while(staffByCode(String(code).padStart(4,'0')))code++;const st={id:uid(),code:String(code).padStart(4,'0'),name:'',pos:'',etype:'ข้าราชการ',...qDefOf('ข้าราชการ'),qCarry:0,dept:D?D.name:''};S.staff.push(st);saveStaff();renderStaff();const el=document.querySelector(`#bStaff input[data-sid="${st.id}"][data-f="name"]`);if(el){el.focus();el.scrollIntoView({block:'center'})}toast(D?`เพิ่มแถวใหม่ใน${D.name} กรอกชื่อได้ทันที`:'เพิ่มแถวใหม่แล้ว อย่าลืมเลือกกลุ่มงาน')};
 async function allLeaves(){
   if(!store.cloud)return LV;
   const out=[];for(let y=curFY()-5;y<=curFY()+1;y++){const s=await store.db.collection('leaves').where('fy','==',y).get();s.docs.forEach(d=>out.push({...d.data()}))}return out;
@@ -2615,7 +2620,7 @@ function renderHome(){if(!attReady(renderHome))return;setTimeout(fitHome,0);
 function homeAtt(){ATD=ATD||todayISO();$('#adDate').value=ATD;
   const VS=attStaff(),LM=lvOn(ATD),A=VS.map(st=>({st,a:attOf(st,ATD,LM)})),c={'':0};AST.forEach(x=>c[x.k]=0);A.forEach(x=>c[x.a.s]++);
   const g=gDept(),here=c['มา']+c['สาย']+c['ไปราชการ'],done=VS.length-c[''];
-  $('#adDonutT').textContent=thD(ATD);$('#adSub').innerHTML=`${esc(g?g.name:role==='head'&&myDept()?myDept().name:'ทุกกลุ่มงาน')}${ETF?' · '+esc(ETN[ETF]):''} · ${WD[pd(ATD).getUTCDay()]} ${thDL(ATD)}${isOff(ATD)?' · <b>วันหยุด: '+esc(offName(ATD))+'</b>':''} · ปฏิบัติงาน <b>${pct(here,VS.length)}%</b> · บันทึกแล้ว ${done}/${VS.length} คน`;
+  $('#adDonutT').textContent=thD(ATD);$('#adSub').innerHTML=`${esc(g?g.name:hd()&&myDept()?myDept().name:'ทุกกลุ่มงาน')}${ETF?' · '+esc(ETN[ETF]):''} · ${WD[pd(ATD).getUTCDay()]} ${thDL(ATD)}${isOff(ATD)?' · <b>วันหยุด: '+esc(offName(ATD))+'</b>':''} · ปฏิบัติงาน <b>${pct(here,VS.length)}%</b> · บันทึกแล้ว ${done}/${VS.length} คน`;
   const K=[['👥',VS.length,'เจ้าหน้าที่ทั้งหมด','*','#000000'],...AST.map(x=>[x.i,c[x.k],x.k==='มา'?'มาปฏิบัติงาน':x.k==='สาย'?'มาสาย':x.k,x.k,x.c]),['❔',c[''],'ยังไม่บันทึก','','#94a3b8']];
   $('#adKpi').innerHTML=K.map(([ic,n,l,f,col],i)=>`<button class="hcard${f===''&&n&&!isOff(ATD)?' warn':''}" data-af="${f}" style="animation-delay:${i*40}ms;--c:${col}"><div class="ic">${ic}</div><div class="n" data-count="${n}" data-suf=" คน">0</div><div class="l">${l}</div></button>`).join('');countUp($('#adKpi'));
   const D=[...AST,ASC['']].map(x=>({x,v:c[x.k]})).filter(o=>o.v),C=2*Math.PI*52;let off=0;
@@ -2636,14 +2641,14 @@ $('#adDate').onchange=e=>{if(e.target.value){ATD=e.target.value;renderHome()}};
 $('#adToday').onclick=()=>{ATD=todayISO();renderHome()};$('#adPrev').onclick=()=>{ATD=addD(ATD,-1);renderHome()};$('#adNext').onclick=()=>{ATD=addD(ATD,1);renderHome()};
 $('#home').addEventListener('click',e=>{const k=e.target.closest('[data-af]');if(k){const f=k.dataset.af;ATF=f==='*'?null:f;showTab('att');return}
   const pp=e.target.closest('[data-pid]');if(pp){openPerson(pp.dataset.pid);return}
-  const e2=e.target.closest('[data-et2]');if(e2){ETF=e2.dataset.et2;renderHome();return}const gd=e.target.closest('[data-gd]');if(gd&&role==='admin'){GF=gd.dataset.gd;renderGrpF();renderHome();return}
+  const e2=e.target.closest('[data-et2]');if(e2){ETF=e2.dataset.et2;renderHome();return}const gd=e.target.closest('[data-gd]');if(gd&&(role==='admin'||headAll())){GF=gd.dataset.gd;renderGrpF();renderHome();return}
   const b=e.target.closest('[data-go2]');if(b){ATF=b.dataset.go2==='att'?'':null;showTab(b.dataset.go2)}});
 
 /* ----- รายงาน ----- */
 const arMode=()=>(document.querySelector('input[name=arM]:checked')||{}).value||'d';
 function arMonOpts(){const t=todayISO(),o=[];let y=+t.slice(0,4),m=+t.slice(5,7);for(let i=0;i<18;i++){o.push(`${y}-${String(m).padStart(2,'0')}`);if(--m<1){m=12;y--}}return o}
-function arData(){const VS=attStaff(),g=gDept(),scope=(g?g.name:role==='head'&&myDept()?myDept().name:'ทุกกลุ่มงาน')+(ETF?' · '+ETN[ETF]:'');
-  if(arMode()==='d'){const d=ATD,LM=lvOn(d),DP=role==='head'?[myDept()].filter(Boolean):g?[g]:S.depts;
+function arData(){const VS=attStaff(),g=gDept(),scope=(g?g.name:hd()&&myDept()?myDept().name:'ทุกกลุ่มงาน')+(ETF?' · '+ETN[ETF]:'');
+  if(arMode()==='d'){const d=ATD,LM=lvOn(d),DP=hd()?[myDept()].filter(Boolean):g?[g]:S.depts;
     const G=DP.map(dp=>{const L=VS.filter(st=>norm(st.dept)===norm(dp.name));return{name:dp.name,n:L.length,c:attCount(L,d,LM)}}).filter(x=>x.n);
     const ET=byEt(VS).map(x=>({name:(x.k==='0'?'':x.k+'. ')+ETN[x.k],n:x.L.length,c:attCount(x.L,d,LM)})),tot={n:VS.length,c:attCount(VS,d,LM)},away=VS.map(st=>({st,a:attOf(st,d,LM)})).filter(x=>x.a.s!=='มา').sort((p,q)=>etgOf(p.st).localeCompare(etgOf(q.st)));
     return{m:'d',scope,title:'รายงานการมาปฏิบัติราชการประจำวัน',ET,when:`${['วันอาทิตย์','วันจันทร์','วันอังคาร','วันพุธ','วันพฤหัสบดี','วันศุกร์','วันเสาร์'][pd(d).getUTCDay()]}ที่ ${thDL(d)}`,G,tot,away}}
@@ -2807,7 +2812,7 @@ function makeSheetDB(url){
       try{const r=await fetch(url,{method:'POST',body:JSON.stringify({ver,ops:batch,a:(batch[0]&&batch[0].a)||shAuth()})});if(!r.ok)throw new Error('HTTP '+r.status);const R=await r.json();if(R.err==='auth')shAuthLost();
         ops=ops.slice(batch.length);lastSync=Date.now();const no=(R.res||[]).filter(x=>!x).length;
         if(R.data){take(R);notify();if(typeof ghOnRemote==='function')ghOnRemote()}else{ver=R.ver;size=JSON.stringify(D).length}
-        if(no){ver=-1;await pull();notify();if(batch.some((o,i)=>!(R.res||[])[i]&&o.p.startsWith('cfg/'))&&typeof loadCfg==='function'){try{await loadCfg();renderTab(curTab())}catch(e){}}if(typeof ghOnRemote==='function')ghOnRemote();toast(`มี ${no} รายการที่ไม่ได้บันทึก เพราะไม่มีสิทธิ์ — กรุณาเข้าสู่ระบบก่อนแก้ไข`,true)}
+        if(no){ver=-1;await pull();notify();if(batch.some((o,i)=>!(R.res||[])[i]&&o.p.startsWith('cfg/'))&&typeof loadCfg==='function'){try{await loadCfg();renderTab(curTab())}catch(e){}}if(typeof ghOnRemote==='function')ghOnRemote();toast(`มี ${no} รายการที่ไม่ได้บันทึก เพราะไม่อยู่ในสิทธิ์ของบัญชีนี้`,true)}
         setState(ops.length?'saving':'ok')}
       catch(e){setState('err',shErr(e))}
     })().finally(()=>{saving=null;if(ops.length)sched(state==='err'?15000:800)});return saving}
