@@ -1520,7 +1520,10 @@ $('#subnav').onclick=e=>{const b=e.target.closest('[data-t]');if(b)showTab(b.dat
 const curTab=()=>curT;
 function renderTab(t){if(LV.some(l=>T[l.type]&&T[l.type].adm))migAdm();if(role==='admin')renderGrpF();if(PAGES[t]&&PAGES[t][2]&&isMgr())etBar();({gh:renderGh,admins:renderAdm,person:renderPsn,att:renderAtt,arep:renderArep,fb:renderFb,home:renderHome,add:renderAdd,back:renderBack,pend:renderPend,rec:renderRec,all:renderAllList,sum:renderSum,rep:renderRep,base:renderBase,staff:renderStaff,hol:renderHol,exp:renderExp,form:renderForm})[t]()}
 function renderAll(){renderHeader();renderTab(curTab())}
-function renderLive(){renderHeader();const t=curTab();if(t==='base'&&document.activeElement&&document.activeElement.closest('#base'))return;if(t==='rec'){renderPerson();updForm()}else renderTab(t)}
+let liveWait=false;
+const typing=()=>{const ae=document.activeElement;return !!(ae&&/INPUT|TEXTAREA|SELECT/.test(ae.tagName)&&ae.closest('main')&&!ae.readOnly&&ae.type!=='checkbox'&&ae.type!=='radio'&&ae.type!=='button')};
+document.addEventListener('focusout',()=>setTimeout(()=>{if(liveWait&&!typing()){liveWait=false;try{renderLive()}catch(e){}}},150));
+function renderLive(){if(typing()){liveWait=true;return}renderHeader();const t=curTab();if(t==='base'&&document.activeElement&&document.activeElement.closest('#base'))return;if(t==='rec'){renderPerson();updForm()}else renderTab(t)}
 function renderHeader(){const st=S.settings,[a,b]=curPeriod();$('#hSub').textContent=`${st.org||'-'} · รอบ${+st.round===1?'ครึ่งปีแรก':'ครึ่งปีหลัง'} ปีงบประมาณ ${st.year} (${thD(a)} – ${thD(b)})`;const n=pendCount();$('#pendN').textContent=n||'';$('#demoBadge').style.display=hasDemo()?'':'none'}
 
 /* ---------- รอตรวจสอบ (ผู้ดูแล) ---------- */
@@ -2702,7 +2705,7 @@ function makeGhDB(c){
     if(o.v&&Array.isArray(o.v._chg)){const v=ghClone(o.v),ch=v._chg;delete v._chg;const cur=X[col][id],rows={...((cur&&cur.rows)||{})};ch.forEach(k=>{if(v.rows&&v.rows[k])rows[k]=v.rows[k];else delete rows[k]});if(Object.keys(rows).length)X[col][id]={...(cur||{}),...v,rows};else delete X[col][id];return}
     if(o.v==null)delete X[col][id];else X[col][id]=ghClone(o.v)};
   const snap=(col,f)=>({docs:Object.values(D[col]||{}).filter(x=>!f||f(x)).map(x=>({data:()=>ghClone(x)})),metadata:{fromCache:false}});
-  const notify=()=>listeners.forEach(L=>{try{L.cb(snap(L.c,L.f))}catch(e){}});
+  const notify=(c)=>listeners.forEach(L=>{if(c&&L.c!==c)return;try{L.cb(snap(L.c,L.f))}catch(e){}});
   const setState=(s,e)=>{state=s;err=e||'';if(typeof ghBadge==='function')ghBadge()};
   const pull=async()=>{const R=await ghGetFile(c,etag);if(R.same){lastSync=Date.now();return false}
     if(R.missing){D={};sha=null;etag=null}else{D=R.data||{};sha=R.sha;etag=R.etag;size=R.size||0}
@@ -2717,7 +2720,7 @@ function makeGhDB(c){
           setState('err',ghErrText(e));break}}
     })().finally(()=>{saving=null;if(ops.length&&state!=='err')sched()});return saving}
   const sched=()=>{clearTimeout(timer);timer=setTimeout(save,1500)};
-  const put=(p,v)=>{const o={p,v:ghClone(v)};ops.push(o);apply(o,D);setState('saving');sched();notify()};
+  const put=(p,v)=>{const o={p,v:ghClone(v)};ops.push(o);apply(o,D);setState('saving');sched();notify(p.slice(0,p.indexOf('/')))};
   setInterval(async()=>{if(document.hidden||saving||ops.length||state==='err'&&!err.includes('เชื่อมต่อ'))return;try{if(await pull()){notify();if(typeof ghOnRemote==='function')ghOnRemote()}if(state!=='ok')setState('ok')}catch(e){setState('err',ghErrText(e))}},45000);
   window.addEventListener('beforeunload',e=>{if(ops.length||saving){e.preventDefault();e.returnValue='ยังบันทึกข้อมูลขึ้นฐานข้อมูลกลางไม่เสร็จ'}});
   const q=(col,f)=>({get:async()=>{await ready;return snap(col,f)},onSnapshot:(cb,er)=>{const L={c:col,f,cb};listeners.push(L);ready.then(()=>cb(snap(col,f))).catch(e=>er&&er(e));return()=>{listeners=listeners.filter(x=>x!==L)}}});
@@ -2739,7 +2742,7 @@ function makeSheetDB(url){
     if(o.v&&Array.isArray(o.v._chg)){const v=ghClone(o.v),ch=v._chg;delete v._chg;const cur=X[col][id],rows={...((cur&&cur.rows)||{})};ch.forEach(k=>{if(v.rows&&v.rows[k])rows[k]=v.rows[k];else delete rows[k]});if(Object.keys(rows).length)X[col][id]={...(cur||{}),...v,rows};else delete X[col][id];return}
     if(o.v==null)delete X[col][id];else X[col][id]=ghClone(o.v)};
   const snap=(col,f)=>({docs:Object.values(D[col]||{}).filter(x=>!f||f(x)).map(x=>({data:()=>ghClone(x)})),metadata:{fromCache:false}});
-  const notify=()=>listeners.forEach(L=>{try{L.cb(snap(L.c,L.f))}catch(e){}});
+  const notify=(c)=>listeners.forEach(L=>{if(c&&L.c!==c)return;try{L.cb(snap(L.c,L.f))}catch(e){}});
   const setState=(s,e)=>{state=s;err=e||'';if(typeof ghBadge==='function')ghBadge()};
   const take=R=>{D=R.data||{};ver=R.ver;size=JSON.stringify(D).length;ops.forEach(o=>apply(o,D))};
   const pull=async()=>{const r=await fetch(url+(url.includes('?')?'&':'?')+'v='+ver+'&t='+Date.now(),{cache:'no-store'});if(!r.ok)throw new Error('HTTP '+r.status);
@@ -2756,7 +2759,7 @@ function makeSheetDB(url){
       catch(e){setState('err',shErr(e))}
     })().finally(()=>{saving=null;if(ops.length)sched(state==='err'?15000:800)});return saving}
   const sched=(ms)=>{clearTimeout(timer);timer=setTimeout(save,ms||1200)};
-  const put=(p,v)=>{const o={p,v:ghClone(v),a:shAuth()};ops.push(o);apply(o,D);setState('saving');sched();notify()};
+  const put=(p,v)=>{const o={p,v:ghClone(v),a:shAuth()};ops.push(o);apply(o,D);setState('saving');sched();notify(p.slice(0,p.indexOf('/')))};
   setInterval(async()=>{if(document.hidden||saving||ops.length)return;try{if(await pull()){notify();if(typeof ghOnRemote==='function')ghOnRemote()}if(state!=='ok')setState('ok')}catch(e){setState('err',shErr(e))}},60000);
   window.addEventListener('beforeunload',e=>{if(ops.length||saving){e.preventDefault();e.returnValue='ยังบันทึกข้อมูลขึ้นฐานข้อมูลกลางไม่เสร็จ'}});
   const q=(col,f)=>({get:async()=>{await ready;return snap(col,f)},onSnapshot:(cb,er)=>{const L={c:col,f,cb};listeners.push(L);ready.then(()=>cb(snap(col,f))).catch(e=>er&&er(e));return()=>{listeners=listeners.filter(x=>x!==L)}}});
@@ -2770,7 +2773,7 @@ function ghErrText(e){const s=e&&e.status;return s===401?'token ไม่ถู�
 function ghBadge(){const m=document.getElementById('mode');if(!m||!store.gh)return;const I=store.db.info();
   m.textContent=I.state==='saving'?'☁ กำลังบันทึก…':I.state==='err'?'⚠ ฐานข้อมูลกลาง: '+I.err:'☁ ฐานข้อมูลกลาง';m.title=I.lastSync?'ซิงค์ล่าสุด '+new Date(I.lastSync).toLocaleTimeString('th-TH'):'';m.style.color=I.state==='err'?'#FF3B30':'';
   if(typeof curTab==='function'&&curTab()==='gh'&&typeof renderGh==='function')renderGh()}
-function ghOnRemote(){const ae=document.activeElement;if(ae&&/INPUT|TEXTAREA|SELECT/.test(ae.tagName)&&ae.closest('main'))return;if(typeof renderLive==='function'&&typeof curTab==='function'&&!['rec','base','form','gh','admins'].includes(curTab())){atLoaded=0;try{renderTab(curTab())}catch(e){}}}
+function ghOnRemote(){if(typing()){liveWait=true;return}if(typeof renderLive==='function'&&typeof curTab==='function'&&!['rec','base','form','gh','admins'].includes(curTab())){atLoaded=0;try{renderTab(curTab())}catch(e){}}}
 function localSnapshot(){const C={};['settings','staff','holidays','forms','depts'].forEach(k=>{const v=lsGet('cfg:'+k);if(v)C[k]=v});
   const L=lsGet('leaves'),A=lsGet('att'),F=lsGet('feedback'),o=(arr)=>Object.fromEntries((arr||[]).filter(x=>x&&x.id).map(x=>[x.id,x]));
   return{cfg:C,leaves:o(Array.isArray(L)?L:[]),attendance:A&&typeof A==='object'?A:{},feedback:o(Array.isArray(F)?F:[])}}
