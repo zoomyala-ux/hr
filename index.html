@@ -971,7 +971,7 @@ html[data-device=mobile] .amt thead{display:none}html[data-device=mobile] .amt t
  <div class="am-grid">
   <div class="panel"><h3><span>☁️ เชื่อมต่อฐานข้อมูลกลาง</span></h3><div class="bd">
    <div class="row"><label>บัญชี GitHub</label><input id="ghOwner" placeholder="zoomyala-ux" autocomplete="off"></div>
-   <div class="row"><label>Repository (ส่วนตัว)</label><input id="ghRepo" placeholder="leave-data" autocomplete="off"></div>
+   <div class="row"><label>Repository (ส่วนตัว)</label><input id="ghRepo" placeholder="hr-data" autocomplete="off"></div>
    <div class="row" id="ghTokRow"><label>Token</label><input id="ghTok" type="password" placeholder="วาง token ที่ขึ้นต้นด้วย github_pat_" autocomplete="off"></div>
    <div class="btns"><button class="btn" id="ghOn">ทดสอบและเชื่อมต่อ</button><button class="btn red" id="ghOff" style="display:none">ยกเลิกการเชื่อมต่อที่เครื่องนี้</button></div>
    <div class="muted" id="ghMsg" style="margin-top:6px"></div>
@@ -2737,7 +2737,7 @@ function localSnapshot(){const C={};['settings','staff','holidays','forms','dept
   return{cfg:C,leaves:o(Array.isArray(L)?L:[]),attendance:A&&typeof A==='object'?A:{},feedback:o(Array.isArray(F)?F:[])}}
 
 /* หน้าตั้งค่าฐานข้อมูลกลาง */
-function renderGh(){const c=ghCfg()||{};if(!$('#ghOwner').value)$('#ghOwner').value=c.owner||'zoomyala-ux';if(!$('#ghRepo').value)$('#ghRepo').value=c.repo||'leave-data';
+function renderGh(){const c=ghCfg()||{};if(!$('#ghOwner').value)$('#ghOwner').value=c.owner||'zoomyala-ux';if(!$('#ghRepo').value)$('#ghRepo').value=c.repo||'hr-data';
   const on=!!store.gh,I=on?store.db.info():null;
   $('#ghStatus').innerHTML=on?`<div class="alert ${I.state==='err'?'':'ok'}" style="cursor:default">${I.state==='err'?'⚠️ '+esc(I.err):'✅ เชื่อมต่อฐานข้อมูลกลางแล้ว'} · <b>${esc(c.owner+'/'+c.repo)}</b></div>
     <div class="ps-kpi"><div><b>${I.counts.leaves}</b><span>ใบลา</span></div><div><b>${I.counts.attendance}</b><span>รายการบันทึกประจำวัน</span></div><div><b>${(I.size/1024).toFixed(0)} KB</b><span>ขนาดข้อมูล</span></div><div><b>${I.lastSync?new Date(I.lastSync).toLocaleTimeString('th-TH'):'-'}</b><span>ซิงค์ล่าสุด${I.pending?` · รอบันทึก ${I.pending}`:''}</span></div></div>`
