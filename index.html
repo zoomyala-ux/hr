@@ -1418,13 +1418,13 @@ async function psPwFill(){const el=$('#psPw');if(!el)return;const st=staffById(e
   if(!$('#psPw')||$('#psPw').dataset.sid!==st.id)return;
   $('#psPw').innerHTML=h?'🔐 รหัสผ่านเข้าระบบ: <b>ตั้งเองแล้ว</b> <button class="btn sec sm" data-pwreset="'+st.id+'">รีเซ็ตเป็นเลขบัตรประชาชน</button>':ok?'🔐 รหัสผ่านเข้าระบบ: <b>เลขบัตรประชาชน</b> (ค่าเริ่มต้น)':'⚠️ ยังเข้าสู่ระบบไม่ได้ — <b>ยังไม่มีเลขบัตรประชาชน</b> กรอกได้ที่เมนู บุคลากร → รายชื่อ'}
 document.addEventListener('click',async e=>{const b=e.target.closest('[data-pwreset]');if(!b)return;const st=staffById(b.dataset.pwreset);if(!st||!await ask(`รีเซ็ตรหัสผ่านของ <b>${esc(st.name)}</b><br>กลับเป็นเลขบัตรประชาชน 13 หลัก?`))return;spwSet(st.id,null);toast('รีเซ็ตรหัสผ่านแล้ว');setTimeout(psPwFill,300)});
-async function editMine(){const st=sess&&sess.role==='staff'&&staffById(sess.sid);if(!st)return;
-  const pr=ask('<b>แก้ไขข้อมูลของฉัน</b><br>หมายเลขโทรศัพท์','text');$('#mInput').value=st.tel||'';const tel=await pr;if(tel===false)return;
-  const pr2=ask('<b>แก้ไขข้อมูลของฉัน</b><br>ที่อยู่ที่ติดต่อได้ระหว่างลา','text');$('#mInput').value=st.addr||'';const addr=await pr2;if(addr===false)return;
-  st.tel=norm(tel).slice(0,200);st.addr=norm(addr).slice(0,200);
+let myEdit=false;
+function saveMine(){const st=sess&&sess.role==='staff'&&staffById(sess.sid);if(!st)return;
+  st.tel=norm($('#myTel').value).slice(0,40);st.addr=norm($('#myAddr').value).slice(0,200);
   if(store.sheet)store.db.doc('sinfo/'+st.id).set({tel:st.tel,addr:st.addr});else saveStaff();
-  contactAuto=true;fillFromStaff(st);renderRec();toast('บันทึกข้อมูลของท่านแล้ว')}
-document.addEventListener('click',e=>{if(e.target.closest('[data-myedit]'))editMine()});
+  myEdit=false;contactAuto=true;fillFromStaff(st);renderRec();toast('บันทึกข้อมูลของท่านแล้ว')}
+document.addEventListener('click',e=>{if(e.target.closest('[data-myedit]')){myEdit=true;renderRec();setTimeout(()=>$('#myTel')&&$('#myTel').focus(),50)}
+  else if(e.target.closest('[data-mycancel]')){myEdit=false;renderRec()}else if(e.target.closest('[data-mysave]'))saveMine()});
 function lgMode(){document.querySelectorAll('#lgSeg button').forEach(b=>b.classList.toggle('on',b.dataset.m===lgM));$('#lgByRow').style.display=lgM==='s'?'none':'flex';
   $('#lgSub').textContent=lgM==='s'?'สำหรับเจ้าหน้าที่ที่ต้องการยื่นใบลาและดูประวัติการลา':'สำหรับผู้ดูแลระบบ และหัวหน้ากลุ่มงาน';
   if(lgM==='s'){$('#lgLbl').textContent='เลข ID หรือเลขบัตรประชาชน';$('#lgUser').placeholder='เช่น 0405 หรือเลข 13 หลัก';$('#lgUser').inputMode='numeric';$('#lgPwHint').textContent='รหัสผ่านเริ่มต้น: เลขบัตรประชาชน 13 หลักของท่าน';return}
@@ -1618,6 +1618,12 @@ function formVals(){
 function renderWho(v){
   const b=$('#fInfo');if(!v.q){b.innerHTML='';return}
   if(!v.st){b.innerHTML=`<div class="who no">✗ ไม่พบ${isMgr()?'ชื่อหรือ':''}เลข ID “${esc(v.q)}” ในฐานข้อมูล${isMgr()?' — เพิ่มได้ที่แท็บเจ้าหน้าที่':' — โปรดติดต่อผู้ดูแลระบบ'}</div>`;return}
+  if(sess&&sess.role==='staff'&&v.st.id===sess.sid&&myEdit){const s=v.st,ro=(l,x)=>`<div class="row"><label>${l}</label><input value="${esc(x||'-')}" readonly tabindex="-1" style="background:#7676801a!important;color:#6b6b70!important;border-color:transparent!important"></div>`;
+    b.innerHTML=`<div class="who" style="background:#fff"><b>✏️ แก้ไขข้อมูลของฉัน</b><div class="muted" style="font-size:13px;margin:2px 0 8px">ช่องสีเทาแก้ไขได้โดยผู้ดูแลระบบเท่านั้น</div>
+    ${ro('ชื่อ-สกุล',s.name)}${ro('เลข ID',s.code)}${ro('ตำแหน่ง',s.pos)}${ro('กลุ่มงาน',s.dept)}${ro('ประเภทบุคลากร',s.etype)}
+    <div class="row"><label>หมายเลขโทรศัพท์</label><input id="myTel" value="${esc(s.tel||'')}" inputmode="tel" maxlength="40" placeholder="เช่น 08x-xxx-xxxx"></div>
+    <div class="row"><label>ที่อยู่ที่ติดต่อได้<br>ระหว่างลา</label><textarea id="myAddr" rows="2" maxlength="200" placeholder="บ้านเลขที่ ถนน ตำบล อำเภอ จังหวัด">${esc(s.addr||'')}</textarea></div>
+    <div class="btns" style="justify-content:flex-end"><button class="btn sec" data-mycancel>ยกเลิก</button><button class="btn" data-mysave>💾 บันทึก</button></div></div>`;return}
   if(sess&&sess.role==='staff'&&v.st.id===sess.sid){const s=v.st,p=supOf(s),h=topOf(s);b.innerHTML=`<div class="who"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><b>👤 ข้อมูลของฉัน</b><button class="btn sec sm" data-myedit>✏️ แก้ไขข้อมูลของฉัน</button></div>
     <div style="margin-top:4px"><b>${esc(s.name)}</b>${s.code?` <span class="muted">(ID ${esc(s.code)})</span>`:''}</div>ตำแหน่ง ${esc(s.pos||'-')}${s.dept?` · ${esc(s.dept)}`:''}${s.etype?` · ${esc(s.etype)}`:''}
     <br>โทรศัพท์ ${esc(s.tel||'-')} · ที่อยู่ติดต่อ ${esc(s.addr||'-')}${p.name?`<br>ผู้บังคับบัญชาชั้นต้น: ${esc(p.name)}${p.pos?` (${esc(p.pos)})`:''}`:''}${h?`<br>ผู้บังคับบัญชาสูงสุด: ${esc(h.name||'-')}${h.pos?` (${esc(h.pos)})`:''}`:''}</div>`;return}
