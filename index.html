@@ -459,11 +459,12 @@ body.admin #adminBar,body.head #adminBar{display:flex;justify-content:space-betw
 .srch{position:relative}.sug{position:absolute;left:0;right:0;top:100%;background:#fff;border:1px solid #9fb3c8;border-radius:6px;z-index:20;max-height:260px;overflow:auto;box-shadow:0 4px 12px #0002}.sug:empty{display:none}.sug div{padding:7px 9px;cursor:pointer;border-bottom:1px solid #eef2f6}.sug div:hover{background:#e8f0fb}
 body.staff .adm{display:none!important}
 body.head .adminonly{display:none!important}body.head.hall .grpF.adminonly{display:inline-block!important}
-#login.gate{background:var(--bg,#F2F2F7);z-index:200}#login.gate #lgCancel{display:none}
+#modal{z-index:300!important}#login.gate{background:var(--bg,#F2F2F7);z-index:200}#login.gate #lgCancel{display:none}
 .lgSeg{display:flex;background:#7676801f;border-radius:9px;padding:2px;margin:0 0 12px}.lgSeg button{flex:1;border:0;background:transparent;padding:7px 4px;border-radius:7px;font:inherit;font-size:14px;cursor:pointer;color:#3C3C43}.lgSeg button.on{background:#fff;box-shadow:0 1px 3px #0002;font-weight:600}
 body.staff.me #adminBar{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}body.staff.me #roleSeg{display:none}
 #login{position:fixed;inset:0;background:#0006;display:none;align-items:center;justify-content:center;z-index:45}#login.show{display:flex}#login .box{background:#fff;border-radius:12px;padding:22px;max-width:360px;width:92%}
-.sx{font-size:12px;font-weight:700;padding:1px 7px;border-radius:9px;white-space:nowrap}.sx.pending{background:#fff4e0;color:var(--amber)}.sx.approved{background:#e8f5e9;color:var(--green)}.sx.rejected{background:#fdecea;color:var(--red)}
+.sx{font-size:12px;font-weight:700;padding:1px 7px;border-radius:9px;white-space:nowrap}.sx.pending{background:#fff4e0;color:var(--amber)}.sx.approved{background:#e8f5e9;color:var(--green)}.sx.cancelled{background:#eceff1;color:#607d8b}
+.sx.rejected{background:#fdecea;color:var(--red)}
 #pendN{background:var(--red);color:#fff;border-radius:9px;padding:0 6px;font-size:12px}#pendN:empty{display:none}
 @media print{body>*:not(#printArea){display:none!important}#printArea{display:block}}
 
@@ -874,6 +875,7 @@ html[data-device=mobile] .amt thead{display:none}html[data-device=mobile] .amt t
 <div id="pbar"><div class="pt"><h2 id="pTitle"></h2><p id="pDesc"></p></div><div class="pf"><select class="grpF adminonly" title="กรองตามกลุ่มงาน"></select><div class="etF"></div></div></div>
 <main>
 <!-- รอตรวจสอบ -->
+<section id="roll"><div id="rollBody"></div></section>
 <section id="pend"><div class="filters stick"><input id="pSearch" placeholder="🔍 พิมพ์ชื่อค้นหา" style="min-width:220px"></div><div class="tw" id="pTable" data-cardify></div></section>
 <!-- บันทึกการลา -->
 <section id="rec" class="on">
@@ -927,7 +929,7 @@ html[data-device=mobile] .amt thead{display:none}html[data-device=mobile] .amt t
  </div>
 </section>
 <!-- หน้าหลัก -->
-<section id="home">
+<section id="home"><div id="sysAl"></div>
  <div class="hero att slim"><div class="blob b1"></div><div class="blob b2"></div>
   <div class="hrow"><div><h2 id="hmHello">ภาพรวมการปฏิบัติราชการ</h2><p id="adSub"></p></div><div class="dnav"><button id="adPrev" title="วันก่อนหน้า">◀</button><input type="date" id="adDate"><button id="adNext" title="วันถัดไป">▶</button><button id="adToday">วันนี้</button></div></div>
   <div class="hfil"><select class="grpF adminonly" title="กรองตามกลุ่มงาน"></select><div class="etF"></div></div></div>
@@ -946,7 +948,7 @@ html[data-device=mobile] .amt thead{display:none}html[data-device=mobile] .amt t
  <div id="psBody"></div>
 </section>
 <section id="att">
- <div class="filters stick"><button class="btn sec sm" id="atPrev" title="วันก่อนหน้า">◀</button><input type="date" id="atDate"><button class="btn sec sm" id="atNext" title="วันถัดไป">▶</button><button class="btn sec sm" id="atToday">วันนี้</button><input id="atSearch" placeholder="🔍 ค้นหาชื่อ" style="min-width:180px"><button class="btn" id="atAllIn">✅ บันทึก “มา” ให้ผู้ที่ยังไม่บันทึก</button><button class="btn sec sm" id="atClear">ล้างข้อมูลวันนี้</button></div>
+ <div class="filters stick"><button class="btn sec sm" id="atPrev" title="วันก่อนหน้า">◀</button><input type="date" id="atDate"><button class="btn sec sm" id="atNext" title="วันถัดไป">▶</button><button class="btn sec sm" id="atToday">วันนี้</button><input id="atSearch" placeholder="🔍 ค้นหาชื่อ" style="min-width:180px"><button class="btn" id="atAllIn">✅ บันทึก “มา” ให้ผู้ที่ยังไม่บันทึก</button><button class="btn sec sm" id="atClear">ล้างข้อมูลวันนี้</button><button class="btn sec sm adminonly" id="atScan" onclick="document.getElementById('atScanF').click()">📥 นำเข้าจากเครื่องสแกน</button><input type="file" id="atScanF" accept=".xlsx,.csv,.txt" style="display:none" onchange="if(this.files[0])scanImport(this.files[0]);this.value=''"></div>
  <div id="atInfo"></div><div id="atSum"></div><div id="atList"></div>
 </section>
 <section id="arep">
@@ -1182,6 +1184,7 @@ html[data-device=mobile] .amt thead{display:none}html[data-device=mobile] .amt t
  <div class="muted" id="lgPwHint" style="font-size:13px"></div>
  <div id="lgErr" style="color:var(--red);min-height:1.4em;font-size:14px"></div>
  <div class="btns" style="justify-content:flex-end"><button class="btn sec" id="lgCancel">ยกเลิก</button><button class="btn" id="lgOk">เข้าสู่ระบบ</button></div>
+ <div style="font-size:12.5px;margin-top:12px;text-align:center"><a href="#" id="lgPdpa" style="color:var(--sub,#8e8e93)">🔒 การคุ้มครองข้อมูลส่วนบุคคล</a></div>
 </div></div>
 <div id="toast"></div>
 <div id="pvModal"><div class="pvm"><div class="pvh"><div><b style="font-size:18px">👁 ตรวจสอบใบลาก่อนบันทึก</b><div class="muted" id="pvInfo"></div></div><button class="btn sec sm" id="pvEdit">✕</button></div>
@@ -1206,7 +1209,7 @@ const isLeave=l=>!T[l.type]?.late&&l.type!=='ขาดราชการ';
 const MS=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
 const ML=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
 const WD=['อา.','จ.','อ.','พ.','พฤ.','ศ.','ส.'];
-const STX={pending:'รออนุมัติ',approved:'อนุมัติแล้ว',rejected:'ไม่อนุมัติ'};
+const STX={pending:'รออนุมัติ',approved:'อนุมัติแล้ว',rejected:'ไม่อนุมัติ',cancelled:'ยกเลิกแล้ว'};
 const DEF_HOL=[['2025-10-13','วันนวมินทรมหาราช'],['2025-10-23','วันปิยมหาราช'],['2025-12-05','วันพ่อแห่งชาติ'],['2025-12-10','วันรัฐธรรมนูญ'],['2025-12-31','วันสิ้นปี'],['2026-01-01','วันขึ้นปีใหม่'],['2026-03-03','วันมาฆบูชา'],['2026-03-20','วันตรุษอีดิ้ลฟิตรี (4 จังหวัดชายแดนใต้) *'],['2026-04-06','วันจักรี'],['2026-04-13','วันสงกรานต์'],['2026-04-14','วันสงกรานต์'],['2026-04-15','วันสงกรานต์'],['2026-05-04','วันฉัตรมงคล'],['2026-05-27','วันตรุษอีดิ้ลอัฎฮา (4 จังหวัดชายแดนใต้) *'],['2026-06-01','ชดเชยวันวิสาขบูชา'],['2026-06-03','วันเฉลิมพระชนมพรรษาสมเด็จพระราชินี'],['2026-07-28','วันเฉลิมพระชนมพรรษา ร.10'],['2026-07-29','วันอาสาฬหบูชา'],['2026-07-30','วันเข้าพรรษา'],['2026-08-12','วันแม่แห่งชาติ']];
 const APP_NAME='ระบบบันทึกเวลาปฏิบัติราชการและการลา';
 const DEF_SET={org:'สำนักงานจังหวัดยะลา',admin:'',round:1,year:2569,maxTimes:10,maxDays:23,maxLate:10,pinHash:''};
@@ -1334,7 +1337,7 @@ async function loadCfg(){
 }
 async function boot(){
   setRole('staff',true);
-  if(!(window.claude&&typeof claude.use==='function')&&shUrl()&&!shAuth()){store.sheet=true;store.gate=true;$('#hSub').textContent='';$('#mode').textContent='☁ ฐานข้อมูลกลาง';openLogin(true);return}
+  if(!(window.claude&&typeof claude.use==='function')&&shUrl()&&!shAuth()){store.sheet=true;store.gate=true;$('#hSub').textContent='';$('#mode').textContent='☁ ฐานข้อมูลกลาง';openLogin(true);try{const m=sessionStorage.getItem('leaveapp:msg');if(m){sessionStorage.removeItem('leaveapp:msg');$('#lgErr').textContent=m}}catch(e){}return}
   let db=null,u=null;
   if(window.claude&&typeof claude.use==='function'){try{[db,u]=await Promise.all([claude.use('db'),claude.use('user')])}catch(e){}}
   let canWrite=null;if(u){try{canWrite=await u.can('data.write')}catch(e){}}
@@ -1352,7 +1355,7 @@ async function boot(){
   if((!store.cloud||store.owner)&&!S.settings.noApprove){LV.filter(l=>l.status==='pending').forEach(l=>putLeave({...l,status:'approved'}));S.settings.noApprove=1;saveSet()}
   if((!store.cloud||store.owner)&&S.settings.demoV!=='hr1'){if(!store.sheet)loadDemo();S.settings.demoV='hr1';saveSet()}
   await loadAtt();migAdm();
-  loadSess();setRole(sess?sess.role:'staff');if(!sess)openLogin(true);
+  loadSess();setRole(sess?sess.role:'staff');if(!sess)openLogin(true);else{idleKick();if(sess.must)setTimeout(forcePw,600)}
 }
 
 /* ---------- roles / login ---------- */
@@ -1368,7 +1371,8 @@ const inDept=st=>{const d=myDept();return !!(d&&st&&(deptAll(d)||norm(st.dept)==
 let GF='';
 const gDept=()=>role==='admin'&&GF?S.depts.find(d=>d.id===GF)||null:null;
 const inGF=st=>{const g=gDept();return !g||!!(st&&norm(st.dept)===norm(g.name))};
-const visStaff0=()=>hd()?S.staff.filter(inDept):S.staff.filter(inGF);
+let showOff=false;
+const visStaff0=()=>(hd()?S.staff.filter(inDept):S.staff.filter(inGF)).filter(s=>showOff||!s.off);
 const etOn=()=>{if(!ETF||typeof PAGES==='undefined')return!!ETF;const P=PAGES[curT];return!P||!!P[2]};
 const visStaff=()=>{const on=etOn();return visStaff0().filter(st=>!on||etgOf(st)===ETF)};
 const inScope=l=>{const st=staffById(l.staffId)||staffByName(l.nm);if(ETF&&etOn()&&(!st||etgOf(st)!==ETF))return false;if(hd())return inDept(st);const g=gDept();return !g||(st?inGF(st):norm(l.dept)===norm(g.name))};
@@ -1394,8 +1398,9 @@ $('#lgCancel').onclick=()=>$('#login').className='';
 async function doLogin(){
   if(store.sheet){const u=norm($('#lgUser').value),p=$('#lgPass').value;if(!u||!p){$('#lgErr').textContent='กรอกชื่อผู้ใช้และรหัสผ่าน';return}
     const a=lgM==='s'?{u,p,m:'s'}:{u,p};$('#lgOk').disabled=true;$('#lgErr').textContent='กำลังตรวจสอบ…';
-    try{const R=await shLogin(a);if(!R.who){$('#lgErr').textContent=lgM==='s'?'เลข ID / เลขบัตรประชาชน หรือรหัสผ่านไม่ถูกต้อง (ถ้ายังไม่มีเลขบัตรประชาชนในระบบ กรุณาติดต่อผู้ดูแลระบบ)':'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง';return}
-      shSetAuth(a);sess=R.who;saveSess();$('#lgErr').textContent='เข้าสู่ระบบแล้ว กำลังโหลดข้อมูล…';location.reload()}
+    try{const R=await shLogin(a);if(R.err==='locked'){$('#lgErr').textContent='กรอกรหัสผ่านผิดหลายครั้ง ระบบระงับการเข้าสู่ระบบของบัญชีนี้ชั่วคราว 15 นาที';return}
+      if(!R.who){$('#lgErr').textContent=(lgM==='s'?'เลข ID / เลขบัตรประชาชน หรือรหัสผ่านไม่ถูกต้อง (ถ้ายังไม่มีเลขบัตรประชาชนในระบบ กรุณาติดต่อผู้ดูแลระบบ)':'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง')+(R.left!=null&&R.left<3?` · เหลืออีก ${R.left} ครั้งก่อนถูกระงับชั่วคราว`:'');return}
+      shSetAuth({t:R.t});sess={...R.who,must:!!R.must};saveSess();$('#lgErr').textContent='เข้าสู่ระบบแล้ว กำลังโหลดข้อมูล…';location.reload()}
     catch(e){$('#lgErr').textContent='เชื่อมต่อฐานข้อมูลกลางไม่ได้ กรุณาลองใหม่'}finally{$('#lgOk').disabled=false}return}
   if(store.gh){try{await store.db.pull();const st=await cfgGet('settings');if(st)S.settings={...DEF_SET,...st};const dp=await cfgGet('depts');if(dp&&Array.isArray(dp.items))S.depts=dp.items}catch(e){}}
   const u=norm($('#lgUser').value),p=$('#lgPass').value;if(!u||!p){$('#lgErr').textContent='กรอกชื่อผู้ใช้และรหัสผ่าน';return}
@@ -1438,12 +1443,17 @@ $('#lgCode').onchange=$('#lgCid').onchange=()=>{lgMode();$('#lgUser').value='';$
 $('#whoCode').onchange=$('#whoCid').onchange=()=>{$('#fName').value='';renderRec();$('#fName').focus()};
 $('#lgOk').onclick=doLogin;$('#lgPass').onkeydown=e=>{if(e.key==='Enter')doLogin()};$('#lgUser').onkeydown=e=>{if(e.key==='Enter')$('#lgPass').focus()};
 $('#roleSeg').onclick=e=>{const b=e.target.closest('[data-r]');if(!b)return;if(b.dataset.r==='staff'){if(role!=='staff')setRole('staff')}else if(sess){if(role==='staff')setRole(sess.role)}else openLogin()};
-$('#exitAdmin').onclick=async()=>{GF='';sess=null;saveSess();if(store.sheet){try{await store.db.flush()}catch(e){}shSetAuth(null);location.reload();return}shSetAuth(null);setRole('staff');openLogin(true);toast('ออกจากระบบแล้ว')};
+$('#exitAdmin').onclick=()=>doLogout();
+async function forcePw(){if(!sess||!sess.must)return;await $('#chgPw').onclick();if(sess&&sess.must){const y=await ask('<b>ยังไม่ได้ตั้งรหัสผ่านใหม่</b><br>ต้องตั้งรหัสผ่านใหม่ก่อนจึงจะใช้งานได้');$('#mYes').textContent='ยืนยัน';if(y)return forcePw();return doLogout()}}
+let idleT=0;const IDLE_MIN=30;function idleKick(){clearTimeout(idleT);if(sess&&store.sheet)idleT=setTimeout(()=>doLogout(`ออกจากระบบอัตโนมัติ เพราะไม่ได้ใช้งานเกิน ${IDLE_MIN} นาที`),IDLE_MIN*60000)}
+['click','keydown','touchstart','scroll'].forEach(ev=>document.addEventListener(ev,()=>{if(!idleT||Date.now()-(idleKick.t||0)>5000){idleKick.t=Date.now();idleKick()}},{passive:true}));
+async function doLogout(msg){GF='';sess=null;saveSess();if(store.sheet){try{await store.db.flush()}catch(e){}const a=shAuth();shSetAuth(null);try{await fetch(shUrl(),{method:'POST',body:JSON.stringify({logout:1,a})})}catch(e){}if(msg)try{sessionStorage.setItem('leaveapp:msg',msg)}catch(e){}location.reload();return}shSetAuth(null);setRole('staff');openLogin(true);toast('ออกจากระบบแล้ว')};
 $('#chgPw').onclick=async()=>{
-  const p=await ask('<b>เปลี่ยนรหัสผ่าน</b><br>รหัสผ่านใหม่ (อย่างน้อย 4 ตัว)','password');if(p===false)return;if(p.length<4)return toast('รหัสผ่านต้องมีอย่างน้อย 4 ตัว',true);
+  const forced=sess&&sess.must;const p=await ask(`<b>${forced?'ตั้งรหัสผ่านใหม่ก่อนเริ่มใช้งาน':'เปลี่ยนรหัสผ่าน'}</b><br>${forced?'เพื่อความปลอดภัย ต้องเปลี่ยนรหัสผ่านเริ่มต้นในการเข้าสู่ระบบครั้งแรก<br>':''}รหัสผ่านใหม่ (อย่างน้อย 6 ตัว)`,'password');if(p===false)return;if(p.length<6)return toast('รหัสผ่านต้องมีอย่างน้อย 6 ตัว',true);
+  {const me=sess.role==='staff'?staffById(sess.sid):null,d=sess.role==='head'?myDept():null;const eqC=(x,y)=>!!x&&x===y;if((me&&eqC(cidDigits(p),cidDigits(me.cid)))||(d&&(p===d.code||eqC(cidDigits(p),cidDigits((staffByName(d.supName)||{}).cid)))))return toast('รหัสผ่านใหม่ต้องไม่ใช่รหัสเริ่มต้น (เลขบัตรประชาชนหรือรหัสกลุ่มงาน)',true)}
   const p2=await ask('<b>ยืนยันรหัสผ่านใหม่</b><br>กรอกรหัสผ่านใหม่อีกครั้ง','password');if(p2===false)return;if(p2!==p)return toast('รหัสผ่านทั้งสองครั้งไม่ตรงกัน ยังไม่ได้เปลี่ยนรหัสผ่าน',true);
   if(sess.role==='staff')spwSet(sess.sid,await sha('staff|'+sess.sid+'|'+p));else if(sess.role==='admin'){const A=sess.aid&&(S.settings.admins||[]).find(a=>a.id===sess.aid);if(A)A.hash=await sha('adm|'+A.user.toLowerCase()+'|'+p);else S.settings.adminHash=await sha('admin|'+p);saveSet()}else{const d=myDept();d.pwHash=await sha('head|'+d.code+'|'+p);saveDepts()}
-  setTimeout(()=>{const a=shAuth();if(a)shSetAuth({...a,p})},60);pwDone();
+  if(sess.must){sess.must=false;saveSess()}if(sess.role==='admin'&&curAdm())curAdm().mustPw=false,saveSet();pwDone();
 };
 function pwDone(){if(store.cloud)toast('เปลี่ยนรหัสผ่านแล้ว มีผลทุกเครื่องที่เปิดหน้านี้');else{const pr=ask(`<b>เปลี่ยนรหัสผ่านแล้ว</b><br>รหัสผ่านใหม่มีผล<b>เฉพาะเครื่องและเบราว์เซอร์นี้</b> เพราะระบบยังเก็บข้อมูลแยกในแต่ละเครื่อง<br><br>เครื่องอื่น หรือเบราว์เซอร์อื่นในเครื่องเดียวกัน ยังใช้รหัสผ่านเดิมจนกว่าจะเปลี่ยนที่เครื่องนั้นด้วย หรือนำเข้าไฟล์สำรองข้อมูลจากเครื่องนี้<br><br>ถ้าเบราว์เซอร์จำรหัสผ่านเดิมไว้ ให้แก้รหัสที่บันทึกไว้ในเบราว์เซอร์ด้วย`);const y=$('#mYes'),n=$('#mNo'),yc=y.className,yt=y.textContent;y.textContent='รับทราบ';y.className='btn';n.style.display='none';pr.then(()=>{y.textContent=yt;y.className=yc;n.style.display=''})}}
 
@@ -1454,16 +1464,16 @@ const inRound=l=>{const[a,b]=curPeriod();return l.start>=a&&l.start<=b};
 const fyAll=()=>LV.filter(l=>l.fy===curFY());
 const fyLeaves=()=>fyAll().filter(l=>l.status==='approved').concat(attVirt(curFY()));
 const roundLeaves=()=>fyLeaves().filter(inRound);
-const active=l=>l.status!=='rejected';
+const active=l=>l.status!=='rejected'&&l.status!=='cancelled';
 const sameGrp=(a,b)=>!!(a&&b&&norm(a.dept)===norm(b.dept));
 const grpMates=st=>S.staff.filter(x=>st&&x.id!==st.id&&sameGrp(x,st));
 const LV2=['ข้าราชการ','พนักงานราชการ'];
 const lvlOK=(a,b)=>!a||!b?true:LV2.includes(a)?LV2.includes(b):a===b;
 const subRule=et=>!et?'':LV2.includes(et)?'ข้าราชการหรือพนักงานราชการ':et;
-const subPool=st=>{const all=S.staff.filter(x=>st&&x.id!==st.id&&lvlOK(st.etype,x.etype)),g=all.filter(x=>sameGrp(x,st));return g.length?g:all};
+const subPool=st=>{const all=S.staff.filter(x=>st&&!x.off&&x.id!==st.id&&lvlOK(st.etype,x.etype)),g=all.filter(x=>sameGrp(x,st));return g.length?g:all};
 const subOK=(st,s2)=>lvlOK(st.etype,s2.etype)&&(sameGrp(st,s2)||!subPool(st).some(x=>sameGrp(x,st)));
 const ownFresh=l=>l.by==='staff'&&Date.now()-(+l.ts||0)<864e5;
-const pendCount=()=>LV.filter(l=>l.status==='pending'&&inScope(l)).length;
+const pendCount=()=>LV.filter(l=>(l.status==='pending'||(l.status==='approved'&&l.cancelReq))&&inScope(l)).length;
 const staffById=id=>S.staff.find(s=>s.id===id);
 const norm=x=>String(x||'').replace(/\s+/g,' ').trim();
 const staffByName=n=>{n=norm(n);return n?S.staff.find(s=>norm(s.name)===n):null};
@@ -1537,12 +1547,12 @@ function reportDoc(title,body){
 function printHTML(html){$('#printArea').innerHTML=html.replace(/^[\s\S]*?<body>/,'').replace(/<\/body>[\s\S]*$/,'');try{window.print()}catch(e){}}
 
 /* ---------- tabs ---------- */
-const ACC={gh:'admin',admins:'admin',fb:'all',home:'mgr',att:'mgr',rec:'all',all:'mgr',back:'admin',pend:'admin',arep:'mgr',sum:'mgr',rep:'mgr',staff:'mgr',person:'mgr',add:'admin',exp:'mgr',base:'admin',hol:'admin',form:'admin'};
+const ACC={gh:'admin',admins:'admin',fb:'all',home:'mgr',att:'mgr',rec:'all',all:'mgr',back:'admin',pend:'admin',roll:'admin',arep:'mgr',sum:'mgr',rep:'mgr',staff:'mgr',person:'mgr',add:'admin',exp:'mgr',base:'admin',hol:'admin',form:'admin'};
 const GROUPS={leave:[['pend','✅ รออนุมัติ'],['all','📋 ใบลาทั้งหมด'],['rec','➕ เพิ่มใบลา 1 ใบ'],['back','🧾 เพิ่มใบลาหลายใบ / ย้อนหลัง']],report:[['arep','🕘 การมาปฏิบัติราชการ (รายวัน/รายเดือน)'],['sum','📊 สรุปวันลารายคน (รอบครึ่งปี)'],['rep','📈 กราฟ / รายเดือน / รายบุคคล']],people:[['staff','👥 รายชื่อ / กลุ่มงาน / โควต้า'],['person','🪪 ประวัติรายคน']],set:[['base','🏢 หน่วยงาน / ปีงบ / เกณฑ์'],['hol','🗓️ วันหยุดราชการ'],['form','🖨️ หน้าตาใบลา'],['admins','👤 ผู้ดูแลระบบ'],['gh','☁️ ฐานข้อมูลกลาง'],['add','⬆ นำเข้า Excel'],['exp','⬇ ดาวน์โหลด / สำรองข้อมูล']]};
 const PAGES={home:['หน้าหลัก','',1],att:['บันทึกประจำวัน','บันทึกสถานะการมาปฏิบัติราชการรายบุคคล ระบบจัดเก็บข้อมูลโดยอัตโนมัติ · ผู้ที่มีใบลาในระบบจะแสดงสถานะ “ลา” โดยอัตโนมัติ',1],all:['ใบลาทั้งหมด','ค้นหา แก้ไข ลบ และพิมพ์ใบลา',1],rec:['เพิ่มใบลา 1 ใบ','บันทึกใบลาและพิมพ์เป็น PDF (กรณีมาสาย/ขาดราชการ ให้บันทึกที่เมนูบันทึกประจำวัน)',0],back:['เพิ่มใบลาหลายใบ','บันทึกใบลาหลายรายการพร้อมกัน สำหรับข้อมูลย้อนหลัง',1],
   arep:['รายงานการมาปฏิบัติราชการ','รายวันหรือสรุปรายเดือน · พิมพ์ / PDF / Excel',1],sum:['สรุปวันลารายคน','รอบครึ่งปีปัจจุบัน ผู้ที่ลาเกินเกณฑ์ · มาสาย/ขาด นับจากบันทึกประจำวัน',1],rep:['กราฟและรายงานการลา','ภาพรวม รายเดือน และรายบุคคล',1],
   staff:['รายชื่อบุคลากร','กลุ่มงาน ประเภทบุคลากร เลข ID และโควต้าวันลา',0],person:['ประวัติรายคน','ข้อมูลใบลา สิทธิ์วันลา และการมาปฏิบัติราชการรายบุคคล',1],
-  base:['หน่วยงาน / ปีงบ / เกณฑ์','ชื่อหน่วยงาน รอบครึ่งปี เกณฑ์การลา และรหัสผ่าน',0],hol:['วันหยุดราชการ','ใช้นับวันทำการทั้งในใบลาและบันทึกประจำวัน',0],form:['หน้าตาใบลา','ข้อความและผู้ลงนามในใบลาที่พิมพ์',0],add:['นำเข้าข้อมูลจาก Excel','ดาวน์โหลดแบบฟอร์ม กรอกข้อมูล แล้วนำเข้าระบบ',0],exp:['ดาวน์โหลดรายงาน / สำรองข้อมูล','ไฟล์ Excel และไฟล์สำรองข้อมูลทั้งระบบ',1],gh:['ฐานข้อมูลกลาง','ทุกเครื่องใช้ข้อมูลชุดเดียวกัน',0],admins:['จัดการผู้ดูแลระบบ','เพิ่ม แก้ไข ระงับ หรือลบบัญชีผู้ดูแลระบบ · ผู้ดูแลระบบทุกคนใช้งานได้ทุกเมนู',0],fb:['แจ้งปัญหา / ข้อเสนอแนะ','แจ้งปัญหาการใช้งานหรือข้อเสนอแนะเพื่อการปรับปรุงระบบ',0],pend:['ใบลารออนุมัติ','ตรวจกับใบลาที่ได้รับอนุญาตทางกระดาษแล้ว จึงกดอนุมัติ · ใบลาที่ยังไม่อนุมัติจะไม่นับวันลา',0]};
+  base:['หน่วยงาน / ปีงบ / เกณฑ์','ชื่อหน่วยงาน รอบครึ่งปี เกณฑ์การลา และรหัสผ่าน',0],hol:['วันหยุดราชการ','ใช้นับวันทำการทั้งในใบลาและบันทึกประจำวัน',0],form:['หน้าตาใบลา','ข้อความและผู้ลงนามในใบลาที่พิมพ์',0],add:['นำเข้าข้อมูลจาก Excel','ดาวน์โหลดแบบฟอร์ม กรอกข้อมูล แล้วนำเข้าระบบ',0],exp:['ดาวน์โหลดรายงาน / สำรองข้อมูล','ไฟล์ Excel และไฟล์สำรองข้อมูลทั้งระบบ',1],gh:['ฐานข้อมูลกลาง','ทุกเครื่องใช้ข้อมูลชุดเดียวกัน',0],admins:['จัดการผู้ดูแลระบบ','เพิ่ม แก้ไข ระงับ หรือลบบัญชีผู้ดูแลระบบ · ผู้ดูแลระบบทุกคนใช้งานได้ทุกเมนู',0],fb:['แจ้งปัญหา / ข้อเสนอแนะ','แจ้งปัญหาการใช้งานหรือข้อเสนอแนะเพื่อการปรับปรุงระบบ',0],roll:['ปิดปีงบประมาณ / ยกวันลาพักผ่อนสะสม','ตรวจวันลาพักผ่อนคงเหลือ กำหนดวันที่ยกไปปีถัดไป แล้วเริ่มปีงบประมาณใหม่',0],pend:['ใบลารออนุมัติ','ตรวจกับใบลาที่ได้รับอนุญาตทางกระดาษแล้ว จึงกดอนุมัติ · ใบลาที่ยังไม่อนุมัติจะไม่นับวันลา',0]};
 function setPbar(t){const P=PAGES[t]||['','',0],b=$('#pbar');$('#pTitle').textContent=P[0];$('#pDesc').textContent=P[1];b.className=(t==='home'?'home ':'')+(P[2]&&isMgr()?'':'nof')+(!P[0]?' off':'');if(P[2]&&isMgr())etBar()}
 const canTab=t=>{const a=ACC[t]||'mgr';return a==='all'||(a==='mgr'&&isMgr())||(a==='admin'&&role==='admin')};
 const grpOf=t=>Object.keys(GROUPS).find(g=>GROUPS[g].some(x=>x[0]===t));
@@ -1555,7 +1565,7 @@ function showTab(t){if(t==='pend'&&role!=='admin')t='all';if(!canTab(t))t=isMgr(
 $('#tabs').onclick=e=>{const b=e.target.closest('button[data-t],button[data-g]');if(!b)return;if(b.dataset.g){const L=GROUPS[b.dataset.g].map(x=>x[0]).filter(canTab);showTab(L.includes(lastInG[b.dataset.g])?lastInG[b.dataset.g]:L[0])}else showTab(b.dataset.t)};
 $('#subnav').onclick=e=>{const b=e.target.closest('[data-t]');if(b)showTab(b.dataset.t)};
 const curTab=()=>curT;
-function renderTab(t){if(LV.some(l=>T[l.type]&&T[l.type].adm))migAdm();if(role==='admin'||headAll())renderGrpF();if(PAGES[t]&&PAGES[t][2]&&isMgr())etBar();({gh:renderGh,admins:renderAdm,person:renderPsn,att:renderAtt,arep:renderArep,fb:renderFb,home:renderHome,add:renderAdd,back:renderBack,pend:renderPend,rec:renderRec,all:renderAllList,sum:renderSum,rep:renderRep,base:renderBase,staff:renderStaff,hol:renderHol,exp:renderExp,form:renderForm})[t]()}
+function renderTab(t){if(LV.some(l=>T[l.type]&&T[l.type].adm))migAdm();if(role==='admin'||headAll())renderGrpF();if(PAGES[t]&&PAGES[t][2]&&isMgr())etBar();({roll:renderRoll,gh:renderGh,admins:renderAdm,person:renderPsn,att:renderAtt,arep:renderArep,fb:renderFb,home:renderHome,add:renderAdd,back:renderBack,pend:renderPend,rec:renderRec,all:renderAllList,sum:renderSum,rep:renderRep,base:renderBase,staff:renderStaff,hol:renderHol,exp:renderExp,form:renderForm})[t]()}
 function renderAll(){renderHeader();renderTab(curTab())}
 let liveWait=false;
 const typing=()=>{const ae=document.activeElement;return !!(ae&&/INPUT|TEXTAREA|SELECT/.test(ae.tagName)&&ae.closest('main')&&!ae.readOnly&&ae.type!=='checkbox'&&ae.type!=='radio'&&ae.type!=='button')};
@@ -1569,6 +1579,9 @@ function renderPend(){
   const q=norm($('#pSearch').value).toLowerCase(),P=LV.filter(l=>l.status==='pending'&&inScope(l)&&(!q||staffName(l).toLowerCase().includes(q)));
   $('#pTable').innerHTML=P.length?`<table><thead><tr><th>ที่</th><th>ชื่อ-สกุล</th><th>ประเภท</th><th>ตั้งแต่</th><th>ถึง</th><th>รวม</th><th>เหตุผล/หมายเหตุ</th><th>ส่งเมื่อ</th><th>สรุปรอบนี้ (อนุมัติแล้ว)</th><th></th></tr></thead><tbody>${P.map((l,i)=>{const s=stats(keyOf(l),roundLeaves());return`<tr><td class="c">${i+1}</td><td>${esc(staffName(l))}<div class="muted">${esc(posOf(l))}${l.dept?' · '+esc(l.dept):''}${l.tel?' · โทร '+esc(l.tel):''}${staffByName(l.nm)||staffById(l.staffId)?'':' · <b style="color:var(--amber)">ชื่อใหม่</b>'}</div></td><td>${esc(l.type)}${l.half?' ('+esc(l.half)+')':''}</td><td class="c">${thD(l.start)}</td><td class="c">${thD(l.end)}</td><td class="c">${fmt(l.days)} วัน</td><td>${esc(l.note)}</td><td class="c muted">${thTime(l.ts)}</td><td class="muted">ป่วย+กิจ ${s.qc} ครั้ง ${fmt(s.qd)} วัน${s.over.length?' <span class="st bad">เกินเกณฑ์</span>':''}</td><td class="c" style="white-space:nowrap"><button class="btn sm" data-ok="${l.id}">อนุมัติ</button> <button class="btn red sm" data-no="${l.id}">ไม่อนุมัติ</button> <button class="btn sec sm" data-edit="${l.id}">แก้ไข</button> ${pdfBtn(l)}</td></tr>`}).join('')}</tbody></table>
   <div class="btns"><button class="btn" id="okAll">อนุมัติทั้งหมด (${P.length})</button></div>`:'<div class="empty">ไม่มีใบลารอตรวจสอบ</div>';
+  {const C=LV.filter(l=>l.status==='approved'&&l.cancelReq&&inScope(l)&&(!q||staffName(l).toLowerCase().includes(q)));
+   if(C.length)$('#pTable').insertAdjacentHTML('beforeend',`<h3 style="margin:18px 0 6px">↩️ คำขอยกเลิกวันลา <span class="pcnt">${C.length}</span></h3><table><thead><tr><th>ชื่อ-สกุล</th><th>ใบลาที่อนุมัติแล้ว</th><th>ขอยกเลิก</th><th>เหตุผล</th><th>ขอเมื่อ</th><th></th></tr></thead><tbody>${C.map(l=>{const c=l.cancelReq;return`<tr><td>${esc(staffName(l))}<div class="muted">${esc(l.dept||'')}</div></td><td>${esc(l.type)} ${thD(l.start)}${l.end!==l.start?' – '+thD(l.end):''} (${fmt(l.days)} วัน)</td><td><b>${c.mode==='all'?'ยกเลิกทั้งหมด':`ใช้ลาจริงถึง ${thD(c.until)} (${fmt(c.days)} วัน) · ยกเลิก ${fmt((+l.days||0)-(+c.days||0))} วัน`}</b></td><td>${esc(c.reason||'')}</td><td class="c muted">${thTime(c.at)}</td><td class="c" style="white-space:nowrap"><button class="btn sm" data-cxok="${l.id}">อนุมัติการยกเลิก</button> <button class="btn red sm" data-cxno="${l.id}">ไม่อนุมัติ</button></td></tr>`}).join('')}</tbody></table>`);
+   if(!P.length&&C.length)$('#pTable').querySelector('.empty')?.remove()}
   const b=$('#okAll');if(b)b.onclick=async()=>{if(!await ask(`อนุมัติใบลาทั้งหมด ${P.length} รายการ?`))return;P.forEach(approve);toast('อนุมัติแล้ว');renderAll()};
 }
 function linkStaff(info){
@@ -1577,6 +1590,27 @@ function linkStaff(info){
   else{let ch=0;['pos','dept','tel'].forEach(f=>{if(!st[f]&&info[f]){st[f]=info[f];ch=1}});if(ch)saveStaff()}
   return st;
 }
+async function reqCancel(l){const last=l.end||l.start,one=last===l.start;
+  const ok=await ask(`<b>ขอยกเลิกวันลา</b><br>${esc(l.type)} ${thD(l.start)}${one?'':' – '+thD(last)} (${fmt(l.days)} วัน)<div style="text-align:left;margin-top:10px;line-height:2">
+   <label style="display:flex;gap:8px;align-items:center"><input type="radio" name="cxm" value="all" checked style="width:auto"> ยกเลิกทั้งหมด</label>
+   ${one?'':`<label style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><input type="radio" name="cxm" value="part" style="width:auto"> ยกเลิกบางวัน · ใช้ลาจริงถึงวันที่ <input type="date" id="cxUntil" min="${l.start}" max="${addD(last,-1)}" value="${addD(last,-1)}" style="width:auto"></label>`}
+   <input id="cxWhy" placeholder="เหตุผล เช่น ถูกเรียกกลับมาปฏิบัติราชการ" style="margin-top:6px"></div>
+   <div class="muted" style="font-size:13px;margin-top:6px">คำขอจะส่งถึงผู้ดูแลระบบ · วันลาจะคืนเมื่อผู้ดูแลระบบอนุมัติการยกเลิก</div>`);
+  if(!ok)return;const mode=(document.querySelector('input[name=cxm]:checked')||{}).value||'all',until=mode==='part'?$('#cxUntil').value:'',why=norm($('#cxWhy').value);
+  if(mode==='part'&&(!until||until<l.start||until>=last))return toast('วันที่ใช้ลาจริงไม่ถูกต้อง',true);
+  const days=mode==='part'?calcDays(l.type,l.start,until,''):0;
+  putLeave({...l,cancelReq:{mode,until,days,reason:why,at:Date.now()}});toast('ส่งคำขอยกเลิกวันลาแล้ว — รอผู้ดูแลระบบอนุมัติ');renderAll()}
+const cxNote=l=>l.cancelDone?`<div class="muted" style="font-size:12.5px">↩️ ${l.cancelDone.mode==='all'?'ยกเลิกทั้งหมด':`ยกเลิกบางส่วน (เดิมถึง ${thD(l.cancelDone.origEnd)}, ${fmt(l.cancelDone.origDays)} วัน)`}${l.cxBy?' · โดย '+esc(l.cxBy):''}</div>`:l.cancelRej?`<div class="muted" style="font-size:12.5px">↩️ คำขอยกเลิกไม่ได้รับอนุมัติ${l.cancelRej.reason?': '+esc(l.cancelRej.reason):''}</div>`:'';
+document.addEventListener('click',async e=>{const b=e.target.closest('[data-cxreq],[data-cxwd],[data-cxok],[data-cxno]');if(!b)return;
+  const l=findLeave(b.dataset.cxreq||b.dataset.cxwd||b.dataset.cxok||b.dataset.cxno);if(!l)return;
+  if(b.dataset.cxreq)return reqCancel(l);
+  if(b.dataset.cxwd){if(!await ask('ถอนคำขอยกเลิกวันลานี้?'))return;const x={...l};delete x.cancelReq;putLeave(x);toast('ถอนคำขอแล้ว');return renderAll()}
+  const c=l.cancelReq;if(!c)return;
+  if(b.dataset.cxok){if(!await ask(`อนุมัติการยกเลิกวันลาของ <b>${esc(staffName(l))}</b>?<br>${c.mode==='all'?'ยกเลิกทั้งหมด':'ใช้ลาจริงถึง '+thD(c.until)}`))return;
+    const x={...l,cancelDone:{...c,origEnd:l.end,origDays:l.days,doneAt:Date.now()}};delete x.cancelReq;
+    if(c.mode==='all')x.status='cancelled';else{x.end=c.until;x.days=c.days;x.half=''}
+    putLeave(x);toast('อนุมัติการยกเลิกวันลาแล้ว');return renderAll()}
+  if(b.dataset.cxno){const r=await ask('ไม่อนุมัติการยกเลิกวันลา · เหตุผล:','text');if(r===false)return;const x={...l,cancelRej:{reason:r||'',at:Date.now()}};delete x.cancelReq;putLeave(x);toast('บันทึกแล้ว');renderAll()}});
 function approve(l){const st=linkStaff(l);putLeave({...l,staffId:st.id,status:'approved'})}
 document.addEventListener('click',async e=>{
   const b=e.target.closest('[data-ok],[data-no],[data-edit],[data-del]');if(!b)return;
@@ -1794,7 +1828,7 @@ async function renderHist(v,mineAll){
   $('#pHistSum').innerHTML=L.length?`<div class="chips">${Object.entries(tot).map(([t,x])=>`<span class="chip">${esc(T[t]?T[t].s:t)}: <b>${x.c}</b> ครั้ง${T[t]?.late?'':` / <b>${fmt(x.d)}</b> วัน`}</span>`).join('')||'<span class="muted">ยังไม่มีรายการ</span>'}</div><div class="muted" style="margin:4px 0">${L.length} รายการ</div>`:'';
   const cnt={};
   $('#pHist').innerHTML=L.length?`<table><thead><tr><th>ปีงบ/รอบ</th><th>ครั้ง</th><th>ลา</th><th>ตั้งแต่</th><th>ถึง</th><th>รวม</th><th></th></tr></thead><tbody>${L.map(l=>{const ok=l.status==='approved',k=l.fy+'|'+halfOf(l)+'|'+l.type;if(ok)cnt[k]=(cnt[k]||0)+1;const can=isMgr()||l.status==='pending';
-    return`<tr class="${l.id===editId?'edit':''}"><td class="c" style="white-space:nowrap">${roundName(l)}</td><td class="c">${ok?cnt[k]:'-'}</td><td>${esc(l.type)}${l.half?` <span class="muted">(${esc(l.half)})</span>`:''} ${sx(l.status)}${l.note?`<div class="muted">${esc(l.note)}</div>`:''}${l.reason?`<div class="muted" style="color:var(--red)">เหตุผล: ${esc(l.reason)}</div>`:''}</td><td class="c">${thD(l.start)}</td><td class="c">${T[l.type]?.late?'-':thD(l.end)}</td><td class="c">${fmt(l.days)}</td><td class="c" style="white-space:nowrap">${pdfBtn(l)} ${can?`<button class="btn sec sm" data-edit="${l.id}">แก้ไข</button>`:''}${!isMgr()&&l.status==='pending'?` <button class="btn red sm" data-del="${l.id}">ลบ</button>`:''}</td></tr>`}).join('')}</tbody></table>`:`<div class="empty">ไม่มีประวัติการลาในช่วงนี้</div>`;
+    return`<tr class="${l.id===editId?'edit':''}"><td class="c" style="white-space:nowrap">${roundName(l)}</td><td class="c">${ok?cnt[k]:'-'}</td><td>${esc(l.type)}${l.half?` <span class="muted">(${esc(l.half)})</span>`:''} ${sx(l.status)}${l.note?`<div class="muted">${esc(l.note)}</div>`:''}${l.reason?`<div class="muted" style="color:var(--red)">เหตุผล: ${esc(l.reason)}</div>`:''}${cxNote(l)}</td><td class="c">${thD(l.start)}</td><td class="c">${T[l.type]?.late?'-':thD(l.end)}</td><td class="c">${fmt(l.days)}</td><td class="c" style="white-space:nowrap">${pdfBtn(l)} ${can?`<button class="btn sec sm" data-edit="${l.id}">แก้ไข</button>`:''}${!isMgr()&&l.status==='pending'?` <button class="btn red sm" data-del="${l.id}">ลบ</button>`:''}${l.status==='approved'&&!T[l.type]?.adm?(l.cancelReq?` <span class="sx pending">รอยกเลิก</span> <button class="btn sec sm" data-cxwd="${l.id}">ถอนคำขอ</button>`:` <button class="btn sec sm" data-cxreq="${l.id}">ขอยกเลิก</button>`):''}</td></tr>`}).join('')}</tbody></table>`:`<div class="empty">ไม่มีประวัติการลาในช่วงนี้</div>`;
 }
 $('#pRange').addEventListener('change',()=>renderPerson());
 
@@ -1906,20 +1940,20 @@ function renderStaff(){
   else{$('#grpTitle').textContent=`กลุ่มงานทั้งหมด (${S.depts.length})`;$('#grpBtns').innerHTML=`<button class="btn sec sm" id="hImport">อัปเดตจากรายชื่อ สนจ.ยล.</button> <button class="btn sec sm" id="dAdd">+ เพิ่มกลุ่มงาน</button>`;
     $('#dTable').innerHTML=`<div class="gchips">${S.depts.map(d=>`<button class="hcard" data-dsel="${d.id}" title="${esc(d.name)}"><span class="muted" data-dsel="${d.id}">${esc(d.code||'-')} · ${grpStaff(d).length} คน</span><b data-dsel="${d.id}">${esc((d.name||'(ยังไม่ตั้งชื่อ)').replace(/^กลุ่มงาน/,''))}</b><span class="muted" data-dsel="${d.id}" style="font-size:12px">${d.supName?esc(d.supName):'⚠ ยังไม่มีผู้บังคับบัญชาชั้นต้น'}</span></button>`).join('')}</div>`}
   const q=norm($('#stSearch').value).toLowerCase();
-  const VS=visStaff().filter(x=>(!D||norm(x.dept)===norm(D.name))&&(!q||[x.code,x.name,x.pos].some(v=>String(v||'').toLowerCase().includes(q)))).sort((a,b)=>String(a.code).localeCompare(String(b.code)));
+  showOff=isA;const VS=visStaff().filter(x=>(!D||norm(x.dept)===norm(D.name))&&(!q||[x.code,x.name,x.pos].some(v=>String(v||'').toLowerCase().includes(q)))).sort((a,b)=>String(a.code).localeCompare(String(b.code)));showOff=false;
   $('#stTitle').textContent=`เจ้าหน้าที่${D?' — '+D.name:' ทุกกลุ่มงาน'} (${VS.length} คน)`;
   $('#dInfo').textContent=D&&D.supName?`ผู้บังคับบัญชาชั้นต้น: ${D.supName}`:'';
   const dopts=cur=>opt('','— เลือกกลุ่มงาน —')+S.depts.map(d=>opt(d.name,d.name,norm(d.name)===norm(cur))).join('')+(cur&&!S.depts.some(d=>norm(d.name)===norm(cur))?opt(cur,cur+' (ไม่มีในรายการ)',true):'');
   const inp=(s,f,w,extra='')=>`<input data-sid="${s.id}" data-f="${f}" value="${esc(s[f]??'')}" style="${w}"${extra}>`;
   $('#bStaff').innerHTML=VS.length?`<table><thead><tr><th>เลข ID</th><th>ชื่อ-สกุล</th><th>ตำแหน่ง</th><th>ประเภท</th>${D?'':'<th>กลุ่มงาน</th>'}<th>เบอร์โทร</th><th>ที่อยู่ติดต่อ</th>${isA?'<th>เลขบัตรประชาชน</th>':''}<th>พักผ่อน<br>ปีนี้</th><th>พักผ่อน<br>สะสม</th><th>ป่วย</th><th>กิจ</th><th></th></tr></thead><tbody>${VS.map(s=>{const Q=quotaOf(s),isSup=D&&norm(D.supName)===norm(s.name);return`<tr>
    <td>${inp(s,'code','width:80px',` class="${s.code&&S.staff.filter(x=>norm(x.code)===norm(s.code)).length>1?'dup':''}"`)}</td>
-   <td>${inp(s,'name','min-width:170px')}${isSup?'<div class="muted">★ ผู้บังคับบัญชาชั้นต้น</div>':''}</td><td>${inp(s,'pos','min-width:170px')}</td>
+   <td>${inp(s,'name','min-width:170px')}${s.off?`<div><span class="sx rejected">พ้นจากหน่วยงาน${s.offAt?' '+thD(s.offAt):''}</span></div>`:''}${isSup?'<div class="muted">★ ผู้บังคับบัญชาชั้นต้น</div>':''}</td><td>${inp(s,'pos','min-width:170px')}</td>
    <td><select data-sid="${s.id}" data-f="etype" style="min-width:120px">${opt('','— เลือก —')+ETYPES.map(e=>opt(e,e,e===s.etype)).join('')}</select></td>
    ${D?'':`<td><select data-sid="${s.id}" data-f="dept" style="min-width:170px"${hd()?' disabled':''}>${dopts(s.dept)}</select></td>`}
    <td>${inp(s,'tel','width:115px')}</td><td>${inp(s,'addr','min-width:150px')}</td>
    ${isA?`<td><input data-sid="${s.id}" data-f="cid" value="${esc(cidFmt(s.cid))}" inputmode="numeric" maxlength="17" style="width:145px" class="${s.cid&&!cidValid(s.cid)?'dup':''}"></td>`:''}
    ${[['qVac',Q.vac],['qCarry',Q.carry],['qSick',Q.sick],['qBiz',Q.biz]].map(([f,v])=>`<td><input type="number" min="0" max="365" step="0.5" data-sid="${s.id}" data-f="${f}" value="${v}" style="width:60px"></td>`).join('')}
-   <td class="c"><button class="btn red sm" data-rm="${s.id}">ลบ</button></td></tr>`}).join('')}</tbody></table>`:'<div class="empty">ไม่พบเจ้าหน้าที่</div>';
+   <td class="c" style="white-space:nowrap">${isA?`<button class="btn sec sm" data-soff="${s.id}">${s.off?'กลับมาปฏิบัติงาน':'พ้นจากหน่วยงาน'}</button> `:''}<button class="btn red sm" data-rm="${s.id}">ลบ</button></td></tr>`}).join('')}</tbody></table>`:'<div class="empty">ไม่พบเจ้าหน้าที่</div>';
 }
 let deptTimer;
 $('#dTable').addEventListener('input',e=>{const i=e.target,d=S.depts.find(x=>x.id===i.dataset.did);if(!d)return;
@@ -1952,6 +1986,7 @@ $('#bPinSave').onclick=async()=>{const p=$('#bPin').value;if(p.length<4)return t
 let staffTimer;
 $('#bStaff').addEventListener('input',e=>{const i=e.target;if(!i.dataset.sid)return;const s=staffById(i.dataset.sid);if(!s)return;s[i.dataset.f]=/^(vac|q[A-Z])/.test(i.dataset.f)?(+i.value||0):i.dataset.f==='cid'?cidDigits(i.value):i.value.trim();if(i.dataset.f==='cid'){const bad=s.cid&&(!cidValid(s.cid)||S.staff.some(x=>x!==s&&cidDigits(x.cid)===s.cid));i.classList.toggle('dup',!!bad);if(s.cid.length===13&&bad)toast(cidValid(s.cid)?'เลขบัตรประชาชนนี้ซ้ำกับคนอื่น':'เลขบัตรประชาชนไม่ถูกต้อง (ตรวจหลักสุดท้ายไม่ผ่าน)',true)}if(i.dataset.f==='code'){const dup=s.code&&S.staff.some(x=>x!==s&&norm(x.code)===norm(s.code));i.classList.toggle('dup',!!dup);if(dup)toast('เลข ID นี้ซ้ำกับคนอื่น',true)}clearTimeout(staffTimer);staffTimer=setTimeout(saveStaff,600)});
 $('#bStaff').addEventListener('click',async e=>{
+  const so=e.target.dataset.soff;if(so){const st=staffById(so);if(!st)return;if(!st.off){const d=await ask(`<b>${esc(st.name)}</b> พ้นจากหน่วยงาน (ย้าย/ลาออก/เกษียณ)<br>ประวัติการลายังเก็บไว้ครบ แต่จะไม่แสดงในรายชื่อและบันทึกประจำวัน และเข้าสู่ระบบไม่ได้<br>วันที่พ้นจากหน่วยงาน:`,'text');if(d===false)return;st.off=true;st.offAt=/^\d{4}-\d{2}-\d{2}$/.test(d)?d:todayISO()}else{if(!await ask(`ให้ <b>${esc(st.name)}</b> กลับมาปฏิบัติงาน?`))return;delete st.off;delete st.offAt}saveStaff();renderStaff();return}
   const rm=e.target.dataset.rm,up=e.target.dataset.up;
   if(up){const i=S.staff.findIndex(s=>s.id===up);if(i>0){[S.staff[i-1],S.staff[i]]=[S.staff[i],S.staff[i-1]];saveStaff();renderStaff()}}
   if(rm){const s=staffById(rm),n=LV.filter(l=>keyOf(l)===rm).length;
@@ -2369,7 +2404,7 @@ $('#bkSave').onclick=async()=>{
   const bad=R.map((r,i)=>(!r.st||!r.type||!r.start)?i+1:0).filter(Boolean);
   if(bad.length)return toast(`แถวที่ ${bad.join(', ')} ยังไม่ครบ (ต้องมีเจ้าหน้าที่ ประเภท และวันเริ่ม)`,true);
   const future=R.filter(r=>r.start>new Date().toISOString().slice(0,10)).length;
-  const dup=[];for(const r of R){const L=await leavesOfFY(fyOf(r.start));const e=T[r.type].late?r.start:(r.end||r.start);if(L.some(l=>keyOf(l)===r.st&&l.status!=='rejected'&&l.start<=e&&(l.end||l.start)>=r.start))dup.push(`${(staffById(r.st)||{}).name} ${thD(r.start)}`)}
+  const dup=[];for(const r of R){const L=await leavesOfFY(fyOf(r.start));const e=T[r.type].late?r.start:(r.end||r.start);if(L.some(l=>keyOf(l)===r.st&&active(l)&&l.start<=e&&(l.end||l.start)>=r.start))dup.push(`${(staffById(r.st)||{}).name} ${thD(r.start)}`)}
   if(!await ask(`บันทึกประวัติการลา ${R.length} รายการ?`+(dup.length?`<br><span style="color:var(--red)">วันที่ซ้ำกับที่มีอยู่แล้ว ${dup.length} รายการ: ${esc(dup.slice(0,5).join(', '))}${dup.length>5?' …':''}</span>`:'')+(future?`<br><span class="muted">มี ${future} รายการเป็นวันในอนาคต</span>`:'')))return;
   const fys=new Set();
   R.forEach(r=>{const st=staffById(r.st),t=T[r.type],e=t.late?r.start:(r.end&&r.end>=r.start?r.end:r.start),fy=fyOf(r.start);fys.add(fy);
@@ -2586,7 +2621,7 @@ $('#atClear').onclick=async()=>{const VS=attStaff(),n=VS.filter(st=>((AT[ATD+'_'
   if(!await ask(`ล้างข้อมูลที่บันทึกของ ${thDL(ATD)} (${n} คน)? (ข้อมูลจากใบลาจะยังอยู่)`))return;VS.forEach(st=>setAtt(st,{s:''}));toast('ล้างแล้ว');renderAtt()};
 
 /* ----- หน้าหลัก (Dashboard รวม) ----- */
-function renderHome(){if(!attReady(renderHome))return;setTimeout(fitHome,0);
+function renderHome(){if(!attReady(renderHome))return;setTimeout(fitHome,0);{const al=$('#sysAl');if(al)al.innerHTML=sysAlerts()}
   const hr=new Date(Date.now()+7*36e5).getUTCHours();$('#hmHello').textContent=`ภาพรวมการปฏิบัติราชการ · ${role==='admin'?'ผู้ดูแลระบบ':'หัวหน้ากลุ่มงาน'}`;
   homeAtt();
   const g=gDept(),VS=visStaff(),RL=roundLeaves().filter(inScope),FL=fyLeaves().filter(inScope),td=todayISO();
@@ -2732,13 +2767,13 @@ $('#amAdd').onclick=async()=>{const user=$('#amUser').value.trim(),name=$('#amNa
   if(!/^[A-Za-z0-9._-]{3,20}$/.test(user))return toast('ชื่อผู้ใช้ต้องเป็นภาษาอังกฤษหรือตัวเลข 3–20 ตัว',true);
   const u=user.toLowerCase();if(u==='admin'||admList().some(a=>a.user.toLowerCase()===u)||S.depts.some(d=>d.code&&norm(d.code).replace(/-/g,'').toLowerCase()===u))return toast('ชื่อผู้ใช้นี้ถูกใช้แล้ว',true);
   if(!name)return toast('กรุณาเลือกหรือระบุชื่อ-สกุล',true);if(p.length<6)return toast('รหัสผ่านต้องมีอย่างน้อย 6 ตัว',true);
-  admList().push({id:uid(),user,name,pos,hash:await sha('adm|'+u+'|'+p),off:false,created:Date.now(),by:curAdm()?curAdm().user:'admin'});saveSet();
+  admList().push({id:uid(),user,name,pos,hash:await sha('adm|'+u+'|'+p),mustPw:true,off:false,created:Date.now(),by:curAdm()?curAdm().user:'admin'});saveSet();
   amReset();renderAdm();toast(`เพิ่มผู้ดูแลระบบ “${user}” แล้ว`)};
 $('#amList').addEventListener('click',async e=>{const b=e.target.closest('button');if(!b)return;
   if(b.dataset.amb){const p=await ask('<b>ตั้งรหัสผ่านใหม่ของบัญชี admin</b><br>อย่างน้อย 6 ตัว','password');if(p===false)return;if(p.length<6)return toast('รหัสผ่านต้องมีอย่างน้อย 6 ตัว',true);S.settings.adminHash=await sha('admin|'+p);saveSet();pwDone();return}
   const id=b.dataset.ame||b.dataset.amp||b.dataset.amo||b.dataset.amd,a=admList().find(x=>x.id===id);if(!a)return;
   if(b.dataset.ame){amEdit=a.id;$('#amUser').value=a.user;$('#amUser').readOnly=true;amSetName(a.name||'');$('#amPos').value=a.pos||'';$('#amPass').closest('.row').style.display='none';$('#amTitle').textContent='✏️ แก้ไขบัญชี “'+a.user+'”';$('#amAdd').textContent='บันทึกการแก้ไข';$('#amCancel').style.display='';$('#amTitle').scrollIntoView({behavior:'smooth',block:'center'});return}
-  if(b.dataset.amp){const p=await ask(`<b>ตั้งรหัสผ่านใหม่ของ “${esc(a.user)}”</b><br>อย่างน้อย 6 ตัว`,'password');if(p===false)return;if(p.length<6)return toast('รหัสผ่านต้องมีอย่างน้อย 6 ตัว',true);a.hash=await sha('adm|'+a.user.toLowerCase()+'|'+p);saveSet();toast('ตั้งรหัสผ่านใหม่แล้ว')}
+  if(b.dataset.amp){const p=await ask(`<b>ตั้งรหัสผ่านใหม่ของ “${esc(a.user)}”</b><br>อย่างน้อย 6 ตัว`,'password');if(p===false)return;if(p.length<6)return toast('รหัสผ่านต้องมีอย่างน้อย 6 ตัว',true);a.hash=await sha('adm|'+a.user.toLowerCase()+'|'+p);a.mustPw=true;saveSet();toast('ตั้งรหัสผ่านใหม่แล้ว — ผู้ใช้ต้องเปลี่ยนรหัสอีกครั้งเมื่อเข้าสู่ระบบ')}
   else if(b.dataset.amo){a.off=!a.off;saveSet();renderAdm();toast(a.off?`ระงับบัญชี “${a.user}” แล้ว`:`เปิดใช้งานบัญชี “${a.user}” แล้ว`)}
   else if(b.dataset.amd){if(!await ask(`ลบบัญชีผู้ดูแลระบบ “${esc(a.user)}” (${esc(a.name)}) ?<br>บัญชีนี้จะเข้าสู่ระบบไม่ได้อีก`))return;S.settings.admins=admList().filter(x=>x.id!==id);saveSet();renderAdm();toast('ลบบัญชีแล้ว')}});
 
@@ -2826,9 +2861,10 @@ function makeSheetDB(url){
   setInterval(async()=>{if(document.hidden||saving||ops.length)return;try{if(await pull()){notify();if(typeof ghOnRemote==='function')ghOnRemote()}if(state!=='ok')setState('ok')}catch(e){setState('err',shErr(e))}},60000);
   window.addEventListener('beforeunload',e=>{if(ops.length||saving){e.preventDefault();e.returnValue='ยังบันทึกข้อมูลขึ้นฐานข้อมูลกลางไม่เสร็จ'}});
   const q=(col,f)=>({get:async()=>{await ready;return snap(col,f)},onSnapshot:(cb,er)=>{const L={c:col,f,cb};listeners.push(L);ready.then(()=>cb(snap(col,f))).catch(e=>er&&er(e));return()=>{listeners=listeners.filter(x=>x!==L)}}});
+  const oldC={},oldQ=v=>{const get=async()=>{await ready;if(!oldC[v]){const r=await fetch(url,{method:'POST',body:JSON.stringify({read:1,fy:+v,a:shAuth()})});const R=await r.json();if(R.err==='auth')shAuthLost();oldC[v]=R.leaves||[]}return{docs:oldC[v].map(x=>({data:()=>ghClone(x)})),metadata:{fromCache:false}}};return{get,onSnapshot:(cb,er)=>{get().then(cb).catch(e=>er&&er(e));return()=>{}}}};
   return{gh:true,sheet:true,url,ready,empty:()=>!D.cfg||!D.cfg.settings,
     doc:p=>({get:async()=>{await ready;const i=p.indexOf('/'),v=(D[p.slice(0,i)]||{})[p.slice(i+1)];return{exists:v!=null,data:()=>ghClone(v)}},set:async v=>put(p,v),delete:async()=>put(p,null)}),
-    collection:col=>({...q(col,null),where:(k,op,v)=>q(col,x=>x&&x[k]===v)}),
+    collection:col=>({...q(col,null),where:(k,op,v)=>col==='leaves'&&k==='fy'&&D._fy0&&+v<D._fy0?oldQ(v):q(col,x=>x&&x[k]===v)}),
     pull:async()=>{if(saving)await saving;try{if(await pull())notify()}catch(e){}},
     flush:()=>{clearTimeout(timer);return save()},
     info:()=>({state,err,lastSync,size,pending:ops.length,counts:Object.fromEntries(['leaves','attendance','feedback'].map(k=>[k,Object.keys(D[k]||{}).length]))})}}
@@ -2945,6 +2981,70 @@ applyDevice();
 
 boot();
 {const _rp=renderPsn;renderPsn=function(){const r=_rp.apply(this,arguments);if(role==='admin')psPwFill();return r}}
+/* ---------- รอบ/ปีงบประมาณ และการแจ้งเตือนระบบ ---------- */
+const nowFR=()=>{const t=todayISO(),y=+t.slice(0,4)+543,m=+t.slice(5,7);return{fy:m>=10?y+1:y,round:(m>=10||m<=3)?1:2}};
+function sysAlerts(){if(role!=='admin')return'';const A=[],n=nowFR(),cy=+S.settings.year,cr=+S.settings.round,b=(t,act,lbl)=>A.push(`<div class="alert" style="cursor:default;display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap"><span>${t}</span>${act?`<button class="btn sm" data-sya="${act}">${lbl}</button>`:''}</div>`);
+  const pc=pendCount();if(pc)b(`📝 มีใบลา/คำขอยกเลิกรออนุมัติ <b>${pc}</b> รายการ`,'pend','ไปที่รออนุมัติ');
+  if(n.fy>cy)b(`📅 เข้าสู่ปีงบประมาณ <b>${n.fy}</b> แล้ว แต่ระบบยังตั้งเป็นปีงบ ${cy}`,'roll','ปิดปีงบและยกวันลาสะสม');
+  else if(n.fy===cy&&n.round!==cr)b(`📅 เข้าสู่<b>รอบ${n.round===1?'ครึ่งปีแรก':'ครึ่งปีหลัง'}</b>แล้ว แต่ระบบยังตั้งเป็นรอบ${cr===1?'ครึ่งปีแรก':'ครึ่งปีหลัง'}`,'round','เปลี่ยนเป็นรอบปัจจุบัน');
+  const g=+todayISO().slice(0,4),need=[g].concat(+todayISO().slice(5,7)>=11?[g+1]:[]).filter(y=>!S.holidays.some(h=>String(h.date).slice(0,4)===String(y)));
+  if(need.length)b(`🗓️ ยังไม่มีวันหยุดราชการของปี ${need.map(y=>y+543).join(', ')} — วันทำการและวันลาจะคำนวณผิด`,'hol','เพิ่มวันหยุดราชการ');
+  if(!(S.settings.admins||[]).some(a=>!a.off))b('👥 มีผู้ดูแลระบบคนเดียว — หากไม่อยู่ ใบลาจะค้างรออนุมัติ ควรเพิ่มผู้ดูแลสำรองอย่างน้อย 1 คน','admins','เพิ่มผู้ดูแลระบบ');
+  return A.join('')}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-sya]');if(!b)return;const a=b.dataset.sya;
+  if(a==='round'){S.settings.round=nowFR().round;saveSet();renderHeader();toast('เปลี่ยนเป็นรอบปัจจุบันแล้ว');return renderTab(curTab())}showTab(a)});
+function renderRoll(){const cy=+S.settings.year,ny=cy+1,V=S.staff.filter(s=>!s.off);
+  const pend=LV.filter(l=>l.status==='pending'&&+l.fy===cy).length;
+  $('#rollBody').innerHTML=`<div class="panel"><div class="bd">
+   <p style="margin:0 0 8px">ปิดปีงบประมาณ <b>${cy}</b> และเริ่มปีงบประมาณ <b>${ny}</b> (รอบครึ่งปีแรก) · วันลาพักผ่อนที่เหลือจะยกไปเป็น “สะสม” ของปีถัดไปตามตัวเลขในช่องด้านขวา</p>
+   <p class="muted" style="margin:0 0 8px;font-size:13.5px">ค่าที่เสนอ: ข้าราชการ ยกได้ไม่เกิน <b>เพดานสะสม − สิทธิ์ปีใหม่</b> (เพดานปกติ 20 วัน · อายุราชการ 10 ปีขึ้นไป 30 วัน — แก้ในช่องเพดานได้) · ประเภทอื่นเสนอ 0 วัน กรุณาตรวจตามระเบียบของแต่ละประเภทก่อนยืนยัน</p>
+   ${pend?`<div class="alert" style="cursor:default">⚠️ ยังมีใบลาของปีงบ ${cy} รออนุมัติ ${pend} รายการ — ควรอนุมัติให้เรียบร้อยก่อน เพื่อให้วันคงเหลือถูกต้อง</div>`:''}
+   <div class="tw"><table><thead><tr><th>เลข ID</th><th>ชื่อ-สกุล</th><th>ประเภท</th><th>สิทธิ์ปี ${cy}<br>(ปีนี้+สะสม)</th><th>ใช้ไป</th><th>คงเหลือ</th><th>เพดานสะสม</th><th>ยกไปปี ${ny}</th></tr></thead><tbody>
+   ${V.sort((a,b)=>String(a.code).localeCompare(String(b.code))).map(st=>{const q=quotaOf(st),u=usedOf(st.id,'ลาพักผ่อน'),rem=Math.max(0,q.vacTot-u),gov=st.etype==='ข้าราชการ',cap=gov?(+st.accCap||20):0,pro=gov?Math.max(0,Math.min(rem,cap-q.vac)):0;
+     return`<tr><td>${esc(st.code||'')}</td><td>${esc(st.name)}</td><td>${esc(st.etype||'-')}</td><td class="c">${fmt(q.vacTot)}</td><td class="c">${fmt(u)}</td><td class="c"><b>${fmt(rem)}</b></td><td class="c">${gov?`<select data-rcap="${st.id}" style="width:auto">${[20,30].map(v=>opt(v,v+' วัน',v===cap)).join('')}</select>`:'-'}</td><td class="c"><input type="number" min="0" max="30" step="0.5" data-rcar="${st.id}" data-rem="${rem}" data-vac="${q.vac}" value="${pro}" style="width:70px"></td></tr>`}).join('')}</tbody></table></div>
+   <div class="btns" style="margin-top:12px"><button class="btn" id="rollGo">✅ ยืนยันปิดปีงบ ${cy} และเริ่มปีงบ ${ny}</button></div></div></div>`;
+  $('#rollBody').onchange=e=>{const c=e.target.dataset.rcap;if(!c)return;const st=staffById(c);st.accCap=+e.target.value;const i=document.querySelector(`[data-rcar="${c}"]`);i.value=Math.max(0,Math.min(+i.dataset.rem,st.accCap-(+i.dataset.vac)))};
+  $('#rollGo').onclick=async()=>{if(!await ask(`<b>ยืนยันปิดปีงบประมาณ ${cy}</b><br>ระบบจะตั้งวันลาพักผ่อนสะสมของทุกคนตามตาราง แล้วเปลี่ยนเป็นปีงบประมาณ ${ny} รอบครึ่งปีแรก<br>ประวัติการลาปีเก่ายังเก็บไว้ครบ`))return;
+    document.querySelectorAll('[data-rcar]').forEach(i=>{const st=staffById(i.dataset.rcar);if(st)st.qCarry=Math.max(0,+i.value||0)});
+    (S.settings.rollLog=S.settings.rollLog||[]).push({from:cy,to:ny,at:Date.now(),by:curAdm()?curAdm().user:'admin'});S.settings.year=ny;S.settings.round=1;saveStaff();saveSet();renderHeader();toast(`เริ่มปีงบประมาณ ${ny} แล้ว`);showTab('home')}}
+/* ---------- นำเข้าข้อมูลจากเครื่องสแกนลายนิ้วมือ/บัตร (Excel หรือ CSV) ---------- */
+function scanRows(rows){const H=(rows[0]||[]).map(x=>String(x||'').trim().toLowerCase());let hi=0;
+  for(let i=0;i<Math.min(rows.length,10);i++){const r=(rows[i]||[]).map(x=>String(x||'').toLowerCase());if(r.some(x=>/(รหัส|id|ac-no|no\.|เลขที่|enno|pin|user)/.test(x))&&r.some(x=>/(วัน|date|time|เวลา)/.test(x))){hi=i;break}}
+  const h=(rows[hi]||[]).map(x=>String(x||'').trim().toLowerCase()),f=re=>h.findIndex(x=>re.test(x));
+  const cId=f(/(รหัส|^id$|user ?id|ac-no|^no\.?$|เลขที่|enno|pin|employee)/),cName=f(/(ชื่อ|name)/),cDT=f(/(date ?time|check ?time|วันเวลา|วันที่และเวลา|^time$)/),cD=f(/(^date$|วันที่)/),cT=f(/(^time$|เวลา)/);
+  const out=[];for(let i=hi+1;i<rows.length;i++){const r=rows[i]||[];if(!r.length)continue;
+    let dt=null;if(cDT>=0&&r[cDT]!==''&&r[cDT]!=null)dt=scanDT(r[cDT]);if(!dt&&cD>=0)dt=scanDT(r[cD],cT>=0?r[cT]:'');
+    if(!dt)continue;out.push({id:cId>=0?String(r[cId]??'').trim():'',name:cName>=0?norm(r[cName]):'',d:dt[0],t:dt[1]})}
+  return out}
+function scanDT(v,tv){if(typeof v==='number'){const d=serialDT(Math.floor(v)),fr=v-Math.floor(v);let t=fr?`${String(Math.floor(fr*24)).padStart(2,'0')}:${String(Math.round(fr*1440)%60).padStart(2,'0')}`:'';if(!t&&tv!=null&&tv!=='')t=scanT(tv);return t?[d,t]:null}
+  const s=String(v||'').trim();let m=s.match(/(\d{4})[-\/.](\d{1,2})[-\/.](\d{1,2})/),d='';
+  if(m)d=`${+m[1]>2400?+m[1]-543:m[1]}-${m[2].padStart(2,'0')}-${m[3].padStart(2,'0')}`;else if((m=s.match(/(\d{1,2})[-\/.](\d{1,2})[-\/.](\d{4})/)))d=`${+m[3]>2400?+m[3]-543:m[3]}-${m[2].padStart(2,'0')}-${m[1].padStart(2,'0')}`;
+  if(!d)return null;const t=scanT(s.replace(m[0],''))||(tv!=null&&tv!==''?scanT(tv):'');return t?[d,t]:null}
+function scanT(v){if(typeof v==='number'&&v<1){const mi=Math.round(v*1440);return`${String(Math.floor(mi/60)).padStart(2,'0')}:${String(mi%60).padStart(2,'0')}`}const m=String(v||'').match(/(\d{1,2}):(\d{2})/);return m?`${m[1].padStart(2,'0')}:${m[2]}`:''}
+async function scanImport(file){const buf=await file.arrayBuffer();let rows=[];
+  try{if(/\.xlsx$/i.test(file.name)){const wb=await readXlsx(buf);rows=Object.values(wb)[0]||[]}else{const txt=new TextDecoder().decode(buf),sep=txt.includes('\t')?'\t':',';rows=txt.split(/\r?\n/).map(l=>l.split(sep).map(x=>x.replace(/^"|"$/g,'').trim()))}}catch(e){return toast('อ่านไฟล์ไม่ได้ — รองรับ .xlsx .csv .txt (ถ้าเป็น .xls ให้บันทึกเป็น .xlsx ก่อน)',true)}
+  const R=scanRows(rows);if(!R.length)return toast('ไม่พบคอลัมน์รหัสและวันเวลาในไฟล์ — ตรวจหัวตารางของไฟล์',true);
+  const byKey=x=>{const n=x.id.replace(/^0+/,'');return S.staff.find(s=>!s.off&&x.id&&(norm(s.code)===x.id||(n&&String(s.code||'').replace(/^0+/,'')===n)))||(x.name?staffByName(x.name):null)};
+  const first={},miss=new Set();R.forEach(x=>{const st=byKey(x);if(!st){miss.add(x.id||x.name);return}const k=st.id+'|'+x.d;if(!first[k]||x.t<first[k].t)first[k]={st,d:x.d,t:x.t}});
+  const E=Object.values(first),days=[...new Set(E.map(x=>x.d))].sort();if(!E.length)return toast('ไม่พบรหัสที่ตรงกับเลข ID ในระบบ',true);
+  const cut0=S.settings.lateAt||'08:30';
+  const ok=await ask(`<b>นำเข้าข้อมูลจากเครื่องสแกน</b><br>${days.length} วัน (${thD(days[0])}${days.length>1?' – '+thD(days[days.length-1]):''}) · ${new Set(E.map(x=>x.st.id)).size} คน · ${E.length} รายการ
+   ${miss.size?`<br><span style="color:var(--amber)">ไม่พบในระบบ ${miss.size} รหัส: ${esc([...miss].slice(0,12).join(', '))}${miss.size>12?' …':''}</span>`:''}
+   <div style="margin-top:10px">สแกนหลังเวลา <input type="time" id="scCut" value="${cut0}" style="width:auto"> นับว่า <b>สาย</b></div>
+   <div class="muted" style="font-size:13px;margin-top:6px">ใช้เวลาสแกนครั้งแรกของวัน · ไม่ทับรายการที่บันทึกไว้แล้ว (ลา/ไปราชการ/อื่น ๆ) · ผู้ที่ไม่มีข้อมูลสแกนจะยังว่างไว้ให้ตรวจเอง</div>`);
+  if(!ok)return;const cut=$('#scCut').value||cut0;if(cut!==S.settings.lateAt){S.settings.lateAt=cut;saveSet()}
+  const keep=ATD;let n={m:0,l:0,skip:0};
+  E.forEach(x=>{ATD=x.d;const k=x.d+'_'+dkOf(x.st),cur=AT[k]&&AT[k].rows&&AT[k].rows[x.st.id];if(cur&&cur.s&&cur.s!=='มา'&&cur.s!=='สาย'){n.skip++;return}
+    const late=x.t>cut;setAtt(x.st,late?{s:'สาย',n:'สแกน '+x.t}:{s:'มา',n:'สแกน '+x.t});late?n.l++:n.m++});
+  ATD=keep;renderTab(curTab());toast(`นำเข้าแล้ว: มา ${n.m} · สาย ${n.l}${n.skip?` · ข้าม ${n.skip} (มีรายการอื่นอยู่แล้ว)`:''}`)}
+$('#lgPdpa').onclick=e=>{e.preventDefault();const p=ask(`<b>การคุ้มครองข้อมูลส่วนบุคคล</b><div style="text-align:left;font-size:14px;line-height:1.7;margin-top:8px">
+ <b>ข้อมูลที่จัดเก็บ</b> ชื่อ-สกุล ตำแหน่ง กลุ่มงาน ประเภทบุคลากร เลขบัตรประชาชน (ใช้ยืนยันตัวตนเมื่อเข้าสู่ระบบครั้งแรก) หมายเลขโทรศัพท์ ที่อยู่ที่ติดต่อได้ ข้อมูลการลา และการมาปฏิบัติราชการ<br>
+ <b>วัตถุประสงค์</b> เพื่อบันทึกและบริหารการลาและเวลาปฏิบัติราชการตามระเบียบของทางราชการเท่านั้น<br>
+ <b>ผู้เข้าถึงข้อมูล</b> เจ้าของข้อมูลเห็นเฉพาะของตนเอง · หัวหน้ากลุ่มงานเห็นเฉพาะกลุ่มของตน · หัวหน้าสำนักงานและผู้ดูแลระบบเห็นทั้งหมด · เลขบัตรประชาชนแสดงเฉพาะผู้ดูแลระบบและหัวหน้าในกลุ่มเดียวกัน<br>
+ <b>การจัดเก็บ</b> เก็บในบัญชี Google ของ${esc(orgN())} มีการสำรองข้อมูลอัตโนมัติ และบันทึกประวัติการแก้ไขทุกครั้ง<br>
+ <b>สิทธิของท่าน</b> ตรวจดูข้อมูลของตนเองได้ในระบบ แก้ไขโทรศัพท์/ที่อยู่ได้เอง และขอแก้ไขข้อมูลอื่นได้ที่ผู้ดูแลระบบ</div>`);
+ $('#mYes').textContent='รับทราบ';$('#mNo').style.display='none';p.then(()=>{$('#mNo').style.display=''})};
+
 </script>
 </body>
 </html>
