@@ -1333,11 +1333,12 @@ async function loadCfg(){
 }
 async function boot(){
   setRole('staff',true);
+  if(!(window.claude&&typeof claude.use==='function')&&shUrl()&&!shAuth()){store.sheet=true;store.gate=true;$('#hSub').textContent='';$('#mode').textContent='☁ ฐานข้อมูลกลาง';openLogin(true);return}
   let db=null,u=null;
   if(window.claude&&typeof claude.use==='function'){try{[db,u]=await Promise.all([claude.use('db'),claude.use('user')])}catch(e){}}
   let canWrite=null;if(u){try{canWrite=await u.can('data.write')}catch(e){}}
   if(db&&canWrite!==false){store.db=db;store.cloud=true;try{store.owner=!!(u&&(await u.canEdit()))}catch(e){}}
-  else{const gc=ghCfg(),su=shUrl();if(su){store.db=makeSheetDB(su);store.cloud=true;store.owner=true;store.gh=true;store.sheet=true;try{await timeout(store.db.ready,20000);store.owner=store.db.empty()||!!shAuth()}catch(e){store.db=null;store.cloud=store.owner=store.gh=store.sheet=false;setTimeout(()=>toast(shErr(e)+' — ใช้ข้อมูลในเครื่องนี้ชั่วคราว',true),800)}}else if(gc){store.db=makeGhDB(gc);store.cloud=true;store.owner=true;store.gh=true;try{await timeout(store.db.ready,15000)}catch(e){store.db=null;store.cloud=store.owner=store.gh=false;setTimeout(()=>toast('เชื่อมต่อฐานข้อมูลกลางไม่ได้: '+ghErrText(e)+' — ใช้ข้อมูลในเครื่องนี้ชั่วคราว',true),800)}}}
+  else{const gc=ghCfg(),su=shUrl();if(su){store.db=makeSheetDB(su);store.cloud=true;store.owner=true;store.gh=true;store.sheet=true;try{await timeout(store.db.ready,20000);store.owner=store.db.empty()||((JSON.parse(sessionStorage.getItem('leaveapp:sess')||'{}')||{}).role==='admin')}catch(e){store.db=null;store.cloud=store.owner=store.gh=store.sheet=false;setTimeout(()=>toast(shErr(e)+' — ใช้ข้อมูลในเครื่องนี้ชั่วคราว',true),800)}}else if(gc){store.db=makeGhDB(gc);store.cloud=true;store.owner=true;store.gh=true;try{await timeout(store.db.ready,15000)}catch(e){store.db=null;store.cloud=store.owner=store.gh=false;setTimeout(()=>toast('เชื่อมต่อฐานข้อมูลกลางไม่ได้: '+ghErrText(e)+' — ใช้ข้อมูลในเครื่องนี้ชั่วคราว',true),800)}}}
   try{await loadCfg()}
   catch(e){if(store.cloud){store.cloud=false;toast('เชื่อมต่อฐานข้อมูลออนไลน์ไม่ได้ ใช้ข้อมูลในเครื่องนี้แทน',true);try{await loadCfg()}catch(_){}}}
   $('#mode').textContent=store.gh?'☁ ฐานข้อมูลกลาง':store.cloud?'☁ ออนไลน์':'💾 เก็บในเครื่องนี้';if(store.gh)ghBadge();
@@ -1387,6 +1388,11 @@ let lgM='s';
 function openLogin(gate){$('#lgCode').checked=true;lgMode();$('#lgUser').value='';$('#lgPass').value='';$('#lgErr').textContent='';$('#login').className=gate?'show gate':'show';setTimeout(()=>$('#lgUser').focus(),50)}
 $('#lgCancel').onclick=()=>$('#login').className='';
 async function doLogin(){
+  if(store.sheet){const u=norm($('#lgUser').value),p=$('#lgPass').value;if(!u||!p){$('#lgErr').textContent='กรอกชื่อผู้ใช้และรหัสผ่าน';return}
+    const a=lgM==='s'?{u,p,m:'s'}:{u,p};$('#lgOk').disabled=true;$('#lgErr').textContent='กำลังตรวจสอบ…';
+    try{const R=await shLogin(a);if(!R.who){$('#lgErr').textContent=lgM==='s'?'เลข ID / เลขบัตรประชาชน หรือรหัสผ่านไม่ถูกต้อง (ถ้ายังไม่มีเลขบัตรประชาชนในระบบ กรุณาติดต่อผู้ดูแลระบบ)':'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง';return}
+      shSetAuth(a);sess=R.who;saveSess();$('#lgErr').textContent='เข้าสู่ระบบแล้ว กำลังโหลดข้อมูล…';location.reload()}
+    catch(e){$('#lgErr').textContent='เชื่อมต่อฐานข้อมูลกลางไม่ได้ กรุณาลองใหม่'}finally{$('#lgOk').disabled=false}return}
   if(store.gh){try{await store.db.pull();const st=await cfgGet('settings');if(st)S.settings={...DEF_SET,...st};const dp=await cfgGet('depts');if(dp&&Array.isArray(dp.items))S.depts=dp.items}catch(e){}}
   const u=norm($('#lgUser').value),p=$('#lgPass').value;if(!u||!p){$('#lgErr').textContent='กรอกชื่อผู้ใช้และรหัสผ่าน';return}
   if(lgM==='s'){const st=staffByCode(u);if(!st){$('#lgErr').textContent='ไม่พบเลข ID หรือเลขบัตรประชาชนนี้ในระบบ';return}
@@ -1421,7 +1427,7 @@ $('#lgCode').onchange=$('#lgCid').onchange=()=>{lgMode();$('#lgUser').value='';$
 $('#whoCode').onchange=$('#whoCid').onchange=()=>{$('#fName').value='';renderRec();$('#fName').focus()};
 $('#lgOk').onclick=doLogin;$('#lgPass').onkeydown=e=>{if(e.key==='Enter')doLogin()};$('#lgUser').onkeydown=e=>{if(e.key==='Enter')$('#lgPass').focus()};
 $('#roleSeg').onclick=e=>{const b=e.target.closest('[data-r]');if(!b)return;if(b.dataset.r==='staff'){if(role!=='staff')setRole('staff')}else if(sess){if(role==='staff')setRole(sess.role)}else openLogin()};
-$('#exitAdmin').onclick=()=>{GF='';sess=null;saveSess();shSetAuth(null);setRole('staff');openLogin(true);toast('ออกจากระบบแล้ว')};
+$('#exitAdmin').onclick=async()=>{GF='';sess=null;saveSess();if(store.sheet){try{await store.db.flush()}catch(e){}shSetAuth(null);location.reload();return}shSetAuth(null);setRole('staff');openLogin(true);toast('ออกจากระบบแล้ว')};
 $('#chgPw').onclick=async()=>{
   const p=await ask('<b>เปลี่ยนรหัสผ่าน</b><br>รหัสผ่านใหม่ (อย่างน้อย 4 ตัว)','password');if(p===false)return;if(p.length<4)return toast('รหัสผ่านต้องมีอย่างน้อย 4 ตัว',true);
   const p2=await ask('<b>ยืนยันรหัสผ่านใหม่</b><br>กรอกรหัสผ่านใหม่อีกครั้ง','password');if(p2===false)return;if(p2!==p)return toast('รหัสผ่านทั้งสองครั้งไม่ตรงกัน ยังไม่ได้เปลี่ยนรหัสผ่าน',true);
@@ -2756,6 +2762,8 @@ const SHEET_URL='https://script.google.com/macros/s/AKfycbzUC7SmpBKUbwLaIfC4BOlY
 const shUrl=()=>{try{return localStorage.getItem('leaveapp:sheet')||SHEET_URL}catch(e){return SHEET_URL}};
 const shAuth=()=>{try{return JSON.parse(sessionStorage.getItem('leaveapp:auth')||'null')}catch(e){return null}};
 function shSetAuth(a){try{a?sessionStorage.setItem('leaveapp:auth',JSON.stringify(a)):sessionStorage.removeItem('leaveapp:auth')}catch(e){}}
+function shAuthLost(){shSetAuth(null);try{sessionStorage.removeItem('leaveapp:sess')}catch(e){}toast('รหัสผ่านถูกเปลี่ยน หรือหมดสิทธิ์ใช้งาน กรุณาเข้าสู่ระบบใหม่',true);setTimeout(()=>location.reload(),1500);throw new Error('auth')}
+async function shLogin(a){const r=await fetch(shUrl(),{method:'POST',body:JSON.stringify({login:1,a})});if(!r.ok)throw new Error('HTTP '+r.status);return r.json()}
 function shErr(e){return navigator.onLine===false?'ไม่มีการเชื่อมต่ออินเทอร์เน็ต':'เชื่อมต่อฐานข้อมูลกลางไม่ได้ ('+(e&&e.message||'')+')'}
 function makeSheetDB(url){
   let D={},ver=-1,ops=[],timer=null,saving=null,listeners=[],state='load',err='',lastSync=0,size=0;
@@ -2766,13 +2774,13 @@ function makeSheetDB(url){
   const notify=(c)=>listeners.forEach(L=>{if(c&&L.c!==c)return;try{L.cb(snap(L.c,L.f))}catch(e){}});
   const setState=(s,e)=>{state=s;err=e||'';if(typeof ghBadge==='function')ghBadge()};
   const take=R=>{D=R.data||{};ver=R.ver;size=JSON.stringify(D).length;ops.forEach(o=>apply(o,D))};
-  const pull=async()=>{const r=await fetch(url+(url.includes('?')?'&':'?')+'v='+ver+'&t='+Date.now(),{cache:'no-store'});if(!r.ok)throw new Error('HTTP '+r.status);
-    const R=await r.json();lastSync=Date.now();if(R.same)return false;take(R);return true};
+  const pull=async()=>{const r=await fetch(url,{method:'POST',cache:'no-store',body:JSON.stringify({read:1,ver,a:shAuth()})});if(!r.ok)throw new Error('HTTP '+r.status);
+    const R=await r.json();if(R.err==='auth')shAuthLost();lastSync=Date.now();if(R.same)return false;take(R);return true};
   const ready=(async()=>{await pull();setState('ok')})();
   ready.catch(e=>setState('err',shErr(e)));
   async function save(){if(saving)return saving;if(!ops.length)return;
     saving=(async()=>{const batch=ops.slice();setState('saving');
-      try{const r=await fetch(url,{method:'POST',body:JSON.stringify({ver,ops:batch})});if(!r.ok)throw new Error('HTTP '+r.status);const R=await r.json();
+      try{const r=await fetch(url,{method:'POST',body:JSON.stringify({ver,ops:batch,a:(batch[0]&&batch[0].a)||shAuth()})});if(!r.ok)throw new Error('HTTP '+r.status);const R=await r.json();if(R.err==='auth')shAuthLost();
         ops=ops.slice(batch.length);lastSync=Date.now();const no=(R.res||[]).filter(x=>!x).length;
         if(R.data){take(R);notify();if(typeof ghOnRemote==='function')ghOnRemote()}else{ver=R.ver;size=JSON.stringify(D).length}
         if(no){ver=-1;await pull();notify();if(batch.some((o,i)=>!(R.res||[])[i]&&o.p.startsWith('cfg/'))&&typeof loadCfg==='function'){try{await loadCfg();renderTab(curTab())}catch(e){}}if(typeof ghOnRemote==='function')ghOnRemote();toast(`มี ${no} รายการที่ไม่ได้บันทึก เพราะไม่มีสิทธิ์ — กรุณาเข้าสู่ระบบก่อนแก้ไข`,true)}
